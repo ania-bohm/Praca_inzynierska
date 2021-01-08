@@ -3,10 +3,32 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="welcome">Witaj ponownie!</string>
-    <string name="email_nickname">Email/Nickname</string>
+    <string name="registration">Rejestracja</string>
+    <string name="create_account">Załóż konto</string>
+    <string name="email">Email</string>
     <string name="password">Hasło</string>
     <string name="login">Zaloguj się</string>
     <string name="no_account">Nie masz konta?</string>
     <string name="register">Zarejestruj się!</string>
     <string name="example_email">example@gmail.com</string>
+    <string name="first_name">Imię*</string>
+    <string name="last_name">Nazwisko*</string>
+    <string name="email1">Adres e-mail*</string>
+    <string name="phone_number">Numer telefonu*</string>
+    <string name="password1">Hasło*</string>
+    <string name="your_events">Twoje wydarzenia</string>
+    <string name="all_events">Wszystkie wydarzenia</string>
+    <string name="countdown">Najbliższe wydarzenie już za:</string>
+    <string name="new_event">Nowe wydarzenie</string>
+    <string name="event_name">Nazwa</string>
+    <string name="event_date_start">Data rozpoczęcia</string>
+    <string name="event_date_finish">Data zakończenia</string>
+    <string name="event_time_start">Godzina rozpoczęcia</string>
+    <string name="event_time_finish">Godzina zakończenia</string>
+    <string name="event_location">Lokalizacja</string>
+    <string name="event_description">Opis</string>
+    <string name="event_guest_list">Lista gości</string>
+    <string name="event_image">Ustaw zdjęcie wydarzenia</string>
+    <string name="event_ready">Gotowe</string>
+    <string name="event_cancel">Anuluj</string>
 </resources>

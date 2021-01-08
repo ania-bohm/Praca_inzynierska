@@ -11,6 +11,7 @@ import androidx.navigation.Navigation;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -20,6 +21,8 @@ import android.view.ViewGroup;
 public class LoginFragment extends Fragment {
 
     NavController navController;
+    Button registerButton;
+    Button loginButton;
 
     public LoginFragment() {
         // Required empty public constructor
@@ -43,9 +46,31 @@ public class LoginFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_login, container, false);
     }
 
+    private View.OnClickListener registerOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            navController.navigate(R.id.loginToRegister);
+        }
+    };
+
+
+    private View.OnClickListener loginOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            navController.navigate(R.id.loginToMain);
+        }
+    };
+
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         navController = Navigation.findNavController(view);
+        registerButton = view.findViewById(R.id.registerButton);
+        loginButton = view.findViewById(R.id.loginButton);
+        registerButton.setOnClickListener(registerOnClickListener);
+        loginButton.setOnClickListener(loginOnClickListener);
     }
+
+
 }

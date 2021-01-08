@@ -9,5 +9,39 @@
         android:id="@+id/loginFragment"
         android:name="com.annabohm.pracainzynierska.LoginFragment"
         android:label="fragment_login"
-        tools:layout="@layout/fragment_login" />
+        tools:layout="@layout/fragment_login" >
+        <action
+            android:id="@+id/loginToRegister"
+            app:destination="@id/registrationFragment" />
+        <action
+            android:id="@+id/loginToMain"
+            app:destination="@id/mainFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/registrationFragment"
+        android:name="com.annabohm.pracainzynierska.RegistrationFragment"
+        android:label="fragment_registration"
+        tools:layout="@layout/fragment_registration" />
+    <fragment
+        android:id="@+id/mainFragment"
+        android:name="com.annabohm.pracainzynierska.MainFragment"
+        android:label="fragment_main"
+        tools:layout="@layout/fragment_main" >
+        <action
+            android:id="@+id/mainToAccountSettings"
+            app:destination="@id/accountSettingsFragment" />
+        <action
+            android:id="@+id/mainToAddEvent"
+            app:destination="@id/addEventFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/accountSettingsFragment"
+        android:name="com.annabohm.pracainzynierska.AccountSettingsFragment"
+        android:label="fragment_account_settings"
+        tools:layout="@layout/fragment_account_settings" />
+    <fragment
+        android:id="@+id/addEventFragment"
+        android:name="com.annabohm.pracainzynierska.AddEventFragment"
+        android:label="fragment_add_event"
+        tools:layout="@layout/fragment_add_event" />
 </navigation>
