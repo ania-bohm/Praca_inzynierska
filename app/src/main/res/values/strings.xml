@@ -31,4 +31,20 @@
     <string name="event_image">Ustaw zdjęcie wydarzenia</string>
     <string name="event_ready">Gotowe</string>
     <string name="event_cancel">Anuluj</string>
+    <string name="account_settings">Ustawienia konta</string>
+    <string name="personal_data">Dane osobowe:</string>
+    <string name="edit_personal_data">Edytuj dane osobowe:</string>
+    <string name="change_password">Zmień hasło:</string>
+    <string name="change_password_old">Wpisz dotychczasowe hasło:</string>
+    <string name="change_password_new">Wpisz nowe hasło:</string>
+    <string name="change_password_repeat">Powtórz nowe hasło:</string>
+    <string name="confirm_change_password">Zatwierdź zmiany</string>
+    <string name="reject_change_password">Odrzuć zmiany</string>
+    <string name="account_first_name">Imię</string>
+    <string name="account_last_name">Nazwisko</string>
+    <string name="account_email">Adres email</string>
+    <string name="account_phone_number">Numer telefonu</string>
+    <string name="account_change_password">Zmień hasło</string>
+    <string name="confirm_edit_personal_data">Zatwierdź zmiany</string>
+    <string name="reject_edit_personal_data">Odrzuć zmiany</string>
 </resources>

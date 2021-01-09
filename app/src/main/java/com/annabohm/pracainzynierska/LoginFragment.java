@@ -1,5 +1,6 @@
 package com.annabohm.pracainzynierska;
 
+import android.media.Image;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -12,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -23,6 +25,7 @@ public class LoginFragment extends Fragment {
     NavController navController;
     Button registerButton;
     Button loginButton;
+    ImageView loginShowPasswordButton;
 
     public LoginFragment() {
         // Required empty public constructor
@@ -68,6 +71,7 @@ public class LoginFragment extends Fragment {
         navController = Navigation.findNavController(view);
         registerButton = view.findViewById(R.id.registerButton);
         loginButton = view.findViewById(R.id.loginButton);
+        loginShowPasswordButton = view.findViewById(R.id.loginShowPasswordButton);
         registerButton.setOnClickListener(registerOnClickListener);
         loginButton.setOnClickListener(loginOnClickListener);
     }

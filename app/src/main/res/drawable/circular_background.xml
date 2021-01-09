@@ -5,7 +5,7 @@
         <layer-list>
 
             <item>
-                <shape android:shape="rectangle">
+                <shape android:shape="oval">
 
                     <size android:width="50dp"
                         android:height="50dp"></size>
@@ -16,12 +16,9 @@
                         android:gradientRadius="10dp"
                         android:type="linear"
                         ></gradient>
-                    <corners
-                        android:topRightRadius="30dp"
-                        android:topLeftRadius="30dp"
-                        android:bottomLeftRadius="30dp"
-                        android:bottomRightRadius="30dp"></corners>
+
                 </shape>
+
             </item>
 
         </layer-list>

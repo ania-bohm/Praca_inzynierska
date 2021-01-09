@@ -132,30 +132,32 @@
             app:layout_constraintVertical_bias="0.57" />
 
         <Button
-            android:id="@+id/eventReadyButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/montserrat"
-            android:text="@string/event_ready"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.024"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.947" />
-
-        <Button
             android:id="@+id/eventCancelButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/montserrat"
             android:text="@string/event_cancel"
+            android:textAllCaps="false"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.279"
             app:layout_constraintStart_toStartOf="@+id/eventReadyButton"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.947" />
+            app:layout_constraintVertical_bias="0.971" />
+
+        <Button
+            android:id="@+id/eventReadyButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/montserrat"
+            android:text="@string/event_ready"
+            android:textAllCaps="false"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.024"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.971" />
 
         <Button
             android:id="@+id/eventImageButton"
@@ -163,15 +165,16 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/montserrat"
             android:text="@string/event_image"
+            android:textAllCaps="false"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintHorizontal_bias="0.923"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.947" />
+            app:layout_constraintVertical_bias="0.971" />
 
         <EditText
-            android:id="@+id/editTextTextPersonName"
+            android:id="@+id/eventNameEditText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ems="10"
@@ -184,7 +187,7 @@
             app:layout_constraintVertical_bias="0.084" />
 
         <EditText
-            android:id="@+id/editTextTextPersonName2"
+            android:id="@+id/eventDescriptionEditText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ems="10"
@@ -196,7 +199,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <EditText
-            android:id="@+id/editTextTextPersonName3"
+            android:id="@+id/eventLocationEditText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ems="10"
@@ -209,7 +212,7 @@
             app:layout_constraintVertical_bias="0.434" />
 
         <EditText
-            android:id="@+id/editTextDate"
+            android:id="@+id/eventDateStartEditText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ems="10"
@@ -222,7 +225,7 @@
             app:layout_constraintVertical_bias="0.164" />
 
         <EditText
-            android:id="@+id/editTextDate2"
+            android:id="@+id/eventDateFinishEditText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ems="10"
@@ -235,7 +238,7 @@
             app:layout_constraintVertical_bias="0.303" />
 
         <EditText
-            android:id="@+id/editTextTime"
+            android:id="@+id/eventTimeStartEditText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ems="10"
@@ -248,7 +251,7 @@
             app:layout_constraintVertical_bias="0.23" />
 
         <EditText
-            android:id="@+id/editTextTime2"
+            android:id="@+id/eventTimeFinishEditText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ems="10"
@@ -259,6 +262,16 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.38" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/eventGuestListRecyclerView"
+            android:layout_width="394dp"
+            android:layout_height="166dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.836" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

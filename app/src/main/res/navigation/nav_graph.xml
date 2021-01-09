@@ -38,10 +38,27 @@
         android:id="@+id/accountSettingsFragment"
         android:name="com.annabohm.pracainzynierska.AccountSettingsFragment"
         android:label="fragment_account_settings"
-        tools:layout="@layout/fragment_account_settings" />
+        tools:layout="@layout/fragment_account_settings" >
+        <action
+            android:id="@+id/accountSettingsToEditAccountSettings"
+            app:destination="@id/editAccountSettingsFragment" />
+        <action
+            android:id="@+id/accountSettingsToChangePassword"
+            app:destination="@id/changePasswordFragment" />
+    </fragment>
     <fragment
         android:id="@+id/addEventFragment"
         android:name="com.annabohm.pracainzynierska.AddEventFragment"
         android:label="fragment_add_event"
         tools:layout="@layout/fragment_add_event" />
+    <fragment
+        android:id="@+id/editAccountSettingsFragment"
+        android:name="com.annabohm.pracainzynierska.EditAccountSettingsFragment"
+        android:label="fragment_edit_account_settings"
+        tools:layout="@layout/fragment_edit_account_settings" />
+    <fragment
+        android:id="@+id/changePasswordFragment"
+        android:name="com.annabohm.pracainzynierska.ChangePasswordFragment"
+        android:label="fragment_change_password"
+        tools:layout="@layout/fragment_change_password" />
 </navigation>

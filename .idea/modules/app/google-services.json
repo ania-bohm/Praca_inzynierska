@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "713291684134",
+    "project_id": "praca-inzynierska-24a27",
+    "storage_bucket": "praca-inzynierska-24a27.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:713291684134:android:7834a503aa6b3d57e189e7",
+        "android_client_info": {
+          "package_name": "com.annabohm.pracainzynierska"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "713291684134-eac2eai74msdeho28l8otn6gb9e4fca6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.annabohm.pracainzynierska",
+            "certificate_hash": "98307ac9e43947b571d25648975c305181679106"
+          }
+        },
+        {
+          "client_id": "713291684134-2deh9nakqgccfppl2ej407pb4h91b43k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDkXOoowaKy7qnz5n8_N5DZdxr5cK7bneA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "713291684134-2deh9nakqgccfppl2ej407pb4h91b43k.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

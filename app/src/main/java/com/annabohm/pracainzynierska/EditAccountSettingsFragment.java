@@ -13,20 +13,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
-public class AddEventFragment extends Fragment {
+public class EditAccountSettingsFragment extends Fragment {
 
     NavController navController;
-    Button eventReadyButton;
-    Button eventCancelButton;
-    Button eventImageButton;
+    Button confirmEditPersonalDataButton;
+    Button rejectEditPersonalDataButton;
 
-    public AddEventFragment() {
+    public EditAccountSettingsFragment() {
         // Required empty public constructor
     }
 
-
-    public static AddEventFragment newInstance(String param1, String param2) {
-        AddEventFragment fragment = new AddEventFragment();
+    public static EditAccountSettingsFragment newInstance(String param1, String param2) {
+        EditAccountSettingsFragment fragment = new EditAccountSettingsFragment();
         return fragment;
     }
 
@@ -39,17 +37,17 @@ public class AddEventFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_add_event, container, false);
+        return inflater.inflate(R.layout.fragment_edit_account_settings, container, false);
     }
 
-    private View.OnClickListener eventReadyOnClickListener = new View.OnClickListener() {
+    private View.OnClickListener confirmEditOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             navController.popBackStack();
         }
     };
 
-    private View.OnClickListener eventCancelOnClickListener = new View.OnClickListener() {
+    private View.OnClickListener rejectEditOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             navController.popBackStack();
@@ -60,10 +58,9 @@ public class AddEventFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         navController = Navigation.findNavController(view);
-        eventReadyButton = view.findViewById(R.id.eventReadyButton);
-        eventCancelButton = view.findViewById(R.id.eventCancelButton);
-        eventImageButton = view.findViewById(R.id.eventImageButton);
-        eventReadyButton.setOnClickListener(eventReadyOnClickListener);
-        eventCancelButton.setOnClickListener(eventCancelOnClickListener);
+        confirmEditPersonalDataButton = view.findViewById(R.id.confirmEditPersonalDataButton);
+        rejectEditPersonalDataButton = view.findViewById(R.id.rejectEditPersonalDataButton);
+        confirmEditPersonalDataButton.setOnClickListener(confirmEditOnClickListener);
+        rejectEditPersonalDataButton.setOnClickListener(rejectEditOnClickListener);
     }
 }

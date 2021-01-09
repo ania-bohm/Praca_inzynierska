@@ -16,6 +16,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/montserrat"
             android:text="@string/register"
+            android:textAllCaps="false"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -53,7 +54,7 @@
             app:layout_constraintVertical_bias="0.154" />
 
         <EditText
-            android:id="@+id/emailEditText1"
+            android:id="@+id/loginEmailEditText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ems="10"
@@ -100,6 +101,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/montserrat"
             android:text="@string/login"
+            android:textAllCaps="false"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -109,18 +111,32 @@
             app:layout_constraintVertical_bias="0.686" />
 
         <EditText
-            android:id="@+id/passwordEditText"
+            android:id="@+id/loginPasswordEditText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ems="10"
             android:fontFamily="@font/montserrat"
             android:inputType="textPassword|numberPassword"
+            android:password="true"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.484"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.578" />
+
+        <ImageView
+            android:id="@+id/loginShowPasswordButton"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:background="@drawable/gray_background"
+            android:src="@drawable/ic_baseline_remove_red_eye_24"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.837"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.576" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

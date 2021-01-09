@@ -4,61 +4,62 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".RegistrationFragment">
+    tools:context=".EditAccountSettingsFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ImageView
-            android:id="@+id/registerShowPasswordButton"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:background="@drawable/gray_background"
-            android:src="@drawable/ic_baseline_remove_red_eye_24"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.824"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.66" />
-
         <TextView
-            android:id="@+id/registrationTextView"
+            android:id="@+id/editPersonalDataTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/montserrat"
-            android:text="@string/registration"
-            android:textSize="30sp"
+            android:text="@string/edit_personal_data"
+            android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.497"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.186" />
+            app:layout_constraintVertical_bias="0.289" />
 
         <Button
-            android:id="@+id/createAccountButton"
+            android:id="@+id/confirmEditPersonalDataButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/montserrat"
-            android:text="@string/create_account"
+            android:text="@string/confirm_edit_personal_data"
             android:textAllCaps="false"
-            android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintHorizontal_bias="0.213"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.805" />
+            app:layout_constraintVertical_bias="0.785" />
+
+        <Button
+            android:id="@+id/rejectEditPersonalDataButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/montserrat"
+            android:text="@string/reject_edit_personal_data"
+            android:textAllCaps="false"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.828"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.783" />
 
         <EditText
-            android:id="@+id/registerLastNameEditText"
+            android:id="@+id/editAccountLastNameEditText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ems="10"
             android:fontFamily="@font/montserrat"
-            android:hint="@string/last_name"
+            android:hint="@string/account_last_name"
             android:inputType="textPersonName"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -69,12 +70,12 @@
             app:layout_constraintVertical_bias="0.453" />
 
         <EditText
-            android:id="@+id/registerFirstNameEditText"
+            android:id="@+id/editAccountFirstNameEditText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ems="10"
             android:fontFamily="@font/montserrat"
-            android:hint="@string/first_name"
+            android:hint="@string/account_first_name"
             android:inputType="textPersonName"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -85,29 +86,12 @@
             app:layout_constraintVertical_bias="0.383" />
 
         <EditText
-            android:id="@+id/registerPasswordEditText1"
+            android:id="@+id/editAccountPhoneNumberEditText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ems="10"
             android:fontFamily="@font/montserrat"
-            android:hint="@string/password1"
-            android:inputType="textPassword|numberPassword"
-            android:password="true"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.494"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.664" />
-
-        <EditText
-            android:id="@+id/registerPhoneNumberEditText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ems="10"
-            android:fontFamily="@font/montserrat"
-            android:hint="@string/phone_number"
+            android:hint="@string/account_phone_number"
             android:inputType="phone"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -117,12 +101,12 @@
             app:layout_constraintVertical_bias="0.594" />
 
         <EditText
-            android:id="@+id/registerEmailEditText"
+            android:id="@+id/editAccountEmailEditText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ems="10"
             android:fontFamily="@font/montserrat"
-            android:hint="@string/email1"
+            android:hint="@string/account_email"
             android:inputType="textEmailAddress"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -131,6 +115,5 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.52" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

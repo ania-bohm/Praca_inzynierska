@@ -12,11 +12,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 
 public class RegistrationFragment extends Fragment {
 
     NavController navController;
-    Button registerButton;
+    Button createAccountButton;
+    ImageView registerShowPasswordButton;
 
     public RegistrationFragment() {
         // Required empty public constructor
@@ -51,8 +53,9 @@ public class RegistrationFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         navController = Navigation.findNavController(view);
-        registerButton = view.findViewById(R.id.registerButton);
-        registerButton.setOnClickListener(registerOnClickListener);
+        createAccountButton = view.findViewById(R.id.createAccountButton);
+        registerShowPasswordButton = view.findViewById(R.id.registerShowPasswordButton);
+        createAccountButton.setOnClickListener(registerOnClickListener);
     }
 
 }
