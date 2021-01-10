@@ -9,27 +9,32 @@
         <item
             android:id="@+id/nav_home"
             android:icon="@drawable/ic_home"
-            android:title="Strona główna"/>
+            android:title="@string/navigation_drawer_home" />
 
         <item
             android:id="@+id/nav_my_invitations"
             android:icon="@drawable/ic_invitation"
-            android:title="Moje zaproszenia"/>
+            android:title="@string/navigation_drawer_my_invitations" />
 
         <item
             android:id="@+id/nav_calendar"
             android:icon="@drawable/ic_calendar"
-            android:title="Kalendarz wydarzeń"/>
+            android:title="@string/navigation_drawer_calendar" />
 
         <item
             android:id="@+id/nav_account_settings"
             android:icon="@drawable/ic_account"
-            android:title="Ustawienia konta"/>
+            android:title="@string/navigation_drawer_account_settings" />
 
         <item
             android:id="@+id/nav_app_settings"
             android:icon="@drawable/ic_app_settings"
-            android:title="Ustawienia"/>
+            android:title="@string/navigation_drawer_app_settings" />
+
+        <item
+            android:id="@+id/nav_logout"
+            android:icon="@drawable/ic_logout"
+            android:title="@string/navigation_drawer_logout" />
 
     </group>
 

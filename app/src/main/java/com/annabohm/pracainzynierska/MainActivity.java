@@ -83,6 +83,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 closeDrawer(drawerLayout);
                 navController.navigate(R.id.accountSettingsFragment);
                 break;
+
+            case R.id.nav_logout:
+                closeDrawer(drawerLayout);
+                navController.navigate(R.id.loginFragment);
+                break;
         }
         return true;
     }

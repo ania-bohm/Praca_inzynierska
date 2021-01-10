@@ -49,4 +49,11 @@
     <string name="reject_edit_personal_data">Odrzuć zmiany</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="navigation_drawer_home">Strona główna</string>
+    <string name="navigation_drawer_my_invitations">Moje zaproszenia</string>
+    <string name="navigation_drawer_calendar">Kalendarz wydarzeń</string>
+    <string name="navigation_drawer_account_settings">Ustawienia konta</string>
+    <string name="navigation_drawer_app_settings">Ustawienia</string>
+    <string name="navigation_drawer_logout">Wyloguj się</string>
+
 </resources>
