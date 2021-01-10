@@ -17,8 +17,6 @@ import android.widget.ImageView;
 public class MainFragment extends Fragment {
 
     NavController navController;
-    ImageView accountSettingsButton;
-    ImageView menuButton;
     ImageView addEventButton;
 
     public MainFragment() {
@@ -42,12 +40,6 @@ public class MainFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_main, container, false);
     }
 
-    private View.OnClickListener accountSettingsOnClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            navController.navigate(R.id.mainToAccountSettings);
-        }
-    };
 
     private View.OnClickListener addEventOnClickListener = new View.OnClickListener() {
         @Override
@@ -60,10 +52,7 @@ public class MainFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         navController = Navigation.findNavController(view);
-        accountSettingsButton = view.findViewById(R.id.accountSettingsButton);
-        menuButton = view.findViewById(R.id.menuButton);
         addEventButton = view.findViewById(R.id.addEventButton);
-        accountSettingsButton.setOnClickListener(accountSettingsOnClickListener);
         addEventButton.setOnClickListener(addEventOnClickListener);
     }
 }

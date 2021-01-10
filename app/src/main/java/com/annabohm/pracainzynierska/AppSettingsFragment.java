@@ -30,7 +30,14 @@ public class AppSettingsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        ((MainActivity)getActivity()).setDrawerLocked();
         return inflater.inflate(R.layout.fragment_app_settings, container, false);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ((MainActivity)getActivity()).setDrawerUnlocked();
     }
 
     @Override

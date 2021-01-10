@@ -36,8 +36,15 @@ public class EditAccountSettingsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        ((MainActivity)getActivity()).setDrawerLocked();
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_edit_account_settings, container, false);
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        ((MainActivity)getActivity()).setDrawerUnlocked();
     }
 
     private View.OnClickListener confirmEditOnClickListener = new View.OnClickListener() {

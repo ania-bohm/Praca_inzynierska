@@ -28,9 +28,6 @@
         android:label="fragment_main"
         tools:layout="@layout/fragment_main" >
         <action
-            android:id="@+id/mainToAccountSettings"
-            app:destination="@id/accountSettingsFragment" />
-        <action
             android:id="@+id/mainToAddEvent"
             app:destination="@id/addEventFragment" />
     </fragment>
@@ -61,4 +58,19 @@
         android:name="com.annabohm.pracainzynierska.ChangePasswordFragment"
         android:label="fragment_change_password"
         tools:layout="@layout/fragment_change_password" />
+    <fragment
+        android:id="@+id/appSettingsFragment"
+        android:name="com.annabohm.pracainzynierska.AppSettingsFragment"
+        android:label="fragment_app_settings"
+        tools:layout="@layout/fragment_app_settings" />
+    <fragment
+        android:id="@+id/invitationListFragment"
+        android:name="com.annabohm.pracainzynierska.InvitationListFragment"
+        android:label="fragment_invitation_list"
+        tools:layout="@layout/fragment_invitation_list" />
+    <fragment
+        android:id="@+id/calendarFragment"
+        android:name="com.annabohm.pracainzynierska.CalendarFragment"
+        android:label="fragment_calendar"
+        tools:layout="@layout/fragment_calendar" />
 </navigation>
