@@ -66,27 +66,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             case R.id.nav_my_invitations:
                 closeDrawer(drawerLayout);
-                navController.navigate(R.id.invitationListFragment);
+                navController.navigate(R.id.mainToInvitationList);
                 break;
 
             case R.id.nav_app_settings:
                 closeDrawer(drawerLayout);
-                navController.navigate(R.id.appSettingsFragment);
+                navController.navigate(R.id.mainToAppSettings);
                 break;
 
             case R.id.nav_calendar:
                 closeDrawer(drawerLayout);
-                navController.navigate(R.id.calendarFragment);
+                navController.navigate(R.id.mainToCalendar);
                 break;
 
             case R.id.nav_account_settings:
                 closeDrawer(drawerLayout);
-                navController.navigate(R.id.accountSettingsFragment);
+                navController.navigate(R.id.mainToAccountSettings);
                 break;
 
             case R.id.nav_logout:
                 closeDrawer(drawerLayout);
-                navController.navigate(R.id.loginFragment);
+                navController.navigate(R.id.mainToLogin);
                 break;
         }
         return true;

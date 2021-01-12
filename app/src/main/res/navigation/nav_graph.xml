@@ -30,6 +30,21 @@
         <action
             android:id="@+id/mainToAddEvent"
             app:destination="@id/addEventFragment" />
+        <action
+            android:id="@+id/mainToAppSettings"
+            app:destination="@id/appSettingsFragment" />
+        <action
+            android:id="@+id/mainToInvitationList"
+            app:destination="@id/invitationListFragment" />
+        <action
+            android:id="@+id/mainToCalendar"
+            app:destination="@id/calendarFragment" />
+        <action
+            android:id="@+id/mainToAccountSettings"
+            app:destination="@id/accountSettingsFragment" />
+        <action
+            android:id="@+id/mainToLogin"
+            app:destination="@id/loginFragment" />
     </fragment>
     <fragment
         android:id="@+id/accountSettingsFragment"
