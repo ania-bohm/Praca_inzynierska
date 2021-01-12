@@ -26,7 +26,7 @@
             app:layout_constraintVertical_bias="0.025" />
 
         <TextView
-            android:id="@+id/viewEventNameTextView"
+            android:id="@+id/displayEventNameTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/montserrat"
@@ -39,7 +39,7 @@
             app:layout_constraintVertical_bias="0.098" />
 
         <TextView
-            android:id="@+id/viewEventDateStartTextView"
+            android:id="@+id/displayEventDateStartTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/montserrat"
@@ -52,7 +52,7 @@
             app:layout_constraintVertical_bias="0.169" />
 
         <TextView
-            android:id="@+id/viewEventTimeStartTextView"
+            android:id="@+id/displayEventTimeStartTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/montserrat"
@@ -65,7 +65,7 @@
             app:layout_constraintVertical_bias="0.238" />
 
         <TextView
-            android:id="@+id/viewEventDateFinishTextView"
+            android:id="@+id/displayEventDateFinishTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/montserrat"
@@ -78,7 +78,7 @@
             app:layout_constraintVertical_bias="0.31" />
 
         <TextView
-            android:id="@+id/viewEventTimeFinishTextView"
+            android:id="@+id/displayEventTimeFinishTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/montserrat"
@@ -91,7 +91,7 @@
             app:layout_constraintVertical_bias="0.373" />
 
         <TextView
-            android:id="@+id/viewEventLocationTextView"
+            android:id="@+id/displayEventLocationTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/montserrat"
@@ -104,7 +104,7 @@
             app:layout_constraintVertical_bias="0.431" />
 
         <TextView
-            android:id="@+id/viewEventDescriptionTextView"
+            android:id="@+id/displayEventDescriptionTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/montserrat"
@@ -117,7 +117,7 @@
             app:layout_constraintVertical_bias="0.499" />
 
         <TextView
-            android:id="@+id/viewEventGuestListTextView"
+            android:id="@+id/displayEventGuestListTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/montserrat"
@@ -132,7 +132,7 @@
             app:layout_constraintVertical_bias="0.609" />
 
         <EditText
-            android:id="@+id/eventNameEditText2"
+            android:id="@+id/displayEventNameEditText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ems="10"
@@ -145,7 +145,7 @@
             app:layout_constraintVertical_bias="0.084" />
 
         <EditText
-            android:id="@+id/eventDescriptionEditText2"
+            android:id="@+id/displayEventDescriptionEditText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ems="10"
@@ -157,7 +157,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <EditText
-            android:id="@+id/eventLocationEditText2"
+            android:id="@+id/displayEventLocationEditText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ems="10"
@@ -170,7 +170,7 @@
             app:layout_constraintVertical_bias="0.434" />
 
         <EditText
-            android:id="@+id/eventDateStartEditText2"
+            android:id="@+id/displayEventDateStartEditText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ems="10"
@@ -183,7 +183,7 @@
             app:layout_constraintVertical_bias="0.164" />
 
         <EditText
-            android:id="@+id/eventDateFinishEditText2"
+            android:id="@+id/displayEventDateFinishEditText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ems="10"
@@ -196,7 +196,7 @@
             app:layout_constraintVertical_bias="0.303" />
 
         <EditText
-            android:id="@+id/eventTimeStartEditText2"
+            android:id="@+id/displayEventTimeStartEditText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ems="10"
@@ -209,7 +209,7 @@
             app:layout_constraintVertical_bias="0.23" />
 
         <EditText
-            android:id="@+id/eventTimeFinishEditText2"
+            android:id="@+id/displayEventTimeFinishEditText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ems="10"
@@ -222,7 +222,7 @@
             app:layout_constraintVertical_bias="0.38" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/viewEventGuestListRecyclerView"
+            android:id="@+id/displayEventGuestListRecyclerView"
             android:layout_width="394dp"
             android:layout_height="166dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -272,7 +272,7 @@
             app:layout_constraintVertical_bias="0.017" />
 
         <ImageView
-            android:id="@+id/eventImageImageView"
+            android:id="@+id/displayEventImageImageView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/circular_background"
