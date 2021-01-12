@@ -45,6 +45,9 @@
         <action
             android:id="@+id/mainToLogin"
             app:destination="@id/loginFragment" />
+        <action
+            android:id="@+id/mainToDisplayEvent"
+            app:destination="@id/displayEventFragment" />
     </fragment>
     <fragment
         android:id="@+id/accountSettingsFragment"
@@ -82,10 +85,44 @@
         android:id="@+id/invitationListFragment"
         android:name="com.annabohm.pracainzynierska.InvitationListFragment"
         android:label="fragment_invitation_list"
-        tools:layout="@layout/fragment_invitation_list" />
+        tools:layout="@layout/fragment_invitation_list" >
+        <action
+            android:id="@+id/invitationListToDisplayEvent"
+            app:destination="@id/displayEventFragment" />
+    </fragment>
     <fragment
         android:id="@+id/calendarFragment"
         android:name="com.annabohm.pracainzynierska.CalendarFragment"
         android:label="fragment_calendar"
         tools:layout="@layout/fragment_calendar" />
+    <fragment
+        android:id="@+id/displayEventFragment"
+        android:name="com.annabohm.pracainzynierska.DisplayEventFragment"
+        android:label="fragment_display_event"
+        tools:layout="@layout/fragment_display_event" >
+        <action
+            android:id="@+id/displayEventToEditEvent"
+            app:destination="@id/editEventFragment" />
+        <action
+            android:id="@+id/displayEventToToDoList"
+            app:destination="@id/toDoFragment" />
+        <action
+            android:id="@+id/displayEventToShoppingList"
+            app:destination="@id/shoppingListFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/editEventFragment"
+        android:name="com.annabohm.pracainzynierska.EditEventFragment"
+        android:label="fragment_edit_event"
+        tools:layout="@layout/fragment_edit_event" />
+    <fragment
+        android:id="@+id/shoppingListFragment"
+        android:name="com.annabohm.pracainzynierska.ShoppingListFragment"
+        android:label="fragment_shopping_list"
+        tools:layout="@layout/fragment_shopping_list" />
+    <fragment
+        android:id="@+id/toDoFragment"
+        android:name="com.annabohm.pracainzynierska.ToDoFragment"
+        android:label="fragment_to_do"
+        tools:layout="@layout/fragment_to_do" />
 </navigation>

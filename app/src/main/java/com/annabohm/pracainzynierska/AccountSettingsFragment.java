@@ -8,11 +8,14 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+
+import static android.content.ContentValues.TAG;
 
 public class AccountSettingsFragment extends Fragment {
 
@@ -43,12 +46,6 @@ public class AccountSettingsFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_account_settings, container, false);
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        ((MainActivity)getActivity()).setDrawerUnlocked();
-    }
-
     private View.OnClickListener editAccountPhotoOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -60,6 +57,7 @@ public class AccountSettingsFragment extends Fragment {
         @Override
         public void onClick(View v) {
             navController.navigate(R.id.accountSettingsToEditAccountSettings);
+            Log.i(TAG, "Jestem w kliknieciu i navcontrollerze");
         }
     };
 

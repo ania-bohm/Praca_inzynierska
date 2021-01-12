@@ -43,12 +43,6 @@ public class ChangePasswordFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_change_password, container, false);
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        ((MainActivity)getActivity()).setDrawerUnlocked();
-    }
-
     private View.OnClickListener confirmChangePasswordOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {

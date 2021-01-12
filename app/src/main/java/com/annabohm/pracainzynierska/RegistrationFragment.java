@@ -43,12 +43,6 @@ public class RegistrationFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_registration, container, false);
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        ((MainActivity)getActivity()).setDrawerUnlocked();
-    }
-
     private View.OnClickListener registerOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {

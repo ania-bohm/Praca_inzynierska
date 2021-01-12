@@ -8,10 +8,13 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+
+import static android.content.ContentValues.TAG;
 
 public class EditAccountSettingsFragment extends Fragment {
 
@@ -39,12 +42,6 @@ public class EditAccountSettingsFragment extends Fragment {
         ((MainActivity)getActivity()).setDrawerLocked();
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_edit_account_settings, container, false);
-    }
-
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        ((MainActivity)getActivity()).setDrawerUnlocked();
     }
 
     private View.OnClickListener confirmEditOnClickListener = new View.OnClickListener() {

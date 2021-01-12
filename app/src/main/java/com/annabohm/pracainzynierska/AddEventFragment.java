@@ -43,12 +43,6 @@ public class AddEventFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_add_event, container, false);
     }
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        ((MainActivity)getActivity()).setDrawerUnlocked();
-    }
-
     private View.OnClickListener eventReadyOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
