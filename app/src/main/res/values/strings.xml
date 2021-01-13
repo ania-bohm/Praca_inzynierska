@@ -55,5 +55,6 @@
     <string name="navigation_drawer_account_settings">Ustawienia konta</string>
     <string name="navigation_drawer_app_settings">Ustawienia</string>
     <string name="navigation_drawer_logout">Wyloguj się</string>
+    <string name="mini_event_dash">-</string>
 
 </resources>

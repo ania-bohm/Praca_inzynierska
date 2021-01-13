@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:orientation="vertical"
+        android:id="@+id/miniEventLinearLayout"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="@drawable/rectangular_background">
+
+        <TextView
+            android:id="@+id/miniEventNameTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/event_name"
+            android:textAlignment="center"
+            android:fontFamily="@font/montserrat"
+            android:textStyle="bold"
+            android:textSize="18dp"
+            android:layout_marginTop="35dp"/>
+
+        <TextView
+            android:id="@+id/miniEventDateStartTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/event_date_start"
+            android:textAlignment="center"
+            android:fontFamily="@font/montserrat"
+            android:textSize="18dp"
+            android:layout_marginTop="20dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/miniEventTimeStartTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:fontFamily="@font/montserrat"
+                android:text="@string/event_time_start"
+                android:textAlignment="center"
+                android:textSize="14dp" />
+
+            <TextView
+                android:id="@+id/miniEventDashTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/mini_event_dash"
+                android:textAlignment="center"
+                android:fontFamily="@font/montserrat"
+                android:textSize="14dp"
+                android:layout_marginTop="20dp"/>
+
+            <TextView
+                android:id="@+id/miniEventTimeFinishTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/event_time_finish"
+                android:textAlignment="center"
+                android:fontFamily="@font/montserrat"
+                android:textSize="14dp"
+                android:layout_marginTop="20dp"/>
+        </LinearLayout>
+
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

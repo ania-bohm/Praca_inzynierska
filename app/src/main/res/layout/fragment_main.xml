@@ -27,22 +27,16 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.161" />
 
-        <HorizontalScrollView
-            android:id="@+id/yourEventsScrollView"
-            android:layout_width="0dp"
-            android:layout_height="200dp"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/yourEventsRecyclerView"
+            android:layout_width="416dp"
+            android:layout_height="177dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.265">
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:orientation="vertical" />
-        </HorizontalScrollView>
+            app:layout_constraintVertical_bias="0.28"/>
 
         <TextView
             android:id="@+id/countdownTextView"
@@ -73,22 +67,16 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.568" />
 
-        <HorizontalScrollView
-            android:id="@+id/allEventsScrollView"
-            android:layout_width="0dp"
-            android:layout_height="200dp"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/allEventsRecyclerView"
+            android:layout_width="411dp"
+            android:layout_height="153dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.804">
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:orientation="vertical" />
-        </HorizontalScrollView>
+            app:layout_constraintVertical_bias="0.812"/>
 
         <ImageView
             android:id="@+id/addEventButton"
