@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 
 import java.util.ArrayList;
@@ -29,6 +30,7 @@ public class MainFragment extends Fragment {
     RecyclerView allEventsRecyclerView;
     List<Event> yourEventsList;
     List<Event> allEventsList;
+    Button button;
 
     public MainFragment() {
         // Required empty public constructor
@@ -60,12 +62,21 @@ public class MainFragment extends Fragment {
         }
     };
 
+    private View.OnClickListener buttonOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            navController.navigate(R.id.mainToDisplayEvent);
+        }
+    };
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         navController = Navigation.findNavController(view);
         addEventButton = view.findViewById(R.id.addEventButton);
         addEventButton.setOnClickListener(addEventOnClickListener);
+        button = view.findViewById(R.id.button);
+        button.setOnClickListener(buttonOnClickListener);
 
         yourEventsRecyclerView = view.findViewById(R.id.yourEventsRecyclerView);
         allEventsRecyclerView = view.findViewById(R.id.allEventsRecyclerView);
