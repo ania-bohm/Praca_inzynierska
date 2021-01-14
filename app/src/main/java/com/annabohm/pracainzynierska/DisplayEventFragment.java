@@ -120,7 +120,9 @@ public class DisplayEventFragment extends Fragment {
         documentReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
-                if(documentSnapshot.exists()) {
+                Event event = new Event();
+                if (documentSnapshot.exists()) {
+                    event = documentSnapshot.toObject(Event.class);
 //                    "Sat Jun 01 12:53:10 IST 2013";
 //                    "Thu Jan 14 00:00:00 GMT+00:00 2021"
 //                    "EE MMM dd HH:mm:ss z yyyy";
@@ -132,52 +134,28 @@ public class DisplayEventFragment extends Fragment {
                     Date eventTimeStart = null;
                     Date eventTimeFinish = null;
 
-
-                    String dateStartValue = documentSnapshot.getDate(KEY_EVENT_DATE_START).toString();
-                    String dateFinishValue = documentSnapshot.getDate(KEY_EVENT_DATE_FINISH).toString();
-                    String timeStartValue = documentSnapshot.getDate(KEY_EVENT_TIME_START).toString();
-                    String timeFinishValue = documentSnapshot.getDate(KEY_EVENT_TIME_FINISH).toString();
-
                     try {
-                        eventDateStart = dateFormatterRead.parse(dateStartValue);
-                        eventDateFinish = dateFormatterRead.parse(dateFinishValue);
-                        eventTimeStart = dateFormatterRead.parse(timeStartValue);
-                        eventTimeFinish = dateFormatterRead.parse(timeFinishValue);
-                    } catch (java.text.ParseException e)
+//                        eventDateStart = dateFormatterRead.parse(documentSnapshot.getDate(KEY_EVENT_DATE_START).toString());
+//                        eventDateFinish = dateFormatterRead.parse(documentSnapshot.getDate(KEY_EVENT_DATE_FINISH).toString());
+//                        eventTimeStart = dateFormatterRead.parse(documentSnapshot.getDate(KEY_EVENT_TIME_START).toString());
+//                        eventTimeFinish = dateFormatterRead.parse(documentSnapshot.getDate(KEY_EVENT_TIME_FINISH).toString());
+
+                        eventDateStart = dateFormatterRead.parse(event.getEventDateStart().toString());
+                        eventDateFinish = dateFormatterRead.parse(event.getEventDateFinish().toString());
+                        eventTimeStart = dateFormatterRead.parse(event.getEventTimeStart().toString());
+                        eventTimeFinish = dateFormatterRead.parse(event.getEventTimeFinish().toString());
+                    } catch (ParseException e)
                     {
                         e.printStackTrace();
                         Log.i(TAG, e.toString());
                     }
 
-                    // Old:
-                    //java.util.Date date = snapshot.getDate("created_at");
-                    // New:
-                    //Timestamp timestamp = snapshot.getTimestamp("created_at");
-                    //java.util.Date date = timestamp.toDate();
-
-//                    try {
-//                        Log.i(TAG, "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-//                        eventDateStart = dateFormatter.parse(dateStartValue).toString();
-//                        Log.i(TAG, eventDateStart);
-//                        eventDateFinish = dateFormatter.parse(dateFinishValue).toString();
-//                        Log.i(TAG, eventDateFinish);
-//                        eventTimeStart = timeFormatter.parse(timeStartValue).toString();
-//                        Log.i(TAG, eventTimeStart);
-//                        eventTimeFinish = timeFormatter.parse(timeFinishValue).toString();
-//                        Log.i(TAG, eventTimeFinish);
-//                        Log.i(TAG, "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-//                    }  catch (java.text.ParseException e)
-//                    {
-//                        e.printStackTrace();
-//                        Log.i(TAG, e.toString());
-//                    }
-
-                    showEventNameTextView.setText(documentSnapshot.getString(KEY_EVENT_NAME));
+                    showEventNameTextView.setText(event.getEventName());
                     showEventDateStartTextView.setText(dateFormatterPrint.format(eventDateStart));
                     showEventTimeStartTextView.setText(timeFormatterPrint.format(eventTimeStart));
                     showEventDateFinishTextView.setText(dateFormatterPrint.format(eventDateFinish));
                     showEventTimeFinishTextView.setText(timeFormatterPrint.format(eventTimeFinish));
-                    showEventDescriptionTextView.setText(documentSnapshot.getString(KEY_EVENT_DESCRIPTION));
+                    showEventDescriptionTextView.setText(event.getEventDescription());
                     //Map<String, Object> events = documentSnapshot.getData();
                 } else {
                     Toast.makeText(context, "Document does not exist", Toast.LENGTH_SHORT).show();
@@ -186,7 +164,7 @@ public class DisplayEventFragment extends Fragment {
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-
+                Toast.makeText(context, "Reading data from Firestore failed", Toast.LENGTH_SHORT).show();
             }
         });
     }

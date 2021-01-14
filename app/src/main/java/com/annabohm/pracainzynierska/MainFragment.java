@@ -8,29 +8,45 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 
+import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import static android.content.ContentValues.TAG;
 
 
 public class MainFragment extends Fragment {
 
     NavController navController;
-    Adapter yourEventsAdapter;
-    Adapter allEventsAdapter;
     ImageView addEventButton;
     RecyclerView yourEventsRecyclerView;
     RecyclerView allEventsRecyclerView;
-    List<Event> yourEventsList;
-    List<Event> allEventsList;
     Button button;
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    DocumentReference documentReference = db.collection("Events").document("My first event!");
+    CollectionReference collectionReference = db.collection("Events");
+    EventAdapter eventAdapter;
 
     public MainFragment() {
         // Required empty public constructor
@@ -69,6 +85,18 @@ public class MainFragment extends Fragment {
         }
     };
 
+    private void setUpAllEventsRecyclerView(View view) {
+        //Query query = collectionReference.orderBy("eventName", Query.Direction.ASCENDING);
+        //FirestoreRecyclerOptions<Event> events = new FirestoreRecyclerOptions.Builder<Event>().setQuery(query, Event.class).build();
+        Query query = collectionReference.orderBy("eventName", Query.Direction.ASCENDING);
+        FirestoreRecyclerOptions<Event> events = new FirestoreRecyclerOptions.Builder<Event>().setQuery(query, Event.class).build();
+        eventAdapter = new EventAdapter(events);
+        allEventsRecyclerView = view.findViewById(R.id.allEventsRecyclerView);
+        allEventsRecyclerView.setHasFixedSize(true);
+        allEventsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));//<----------
+        allEventsRecyclerView.setAdapter(eventAdapter);
+    }
+
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -78,36 +106,18 @@ public class MainFragment extends Fragment {
         button = view.findViewById(R.id.button);
         button.setOnClickListener(buttonOnClickListener);
 
-        yourEventsRecyclerView = view.findViewById(R.id.yourEventsRecyclerView);
-        allEventsRecyclerView = view.findViewById(R.id.allEventsRecyclerView);
-        yourEventsList = new ArrayList<>();
-        allEventsList = new ArrayList<>();
-//        mReference = FirebaseDatabase.getInstance().getReference();
-//
-//        mReference.addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                photos.clear();
-//                for (DataSnapshot child : snapshot.getChildren()) {
-//                    photos.add(child.getValue().toString());
-//                }
-//                adapter.notifyDataSetChanged();
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//
-//            }
-//        });
-        yourEventsAdapter = new Adapter(getContext(), yourEventsList);
-        allEventsAdapter = new Adapter(getContext(), allEventsList);
-        yourEventsAdapter.notifyDataSetChanged();
-        allEventsAdapter.notifyDataSetChanged();
-        GridLayoutManager yourEventsLayoutManager = new GridLayoutManager(getContext(),3, GridLayoutManager.HORIZONTAL, false);
-        GridLayoutManager allEventsLayoutManager = new GridLayoutManager(getContext(),3, GridLayoutManager.HORIZONTAL, false);
-        yourEventsRecyclerView.setLayoutManager(yourEventsLayoutManager);
-        allEventsRecyclerView.setLayoutManager(allEventsLayoutManager);
-        yourEventsRecyclerView.setAdapter(yourEventsAdapter);
-        allEventsRecyclerView.setAdapter(allEventsAdapter);
+        setUpAllEventsRecyclerView(view);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        eventAdapter.startListening();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        eventAdapter.stopListening();
     }
 }

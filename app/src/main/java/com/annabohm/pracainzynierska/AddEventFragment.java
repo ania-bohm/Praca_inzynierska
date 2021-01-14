@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.sql.Time;
@@ -82,7 +83,7 @@ public class AddEventFragment extends Fragment {
             String eventDescription = eventDescriptionEditText.getText().toString();
             //
             DateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy");
-            DateFormat timeFormatter = new SimpleDateFormat("hh:mm");
+            DateFormat timeFormatter = new SimpleDateFormat("HH:mm");
             Date eventDateStart = null;
             Date eventDateFinish = null;
             Date eventTimeStart = null;
@@ -103,19 +104,21 @@ public class AddEventFragment extends Fragment {
                 Log.i(TAG, e.toString());
             }
             //
-            Map<String, Object> eventMap = new HashMap<>();
-            eventMap.put(KEY_EVENT_NAME, eventName);
-            eventMap.put(KEY_EVENT_DATE_START, eventDateStart);
-            eventMap.put(KEY_EVENT_TIME_START, eventTimeStart);
-            eventMap.put(KEY_EVENT_DATE_FINISH, eventDateFinish);
-            eventMap.put(KEY_EVENT_TIME_FINISH, eventTimeFinish);
-            eventMap.put(KEY_EVENT_DESCRIPTION, eventDescription);
+//            Map<String, Object> eventMap = new HashMap<>();
+//            eventMap.put(KEY_EVENT_NAME, eventName);
+//            eventMap.put(KEY_EVENT_DATE_START, eventDateStart);
+//            eventMap.put(KEY_EVENT_TIME_START, eventTimeStart);
+//            eventMap.put(KEY_EVENT_DATE_FINISH, eventDateFinish);
+//            eventMap.put(KEY_EVENT_TIME_FINISH, eventTimeFinish);
+//            eventMap.put(KEY_EVENT_DESCRIPTION, eventDescription);
+            Event event = new Event(eventName, eventDateStart, eventTimeStart, eventDateFinish, eventTimeFinish, eventDescription);
 
             //alternatively - db.document("Events/My first event!");
             //String.valueOf(System.currentTimeMillis()) - as documentPath
-            db.collection("Events").document("My first event!").set(eventMap).addOnSuccessListener(new OnSuccessListener<Void>() {
+            //db.collection("Events").add(eventMap);
+            db.collection("Events").add(event).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                 @Override
-                public void onSuccess(Void aVoid) {
+                public void onSuccess(DocumentReference documentReference) {
                     Toast.makeText(context, "Event saved successfully", Toast.LENGTH_SHORT).show();
                 }
             }).addOnFailureListener(new OnFailureListener() {
@@ -125,6 +128,19 @@ public class AddEventFragment extends Fragment {
                     Log.d(TAG, e.toString());
                 }
             });
+
+//            db.collection("Events").document("My first event!").set(event).addOnSuccessListener(new OnSuccessListener<Void>() {
+//                @Override
+//                public void onSuccess(Void aVoid) {
+//                    Toast.makeText(context, "Event saved successfully", Toast.LENGTH_SHORT).show();
+//                }
+//            }).addOnFailureListener(new OnFailureListener() {
+//                @Override
+//                public void onFailure(@NonNull Exception e) {
+//                    Toast.makeText(context, "Event save failed!", Toast.LENGTH_SHORT).show();
+//                    Log.d(TAG, e.toString());
+//                }
+//            });
             navController.popBackStack();
         }
     };
