@@ -16,6 +16,7 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 
 import static android.content.ContentValues.TAG;
 
@@ -30,7 +31,7 @@ public class EventAdapter extends FirestoreRecyclerAdapter<Event, EventAdapter.E
         Date eventDateStart = model.getEventDateStart();
         Date eventTimeStart = model.getEventTimeStart();
         Date eventTimeFinish = model.getEventTimeFinish();
-        DateFormat dateFormatterRead = new SimpleDateFormat("EE MMM dd HH:mm:ss z yyyy");
+        DateFormat dateFormatterRead = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy");
         DateFormat dateFormatterPrint = new SimpleDateFormat("dd/MM/yyyy");
         DateFormat timeFormatterPrint = new SimpleDateFormat("HH:mm");
 

@@ -126,7 +126,7 @@ public class DisplayEventFragment extends Fragment {
 //                    "Sat Jun 01 12:53:10 IST 2013";
 //                    "Thu Jan 14 00:00:00 GMT+00:00 2021"
 //                    "EE MMM dd HH:mm:ss z yyyy";
-                    DateFormat dateFormatterRead = new SimpleDateFormat("EE MMM dd HH:mm:ss z yyyy");
+                    DateFormat dateFormatterRead = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy");
                     DateFormat dateFormatterPrint = new SimpleDateFormat("dd/MM/yyyy");
                     DateFormat timeFormatterPrint = new SimpleDateFormat("HH:mm");
                     Date eventDateStart = null;
