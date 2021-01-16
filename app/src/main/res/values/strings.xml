@@ -32,6 +32,7 @@
     <string name="event_ready">Gotowe</string>
     <string name="event_cancel">Anuluj</string>
     <string name="account_settings">Ustawienia konta</string>
+    <string name="app_settings">Ustawienia ogólne</string>
     <string name="personal_data">Dane osobowe:</string>
     <string name="edit_personal_data">Edytuj dane osobowe:</string>
     <string name="change_password">Zmień hasło:</string>
@@ -56,5 +57,7 @@
     <string name="navigation_drawer_app_settings">Ustawienia</string>
     <string name="navigation_drawer_logout">Wyloguj się</string>
     <string name="mini_event_dash">-</string>
+    <string name="notifications">Powiadomienia</string>
+    <string name="sound">Dźwięk aplikacji</string>
 
 </resources>
