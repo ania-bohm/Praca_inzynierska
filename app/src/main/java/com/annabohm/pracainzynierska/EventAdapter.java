@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.firebase.firestore.DocumentSnapshot;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -21,6 +22,7 @@ import java.util.TimeZone;
 import static android.content.ContentValues.TAG;
 
 public class EventAdapter extends FirestoreRecyclerAdapter<Event, EventAdapter.EventHolder> {
+    OnItemClickListener listener;
 
     public EventAdapter(@NonNull FirestoreRecyclerOptions<Event> options) {
         super(options);
@@ -57,6 +59,10 @@ public class EventAdapter extends FirestoreRecyclerAdapter<Event, EventAdapter.E
         return new EventHolder(view);
     }
 
+    public void deleteItem(int position){
+        getSnapshots().getSnapshot(position).getReference().delete();
+    }
+
     class EventHolder extends RecyclerView.ViewHolder{
         LinearLayout miniEventLinearLayout;
         TextView miniEventNameTextView;
@@ -71,6 +77,24 @@ public class EventAdapter extends FirestoreRecyclerAdapter<Event, EventAdapter.E
             miniEventDateStartTextView = itemView.findViewById(R.id.miniEventDateStartTextView);
             miniEventTimeStartTextView = itemView.findViewById(R.id.miniEventTimeStartTextView);
             miniEventTimeFinishTextView = itemView.findViewById(R.id.miniEventTimeFinishTextView);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int position = getAdapterPosition();
+                    if(position != RecyclerView.NO_POSITION && listener != null){
+                        listener.onItemClick(getSnapshots().getSnapshot(position), position);
+                    }
+                }
+            });
         }
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(DocumentSnapshot documentSnapshot, int position);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener){
+        this.listener = listener;
     }
 }

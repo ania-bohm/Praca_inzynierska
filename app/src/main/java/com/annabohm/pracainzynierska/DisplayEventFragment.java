@@ -40,11 +40,13 @@ public class DisplayEventFragment extends Fragment {
     ImageView shoppingListButton;
     ImageView editEventButton;
     Context context;
+    Bundle bundle;
     TextView showEventNameTextView;
     TextView showEventDateStartTextView;
     TextView showEventTimeStartTextView;
     TextView showEventDateFinishTextView;
     TextView showEventTimeFinishTextView;
+    TextView showEventLocationTextView;
     TextView showEventDescriptionTextView;
     static final String KEY_EVENT_NAME = "event_name";
     static final String KEY_EVENT_DATE_START = "event_date_start";
@@ -53,8 +55,8 @@ public class DisplayEventFragment extends Fragment {
     static final String KEY_EVENT_TIME_FINISH = "event_time_finish";
     static final String KEY_EVENT_DESCRIPTION = "event_description";
     FirebaseFirestore db = FirebaseFirestore.getInstance();
-    DocumentReference documentReference = db.collection("Events").document("My first event!");
     CollectionReference collectionReference = db.collection("Events");
+    DocumentReference documentReference;
 
     public DisplayEventFragment() {
         // Required empty public constructor
@@ -96,7 +98,8 @@ public class DisplayEventFragment extends Fragment {
     private View.OnClickListener editEventOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            navController.navigate(R.id.displayEventToEditEvent);
+            Toast.makeText(context, "Bundle: "+bundle.getString("path"), Toast.LENGTH_SHORT).show();
+            navController.navigate(R.id.displayEventToEditEvent, bundle);
         }
     };
 
@@ -112,10 +115,15 @@ public class DisplayEventFragment extends Fragment {
         showEventTimeStartTextView = view.findViewById(R.id.showEventTimeStartTextView);
         showEventDateFinishTextView = view.findViewById(R.id.showEventDateFinishTextView);
         showEventTimeFinishTextView = view.findViewById(R.id.showEventTimeFinishTextView);
+        showEventLocationTextView = view.findViewById(R.id.showEventLocationTextView);
         showEventDescriptionTextView = view.findViewById(R.id.showEventDescriptionTextView);
         toDoListButton.setOnClickListener(toDoListOnClickListener);
         shoppingListButton.setOnClickListener(shoppingListOnClickListener);
         editEventButton.setOnClickListener(editEventOnClickListener);
+
+        bundle = this.getArguments();
+        String path = bundle.getString("path");
+        documentReference = db.document(path);
 
         documentReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
@@ -123,38 +131,15 @@ public class DisplayEventFragment extends Fragment {
                 Event event = new Event();
                 if (documentSnapshot.exists()) {
                     event = documentSnapshot.toObject(Event.class);
-//                    "Sat Jun 01 12:53:10 IST 2013";
-//                    "Thu Jan 14 00:00:00 GMT+00:00 2021"
-//                    "EE MMM dd HH:mm:ss z yyyy";
-                    DateFormat dateFormatterRead = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy");
                     DateFormat dateFormatterPrint = new SimpleDateFormat("dd/MM/yyyy");
                     DateFormat timeFormatterPrint = new SimpleDateFormat("HH:mm");
-                    Date eventDateStart = null;
-                    Date eventDateFinish = null;
-                    Date eventTimeStart = null;
-                    Date eventTimeFinish = null;
-
-                    try {
-//                        eventDateStart = dateFormatterRead.parse(documentSnapshot.getDate(KEY_EVENT_DATE_START).toString());
-//                        eventDateFinish = dateFormatterRead.parse(documentSnapshot.getDate(KEY_EVENT_DATE_FINISH).toString());
-//                        eventTimeStart = dateFormatterRead.parse(documentSnapshot.getDate(KEY_EVENT_TIME_START).toString());
-//                        eventTimeFinish = dateFormatterRead.parse(documentSnapshot.getDate(KEY_EVENT_TIME_FINISH).toString());
-
-                        eventDateStart = dateFormatterRead.parse(event.getEventDateStart().toString());
-                        eventDateFinish = dateFormatterRead.parse(event.getEventDateFinish().toString());
-                        eventTimeStart = dateFormatterRead.parse(event.getEventTimeStart().toString());
-                        eventTimeFinish = dateFormatterRead.parse(event.getEventTimeFinish().toString());
-                    } catch (ParseException e)
-                    {
-                        e.printStackTrace();
-                        Log.i(TAG, e.toString());
-                    }
 
                     showEventNameTextView.setText(event.getEventName());
-                    showEventDateStartTextView.setText(dateFormatterPrint.format(eventDateStart));
-                    showEventTimeStartTextView.setText(timeFormatterPrint.format(eventTimeStart));
-                    showEventDateFinishTextView.setText(dateFormatterPrint.format(eventDateFinish));
-                    showEventTimeFinishTextView.setText(timeFormatterPrint.format(eventTimeFinish));
+                    showEventDateStartTextView.setText(dateFormatterPrint.format(event.getEventDateStart()));
+                    showEventTimeStartTextView.setText(timeFormatterPrint.format(event.getEventTimeStart()));
+                    showEventDateFinishTextView.setText(dateFormatterPrint.format(event.getEventDateFinish()));
+                    showEventTimeFinishTextView.setText(timeFormatterPrint.format(event.getEventTimeFinish()));
+                    showEventLocationTextView.setText(event.getEventLocation());
                     showEventDescriptionTextView.setText(event.getEventDescription());
                     //Map<String, Object> events = documentSnapshot.getData();
                 } else {

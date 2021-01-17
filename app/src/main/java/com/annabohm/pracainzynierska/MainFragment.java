@@ -1,5 +1,7 @@
 package com.annabohm.pracainzynierska;
 
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -8,6 +10,7 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -17,6 +20,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
@@ -85,16 +89,43 @@ public class MainFragment extends Fragment {
         }
     };
 
-    private void setUpAllEventsRecyclerView(View view) {
+    private void setUpAllEventsRecyclerView(final View view) {
         //Query query = collectionReference.orderBy("eventName", Query.Direction.ASCENDING);
         //FirestoreRecyclerOptions<Event> events = new FirestoreRecyclerOptions.Builder<Event>().setQuery(query, Event.class).build();
-        Query query = collectionReference.orderBy("eventName", Query.Direction.ASCENDING);
-        FirestoreRecyclerOptions<Event> events = new FirestoreRecyclerOptions.Builder<Event>().setQuery(query, Event.class).build();
+        Query query = collectionReference.orderBy("eventDateStart", Query.Direction.ASCENDING);
+        final FirestoreRecyclerOptions<Event> events = new FirestoreRecyclerOptions.Builder<Event>().setQuery(query, Event.class).build();
         eventAdapter = new EventAdapter(events);
         allEventsRecyclerView = view.findViewById(R.id.allEventsRecyclerView);
         allEventsRecyclerView.setHasFixedSize(true);
         allEventsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));//<----------
         allEventsRecyclerView.setAdapter(eventAdapter);
+
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.UP | ItemTouchHelper.DOWN) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                eventAdapter.deleteItem(viewHolder.getAdapterPosition());
+            }
+        }).attachToRecyclerView(allEventsRecyclerView);
+
+        eventAdapter.setOnItemClickListener(new EventAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(DocumentSnapshot documentSnapshot, int position) {
+                Event event = documentSnapshot.toObject(Event.class);
+                String path = documentSnapshot.getReference().getPath();
+                String id = documentSnapshot.getId();
+                DocumentReference documentReference = documentSnapshot.getReference();
+                Toast.makeText(getContext(), "Position clicked: " + position, Toast.LENGTH_SHORT).show();
+
+                Bundle bundle = new Bundle();
+                bundle.putString("path", path);
+                navController.navigate(R.id.mainToDisplayEvent, bundle);
+            }
+        });
     }
 
     @Override

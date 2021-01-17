@@ -49,6 +49,7 @@ public class AddEventFragment extends Fragment {
     EditText eventTimeStartEditText;
     EditText eventDateFinishEditText;
     EditText eventTimeFinishEditText;
+    EditText eventLocationEditText;
     EditText eventDescriptionEditText;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -81,6 +82,15 @@ public class AddEventFragment extends Fragment {
         public void onClick(View v) {
             String eventName = eventNameEditText.getText().toString();
             String eventDescription = eventDescriptionEditText.getText().toString();
+            String eventLocation = eventLocationEditText.getText().toString();
+            String dateStartValue = eventDateStartEditText.getText().toString();
+            String dateFinishValue = eventDateFinishEditText.getText().toString();
+            String timeStartValue = eventTimeStartEditText.getText().toString();
+            String timeFinishValue = eventTimeFinishEditText.getText().toString();
+            if(eventName.trim().isEmpty() || eventDescription.trim().isEmpty() || dateStartValue.trim().isEmpty() || dateFinishValue.trim().isEmpty() || timeStartValue.trim().isEmpty() || timeFinishValue.trim().isEmpty()) {
+                Toast.makeText(context, "Please fill all the fields!", Toast.LENGTH_SHORT).show();
+                return;
+            }
             //
             DateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy");
             DateFormat timeFormatter = new SimpleDateFormat("HH:mm");
@@ -88,11 +98,8 @@ public class AddEventFragment extends Fragment {
             Date eventDateFinish = null;
             Date eventTimeStart = null;
             Date eventTimeFinish = null;
+            
             try {
-                String dateStartValue = eventDateStartEditText.getText().toString();
-                String dateFinishValue = eventDateFinishEditText.getText().toString();
-                String timeStartValue = eventTimeStartEditText.getText().toString();
-                String timeFinishValue = eventTimeFinishEditText.getText().toString();
                 eventDateStart = dateFormatter.parse(dateStartValue);
                 eventDateFinish= dateFormatter.parse(dateFinishValue);
                 eventTimeStart = timeFormatter.parse(timeStartValue);
@@ -111,7 +118,7 @@ public class AddEventFragment extends Fragment {
 //            eventMap.put(KEY_EVENT_DATE_FINISH, eventDateFinish);
 //            eventMap.put(KEY_EVENT_TIME_FINISH, eventTimeFinish);
 //            eventMap.put(KEY_EVENT_DESCRIPTION, eventDescription);
-            Event event = new Event(eventName, eventDateStart, eventTimeStart, eventDateFinish, eventTimeFinish, eventDescription);
+            Event event = new Event(eventName, eventDateStart, eventTimeStart, eventDateFinish, eventTimeFinish, eventLocation, eventDescription);
 
             //alternatively - db.document("Events/My first event!");
             //String.valueOf(System.currentTimeMillis()) - as documentPath
@@ -166,6 +173,7 @@ public class AddEventFragment extends Fragment {
         eventTimeStartEditText = view.findViewById(R.id.eventTimeStartEditText);
         eventDateFinishEditText = view.findViewById(R.id.eventDateFinishEditText);
         eventTimeFinishEditText = view.findViewById(R.id.eventTimeFinishEditText);
+        eventLocationEditText = view.findViewById(R.id.eventLocationEditText);
         eventDescriptionEditText = view.findViewById(R.id.eventDescriptionEditText);
     }
 }

@@ -59,5 +59,6 @@
     <string name="mini_event_dash">-</string>
     <string name="notifications">Powiadomienia</string>
     <string name="sound">Dźwięk aplikacji</string>
+    <string name="editEvent">Edytuj wydarzenie</string>
 
 </resources>

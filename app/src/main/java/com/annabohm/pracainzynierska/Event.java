@@ -9,18 +9,20 @@ public class Event {
     private Date eventTimeStart;
     private Date eventDateFinish;
     private Date eventTimeFinish;
+    private String eventLocation;
     private String eventDescription;
 
     public Event(){
 
     }
 
-    public Event(String eventName, Date eventDateStart, Date eventTimeStart, Date eventDateFinish, Date eventTimeFinish, String eventDescription){
+    public Event(String eventName, Date eventDateStart, Date eventTimeStart, Date eventDateFinish, Date eventTimeFinish, String eventLocation, String eventDescription){
         this.eventName = eventName;
         this.eventDateStart = eventDateStart;
         this.eventTimeStart = eventTimeStart;
         this.eventDateFinish = eventDateFinish;
         this.eventTimeFinish = eventTimeFinish;
+        this.eventLocation = eventLocation;
         this.eventDescription = eventDescription;
     }
 
@@ -62,6 +64,14 @@ public class Event {
 
     public void setEventTimeFinish(Date eventTimeFinish) {
         this.eventTimeFinish = eventTimeFinish;
+    }
+
+    public String getEventLocation() {
+        return eventLocation;
+    }
+
+    public void setEventLocation(String eventLocation) {
+        this.eventLocation = eventLocation;
     }
 
     public String getEventDescription() {

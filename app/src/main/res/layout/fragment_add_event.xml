@@ -6,162 +6,98 @@
     android:layout_height="match_parent"
     tools:context=".AddEventFragment">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/newEventTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
             android:fontFamily="@font/montserrat"
             android:text="@string/new_event"
             android:textSize="18sp"
-            android:textStyle="italic"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.047"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.025" />
+            android:textStyle="italic" />
 
         <LinearLayout
+            android:id="@+id/linearLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.182">
+            android:orientation="horizontal">
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:orientation="vertical"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:layout_marginStart="20dp">
-
+                android:layout_marginStart="10dp"
+                android:orientation="vertical">
 
                 <TextView
                     android:id="@+id/eventNameTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="40dp"
+                    android:layout_marginTop="6dp"
                     android:fontFamily="@font/montserrat"
-                    android:text="@string/event_name"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.05"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.08" />
+                    android:text="@string/event_name" />
 
                 <TextView
                     android:id="@+id/eventDateStartTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="40dp"
                     android:fontFamily="@font/montserrat"
-                    android:text="@string/event_date_start"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.05"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.16" />
+                    android:text="@string/event_date_start" />
 
                 <TextView
                     android:id="@+id/eventTimeStartTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="40dp"
                     android:fontFamily="@font/montserrat"
-                    android:text="@string/event_time_start"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.05"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.241" />
+                    android:text="@string/event_time_start" />
 
                 <TextView
                     android:id="@+id/eventDateFinishTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="40dp"
                     android:fontFamily="@font/montserrat"
-                    android:text="@string/event_date_finish"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.05"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.323" />
+                    android:text="@string/event_date_finish" />
 
                 <TextView
                     android:id="@+id/eventTimeFinishTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="40dp"
                     android:fontFamily="@font/montserrat"
-                    android:text="@string/event_time_finish"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.05"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.4" />
+                    android:text="@string/event_time_finish" />
 
                 <TextView
                     android:id="@+id/eventLocationTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="40dp"
                     android:fontFamily="@font/montserrat"
-                    android:text="@string/event_location"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.483" />
+                    android:text="@string/event_location" />
 
                 <TextView
                     android:id="@+id/eventDescriptionTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="40dp"
                     android:fontFamily="@font/montserrat"
-                    android:text="@string/event_description"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.05"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.568" />
+                    android:text="@string/event_description" />
 
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                android:layout_marginStart="40dp">
-
+                android:layout_marginStart="20dp"
+                android:orientation="vertical">
 
                 <EditText
                     android:id="@+id/eventNameEditText"
                     android:layout_width="180dp"
                     android:layout_height="40dp"
                     android:ems="10"
-                    android:inputType="text"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.965"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.063" />
+                    android:inputType="text" />
 
                 <br.com.sapereaude.maskedEditText.MaskedEditText
                     android:id="@+id/eventDateStartEditText"
@@ -169,12 +105,6 @@
                     android:layout_height="40dp"
                     android:ems="10"
                     android:inputType="date"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.965"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.149"
                     app:mask="##/##/####" />
 
                 <br.com.sapereaude.maskedEditText.MaskedEditText
@@ -183,12 +113,6 @@
                     android:layout_height="40dp"
                     android:ems="10"
                     android:inputType="time"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.965"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.236"
                     app:mask="##:##" />
 
                 <br.com.sapereaude.maskedEditText.MaskedEditText
@@ -197,12 +121,6 @@
                     android:layout_height="40dp"
                     android:ems="10"
                     android:inputType="date"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.965"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.32"
                     app:mask="##/##/####" />
 
                 <br.com.sapereaude.maskedEditText.MaskedEditText
@@ -211,12 +129,6 @@
                     android:layout_height="40dp"
                     android:ems="10"
                     android:inputType="time"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.965"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.403"
                     app:mask="##:##" />
 
                 <EditText
@@ -224,97 +136,68 @@
                     android:layout_width="180dp"
                     android:layout_height="40dp"
                     android:ems="10"
-                    android:inputType="text"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.965"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.485" />
+                    android:inputType="text" />
 
                 <EditText
                     android:id="@+id/eventDescriptionEditText"
                     android:layout_width="180dp"
-                    android:layout_height="40dp"
+                    android:layout_height="wrap_content"
                     android:ems="10"
-                    android:inputType="text"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.965"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.571" />
+                    android:inputType="textMultiLine" />
 
             </LinearLayout>
         </LinearLayout>
 
-
         <TextView
             android:id="@+id/eventGuestListTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
+            android:layout_width="90dp"
+            android:layout_height="28dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="20dp"
             android:fontFamily="@font/montserrat"
             android:text="@string/event_guest_list"
             android:textSize="16sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.048"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.605" />
-
-        <Button
-            android:id="@+id/eventCancelButton"
-            android:layout_width="80dp"
-            android:layout_height="42dp"
-            android:fontFamily="@font/montserrat"
-            android:text="@string/event_cancel"
-            android:textAllCaps="false"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.356"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.961" />
-
-        <Button
-            android:id="@+id/eventReadyButton"
-            android:layout_width="88dp"
-            android:layout_height="42dp"
-            android:fontFamily="@font/montserrat"
-            android:text="@string/event_ready"
-            android:textAllCaps="false"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.027"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.961" />
-
-        <Button
-            android:id="@+id/eventImageButton"
-            android:layout_width="175dp"
-            android:layout_height="58dp"
-            android:fontFamily="@font/montserrat"
-            android:text="@string/event_image"
-            android:textAllCaps="false"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.949"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.973" />
+            android:textStyle="bold" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/eventGuestListRecyclerView"
             android:layout_width="387dp"
             android:layout_height="131dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.784" />
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="60dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/eventCancelButton"
+                android:layout_width="80dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="35dp"
+                android:fontFamily="@font/montserrat"
+                android:text="@string/event_cancel"
+                android:textAllCaps="false" />
+
+            <Button
+                android:id="@+id/eventReadyButton"
+                android:layout_width="88dp"
+                android:layout_height="match_parent"
+                android:fontFamily="@font/montserrat"
+                android:text="@string/event_ready"
+                android:textAllCaps="false" />
+
+            <Button
+                android:id="@+id/eventImageButton"
+                android:layout_width="175dp"
+                android:layout_height="match_parent"
+                android:fontFamily="@font/montserrat"
+                android:text="@string/event_image"
+                android:textAllCaps="false" />
+
+        </LinearLayout>
+
+    </LinearLayout>
 </FrameLayout>
