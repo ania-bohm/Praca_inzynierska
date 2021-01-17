@@ -46,7 +46,6 @@ public class MainFragment extends Fragment {
     ImageView addEventButton;
     RecyclerView yourEventsRecyclerView;
     RecyclerView allEventsRecyclerView;
-    Button button;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     DocumentReference documentReference = db.collection("Events").document("My first event!");
     CollectionReference collectionReference = db.collection("Events");
@@ -74,18 +73,10 @@ public class MainFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_main, container, false);
     }
 
-
     private View.OnClickListener addEventOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             navController.navigate(R.id.mainToAddEvent);
-        }
-    };
-
-    private View.OnClickListener buttonOnClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            navController.navigate(R.id.mainToDisplayEvent);
         }
     };
 
@@ -96,7 +87,7 @@ public class MainFragment extends Fragment {
         final FirestoreRecyclerOptions<Event> events = new FirestoreRecyclerOptions.Builder<Event>().setQuery(query, Event.class).build();
         eventAdapter = new EventAdapter(events);
         allEventsRecyclerView = view.findViewById(R.id.allEventsRecyclerView);
-        allEventsRecyclerView.setHasFixedSize(true);
+        allEventsRecyclerView.setHasFixedSize(false);
         allEventsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));//<----------
         allEventsRecyclerView.setAdapter(eventAdapter);
 
@@ -120,7 +111,6 @@ public class MainFragment extends Fragment {
                 String id = documentSnapshot.getId();
                 DocumentReference documentReference = documentSnapshot.getReference();
                 Toast.makeText(getContext(), "Position clicked: " + position, Toast.LENGTH_SHORT).show();
-
                 Bundle bundle = new Bundle();
                 bundle.putString("path", path);
                 navController.navigate(R.id.mainToDisplayEvent, bundle);
@@ -134,9 +124,6 @@ public class MainFragment extends Fragment {
         navController = Navigation.findNavController(view);
         addEventButton = view.findViewById(R.id.addEventButton);
         addEventButton.setOnClickListener(addEventOnClickListener);
-        button = view.findViewById(R.id.button);
-        button.setOnClickListener(buttonOnClickListener);
-
         setUpAllEventsRecyclerView(view);
     }
 

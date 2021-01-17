@@ -6,11 +6,11 @@
     android:layout_height="match_parent"
     tools:context=".MainFragment">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <LinearLayout
         android:id="@+id/relativeLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/yourEventsTextView"
@@ -20,28 +20,20 @@
             android:text="@string/your_events"
             android:textSize="18sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.062"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.096" />
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="10dp"/>
 
         <androidx.coordinatorlayout.widget.CoordinatorLayout
-            android:layout_width="404dp"
-            android:layout_height="177dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.2">
+            android:layout_width="match_parent"
+            android:layout_height="177dp">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/yourEventsRecyclerView"
                 android:layout_width="match_parent"
-                android:layout_height="176dp"
-                android:scrollbars="horizontal"/>
+                android:layout_height="match_parent"
+                android:scrollbars="horizontal"
+                android:layout_marginTop="10dp"
+                android:layout_marginStart="10dp"/>
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
         <TextView
@@ -51,12 +43,8 @@
             android:fontFamily="@font/montserrat"
             android:text="@string/countdown"
             android:textSize="18sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.101"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.446" />
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="10dp"/>
 
         <TextView
             android:id="@+id/allEventsTextView"
@@ -66,37 +54,21 @@
             android:text="@string/all_events"
             android:textSize="18sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.073"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.501" />
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="10dp"/>
 
         <androidx.coordinatorlayout.widget.CoordinatorLayout
-            android:layout_width="404dp"
+            android:layout_width="match_parent"
             android:layout_height="177dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.765" >
+            android:id="@+id/coordinatorLayout">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/allEventsRecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:scrollbars="horizontal"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="1.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.812" />
+                android:scrollbars="horizontal"/>
 
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
-
 
         <ImageView
             android:id="@+id/addEventButton"
@@ -104,24 +76,9 @@
             android:layout_height="wrap_content"
             android:background="@drawable/circular_background"
             android:src="@drawable/ic_add"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.916"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.947" />
+            android:elevation="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="280dp"/>
 
-        <Button
-            android:id="@+id/button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Button"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.139"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.945" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
 </FrameLayout>
