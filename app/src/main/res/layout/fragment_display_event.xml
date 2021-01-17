@@ -31,7 +31,7 @@
                 android:id="@+id/toDoListButton"
                 android:layout_width="40sp"
                 android:layout_height="40sp"
-                android:layout_marginStart="200dp"
+                android:layout_marginStart="150dp"
                 android:layout_marginTop="5dp"
                 android:background="@drawable/rectangular_background"
                 android:src="@drawable/ic_to_do_list" />
@@ -191,7 +191,7 @@
             android:id="@+id/displayEventImageImageView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="5dp"
             android:src="@drawable/circular_background" />
 
         <TextView
@@ -200,7 +200,7 @@
             android:layout_height="wrap_content"
             android:fontFamily="@font/montserrat"
             android:text="@string/event_guest_list"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="5dp"
             android:textSize="16sp"
             android:textStyle="bold" />
 
@@ -208,7 +208,7 @@
             android:id="@+id/displayEventGuestListRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"/>
+            android:layout_marginTop="5dp"/>
 
     </LinearLayout>
 </FrameLayout>
