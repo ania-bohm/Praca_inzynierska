@@ -2,6 +2,7 @@ package com.annabohm.pracainzynierska;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
@@ -9,6 +10,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -16,6 +18,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.google.android.material.navigation.NavigationView;
 import com.google.api.Distribution;
@@ -87,9 +90,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             case R.id.nav_logout:
                 closeDrawer(drawerLayout);
-                //sign out
-                FirebaseAuth.getInstance().signOut();
-                navController.navigate(R.id.mainToLogin);
+                userSignOut();
                 break;
         }
         return true;
@@ -100,7 +101,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if(drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+            userSignOut();
+            //super.onBackPressed();
             //navController.popBackStack();
         }
     }
@@ -115,5 +117,21 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public void setDrawerUnlocked() {
         drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
         toolbar.setNavigationIcon(R.drawable.ic_menu);
+    }
+
+    public void userSignOut() {
+        new AlertDialog.Builder(MainActivity.this)
+                .setTitle("Wylogowywanie")
+                .setMessage("Czy chcesz się wylogować?")
+                .setPositiveButton("Tak", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        FirebaseAuth.getInstance().signOut();
+                        Toast.makeText(MainActivity.this, "You logged out successfully!", Toast.LENGTH_SHORT).show();
+                        navController.navigate(R.id.mainToLogin);
+                    }
+                })
+                .setNegativeButton("Nie", null)
+                .setIcon(R.drawable.ic_logout_gray)
+                .show();
     }
 }
