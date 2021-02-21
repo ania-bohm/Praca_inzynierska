@@ -1,5 +1,6 @@
 package com.annabohm.pracainzynierska;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -8,17 +9,34 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.Toast;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.SignInMethodQueryResult;
 
 public class RegistrationFragment extends Fragment {
 
+    private static final String TAG = "EMAIL EXISTENCE";
     NavController navController;
     Button createAccountButton;
     ImageView registerShowPasswordButton;
+    EditText registerFirstNameEditText, registerLastNameEditText, registerEmailEditText, registerPhoneNumberEditText, registerPasswordEditText;
+    FirebaseAuth firebaseAuth;
+    ProgressBar registerProgressBar;
+    Context context;
 
     public RegistrationFragment() {
         // Required empty public constructor
@@ -32,7 +50,7 @@ public class RegistrationFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        context = getContext();
     }
 
     @Override
@@ -46,7 +64,44 @@ public class RegistrationFragment extends Fragment {
     private View.OnClickListener registerOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            navController.popBackStack();
+//            String registerFirstName = registerFirstNameEditText.getText().toString();
+//            String registerLastName = registerLastNameEditText.getText().toString();
+//            String registerPhoneNumber = registerPhoneNumberEditText.getText().toString().trim();
+
+            String registerEmail = registerEmailEditText.getText().toString().trim();
+            String registerPassword = registerPasswordEditText.getText().toString();
+
+//            if(TextUtils.isEmpty(registerFirstName)) {
+//                registerFirstNameEditText.setError("First name is required");
+//                return;
+//            }
+//
+//            if(TextUtils.isEmpty(registerLastName)) {
+//                registerEmailEditText.setError("Last name is required");
+//                return;
+//            }
+//
+//            if(TextUtils.isEmpty(registerPhoneNumber)) {
+//                registerEmailEditText.setError("Phone number is required");
+//                return;
+//            }
+
+            if(TextUtils.isEmpty(registerEmail)) {
+                registerEmailEditText.setError("Email is required");
+                return;
+            }
+
+            if(TextUtils.isEmpty(registerPassword)) {
+                registerEmailEditText.setError("Password is required");
+                return;
+            }
+
+            if(registerPassword.length() < 6) {
+                registerPasswordEditText.setError("Password must be at least 6 characters long");
+                return;
+            }
+
+            checkEmailExistsOrNot(registerEmailEditText, registerPasswordEditText);
         }
     };
 
@@ -56,7 +111,51 @@ public class RegistrationFragment extends Fragment {
         navController = Navigation.findNavController(view);
         createAccountButton = view.findViewById(R.id.createAccountButton);
         registerShowPasswordButton = view.findViewById(R.id.registerShowPasswordButton);
+        registerFirstNameEditText = view.findViewById(R.id.registerFirstNameEditText);
+        registerLastNameEditText = view.findViewById(R.id.registerLastNameEditText);
+        registerEmailEditText = view.findViewById(R.id.registerEmailEditText);
+        registerPhoneNumberEditText = view.findViewById(R.id.registerPhoneNumberEditText);
+        registerPasswordEditText = view.findViewById(R.id.registerPasswordEditText);
+        registerProgressBar = view.findViewById(R.id.registerProgressBar);
+
+        firebaseAuth = FirebaseAuth.getInstance();
+
         createAccountButton.setOnClickListener(registerOnClickListener);
+    }
+
+    private void checkEmailExistsOrNot(final EditText registerEmailEditText, final EditText registerPasswordEditText){
+        firebaseAuth.fetchSignInMethodsForEmail(registerEmailEditText.getText().toString().trim()).addOnCompleteListener(new OnCompleteListener<SignInMethodQueryResult>() {
+            @Override
+            public void onComplete(@NonNull Task<SignInMethodQueryResult> task) {
+                Log.d(TAG,"" + task.getResult().getSignInMethods().size());
+                if (task.getResult().getSignInMethods().size() == 0){
+                    registerProgressBar.setVisibility(View.VISIBLE);
+                    registerUser(registerEmailEditText, registerPasswordEditText);
+                } else {
+                    registerEmailEditText.setError("This email is already registered");
+                    return;
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                e.printStackTrace();
+            }
+        });
+    }
+
+    private void registerUser(EditText registerEmailEditText, EditText registerPasswordEditText) {
+        firebaseAuth.createUserWithEmailAndPassword(registerEmailEditText.getText().toString().trim(), registerPasswordEditText.getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if(task.isSuccessful()) {
+                    Toast.makeText(context, "User created successfully", Toast.LENGTH_SHORT).show();
+                    navController.popBackStack();
+                } else {
+                    Toast.makeText(context, "Error: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
 }

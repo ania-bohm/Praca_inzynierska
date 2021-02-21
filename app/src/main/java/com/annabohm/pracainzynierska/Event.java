@@ -1,6 +1,7 @@
 package com.annabohm.pracainzynierska;
 
 import java.util.Date;
+import java.util.List;
 
 public class Event {
 
@@ -11,6 +12,8 @@ public class Event {
     private Date eventTimeFinish;
     private String eventLocation;
     private String eventDescription;
+    private User eventAuthor;
+    private List<Invitation> eventInvitations;
 
     public Event(){
 

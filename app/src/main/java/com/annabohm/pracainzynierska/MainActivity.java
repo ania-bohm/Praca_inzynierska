@@ -20,6 +20,7 @@ import android.widget.LinearLayout;
 import com.google.android.material.navigation.NavigationView;
 import com.google.api.Distribution;
 import com.google.common.io.LineReader;
+import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, DrawerController{
 
@@ -86,6 +87,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             case R.id.nav_logout:
                 closeDrawer(drawerLayout);
+                //sign out
+                FirebaseAuth.getInstance().signOut();
                 navController.navigate(R.id.mainToLogin);
                 break;
         }
