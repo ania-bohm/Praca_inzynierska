@@ -22,21 +22,27 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.SignInMethodQueryResult;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class RegistrationFragment extends Fragment {
 
-    private static final String TAG = "EMAIL EXISTENCE";
+    private static final String TAG = "DEV'S TAG";
     NavController navController;
     Button createAccountButton;
     ImageView registerShowPasswordButton;
     EditText registerFirstNameEditText, registerLastNameEditText, registerEmailEditText, registerPhoneNumberEditText, registerPasswordEditText;
     FirebaseAuth firebaseAuth;
+    FirebaseFirestore firebaseFirestore;
+    DocumentReference documentReference;
     ProgressBar registerProgressBar;
     Context context;
+    String userID, registerFirstName, registerLastName, registerEmail, registerPassword, registerPhoneNumber;
 
     public RegistrationFragment() {
         // Required empty public constructor
@@ -64,27 +70,26 @@ public class RegistrationFragment extends Fragment {
     private View.OnClickListener registerOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-//            String registerFirstName = registerFirstNameEditText.getText().toString();
-//            String registerLastName = registerLastNameEditText.getText().toString();
-//            String registerPhoneNumber = registerPhoneNumberEditText.getText().toString().trim();
+            registerFirstName = registerFirstNameEditText.getText().toString();
+            registerLastName = registerLastNameEditText.getText().toString();
+            registerPhoneNumber = registerPhoneNumberEditText.getText().toString().trim();
+            registerEmail = registerEmailEditText.getText().toString().trim();
+            registerPassword = registerPasswordEditText.getText().toString();
 
-            String registerEmail = registerEmailEditText.getText().toString().trim();
-            String registerPassword = registerPasswordEditText.getText().toString();
+            if(TextUtils.isEmpty(registerFirstName)) {
+                registerFirstNameEditText.setError("First name is required");
+                return;
+            }
 
-//            if(TextUtils.isEmpty(registerFirstName)) {
-//                registerFirstNameEditText.setError("First name is required");
-//                return;
-//            }
-//
-//            if(TextUtils.isEmpty(registerLastName)) {
-//                registerEmailEditText.setError("Last name is required");
-//                return;
-//            }
-//
-//            if(TextUtils.isEmpty(registerPhoneNumber)) {
-//                registerEmailEditText.setError("Phone number is required");
-//                return;
-//            }
+            if(TextUtils.isEmpty(registerLastName)) {
+                registerEmailEditText.setError("Last name is required");
+                return;
+            }
+
+            if(TextUtils.isEmpty(registerPhoneNumber)) {
+                registerEmailEditText.setError("Phone number is required");
+                return;
+            }
 
             if(TextUtils.isEmpty(registerEmail)) {
                 registerEmailEditText.setError("Email is required");
@@ -101,7 +106,7 @@ public class RegistrationFragment extends Fragment {
                 return;
             }
 
-            checkEmailExistsOrNot(registerEmailEditText, registerPasswordEditText);
+            checkEmailExistsOrNot(registerEmailEditText, registerPasswordEditText, registerFirstNameEditText, registerLastNameEditText, registerPhoneNumberEditText);
         }
     };
 
@@ -119,18 +124,19 @@ public class RegistrationFragment extends Fragment {
         registerProgressBar = view.findViewById(R.id.registerProgressBar);
 
         firebaseAuth = FirebaseAuth.getInstance();
+        firebaseFirestore = FirebaseFirestore.getInstance();
 
         createAccountButton.setOnClickListener(registerOnClickListener);
     }
 
-    private void checkEmailExistsOrNot(final EditText registerEmailEditText, final EditText registerPasswordEditText){
+    private void checkEmailExistsOrNot(final EditText registerEmailEditText, final EditText registerPasswordEditText, final EditText registerFirstNameEditText, final EditText registerLastNameEditText, final EditText registerPhoneNumberEditText){
         firebaseAuth.fetchSignInMethodsForEmail(registerEmailEditText.getText().toString().trim()).addOnCompleteListener(new OnCompleteListener<SignInMethodQueryResult>() {
             @Override
             public void onComplete(@NonNull Task<SignInMethodQueryResult> task) {
                 Log.d(TAG,"" + task.getResult().getSignInMethods().size());
                 if (task.getResult().getSignInMethods().size() == 0){
                     registerProgressBar.setVisibility(View.VISIBLE);
-                    registerUser(registerEmailEditText, registerPasswordEditText);
+                    registerUser(registerEmailEditText, registerPasswordEditText, registerFirstNameEditText, registerLastNameEditText, registerPhoneNumberEditText);
                 } else {
                     registerEmailEditText.setError("This email is already registered");
                     return;
@@ -144,11 +150,25 @@ public class RegistrationFragment extends Fragment {
         });
     }
 
-    private void registerUser(EditText registerEmailEditText, EditText registerPasswordEditText) {
+    private void registerUser(EditText registerEmailEditText, EditText registerPasswordEditText, EditText registerFirstNameEditText, EditText registerLastNameEditText, EditText registerPhoneNumberEditText) {
+//        registerFirstName = registerFirstNameEditText.getText().toString();
+//        registerLastName = registerLastNameEditText.getText().toString();
+//        registerPhoneNumber = registerPhoneNumberEditText.getText().toString().trim();
+//        registerEmail = registerEmailEditText.getText().toString().trim();
+//        registerPassword = registerPasswordEditText.getText().toString();
         firebaseAuth.createUserWithEmailAndPassword(registerEmailEditText.getText().toString().trim(), registerPasswordEditText.getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if(task.isSuccessful()) {
+                    userID = firebaseAuth.getCurrentUser().getUid();
+                    documentReference = firebaseFirestore.collection("Users").document(userID);
+                    User newUser = new User(registerFirstName, registerLastName, registerEmail, registerPhoneNumber, registerPassword);
+                    documentReference.set(newUser).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Log.d(TAG, "onSuccess: user profile is created for: " + userID);
+                        }
+                    });
                     Toast.makeText(context, "User created successfully", Toast.LENGTH_SHORT).show();
                     navController.popBackStack();
                 } else {

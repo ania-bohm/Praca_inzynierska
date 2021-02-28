@@ -8,7 +8,9 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
+import androidx.navigation.NavDestination;
 import androidx.navigation.Navigation;
+import androidx.navigation.fragment.NavHostFragment;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -98,11 +100,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public void onBackPressed() {
-        if(drawerLayout.isDrawerOpen(GravityCompat.START)) {
-            drawerLayout.closeDrawer(GravityCompat.START);
+        NavDestination current = NavHostFragment.findNavController(getSupportFragmentManager().getPrimaryNavigationFragment().getFragmentManager().getFragments().get(0)).getCurrentDestination();
+//        Toast.makeText(this, "fragment: " + current.getId() + " R.id blabla: " + R.id.mainFragment, Toast.LENGTH_LONG).show();
+        int currentId = current.getId();
+
+        if(currentId == R.id.mainFragment){
+            if(drawerLayout.isDrawerOpen(GravityCompat.START)) {
+                drawerLayout.closeDrawer(GravityCompat.START);
+            } else {
+                userSignOut();
+            }
         } else {
-            userSignOut();
-            //super.onBackPressed();
+            super.onBackPressed();
             //navController.popBackStack();
         }
     }
@@ -127,7 +136,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     public void onClick(DialogInterface dialog, int which) {
                         FirebaseAuth.getInstance().signOut();
                         Toast.makeText(MainActivity.this, "You logged out successfully!", Toast.LENGTH_SHORT).show();
-                        navController.navigate(R.id.mainToLogin);
+                        navController.popBackStack();
+//                        navController.navigate(R.id.mainToLogin);
                     }
                 })
                 .setNegativeButton("Nie", null)

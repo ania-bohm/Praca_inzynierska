@@ -91,7 +91,7 @@
             android:ems="10"
             android:fontFamily="@font/montserrat"
             android:hint="@string/password1"
-            android:inputType="textPassword|numberPassword"
+            android:inputType="textPassword"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
