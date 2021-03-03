@@ -9,7 +9,6 @@ public class User {
     private String userLastName;
     private String userEmail;
     private String userPhoneNumber;
-    private String userPassword;
     private String userPhoto;
     private List<Event> userEvents;
     private List<Invitation> userInvitations;
@@ -18,12 +17,11 @@ public class User {
 
     }
 
-    public User(String userFirstName, String userLastName, String userEmail, String userPhoneNumber, String userPassword) {
+    public User(String userFirstName, String userLastName, String userEmail, String userPhoneNumber) {
         this.userFirstName = userFirstName;
         this.userLastName = userLastName;
         this.userEmail = userEmail;
         this.userPhoneNumber = userPhoneNumber;
-        this.userPassword = userPassword;
         userEvents = new ArrayList<>();
         userInvitations = new ArrayList<>();
     }
@@ -58,14 +56,6 @@ public class User {
 
     public void setUserPhoneNumber(String userPhoneNumber) {
         this.userPhoneNumber = userPhoneNumber;
-    }
-
-    public String getUserPassword() {
-        return userPassword;
-    }
-
-    public void setUserPassword(String userPassword) {
-        this.userPassword = userPassword;
     }
 
     public String getUserPhoto() {

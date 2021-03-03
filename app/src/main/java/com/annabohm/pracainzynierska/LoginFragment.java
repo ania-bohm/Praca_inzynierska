@@ -1,6 +1,7 @@
 package com.annabohm.pracainzynierska;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.media.Image;
 import android.os.Bundle;
 
@@ -35,6 +36,11 @@ public class LoginFragment extends Fragment {
     ProgressBar loginProgressBar;
     FirebaseAuth firebaseAuth;
     Context context;
+    SharedPreferences sharedPreferences;
+    public static final String myPreference = "myPref";
+    public static final String Password = "Password";
+    public static final String Email = "Email";
+
     private View.OnClickListener registerOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -44,8 +50,8 @@ public class LoginFragment extends Fragment {
     private View.OnClickListener loginOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            String loginEmail = loginEmailEditText.getText().toString().trim();
-            String loginPassword = loginPasswordEditText.getText().toString();
+            final String loginEmail = loginEmailEditText.getText().toString().trim();
+            final String loginPassword = loginPasswordEditText.getText().toString();
 
 
             if (TextUtils.isEmpty(loginEmail)) {
@@ -70,7 +76,13 @@ public class LoginFragment extends Fragment {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if (task.isSuccessful()) {
+                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                        editor.putString(Email, loginEmail);
+                        editor.putString(Password, loginPassword);
+                        editor.commit();
                         Toast.makeText(context, "Logged in successfully!", Toast.LENGTH_SHORT).show();
+                        loginEmailEditText.setText("");
+                        loginPasswordEditText.setText("");
                         navController.navigate(R.id.loginToMain);
                     } else {
                         Toast.makeText(context, "Error: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
@@ -97,6 +109,7 @@ public class LoginFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         context = getContext();
+        sharedPreferences = this.getActivity().getSharedPreferences(myPreference, Context.MODE_PRIVATE);
     }
 
     @Override

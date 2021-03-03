@@ -45,6 +45,7 @@ public class EditEventFragment extends Fragment {
     Button editEventCancelButton;
     DocumentReference documentReference;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
+
     private View.OnClickListener editEventReadyOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {

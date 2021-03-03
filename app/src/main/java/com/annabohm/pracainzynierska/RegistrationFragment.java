@@ -161,7 +161,7 @@ public class RegistrationFragment extends Fragment {
                 if (task.isSuccessful()) {
                     userID = firebaseAuth.getCurrentUser().getUid();
                     documentReference = firebaseFirestore.collection("Users").document(userID);
-                    User newUser = new User(registerFirstName, registerLastName, registerEmail, registerPhoneNumber, registerPassword);
+                    User newUser = new User(registerFirstName, registerLastName, registerEmail, registerPhoneNumber);
                     documentReference.set(newUser).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
