@@ -27,7 +27,7 @@ import com.google.api.Distribution;
 import com.google.common.io.LineReader;
 import com.google.firebase.auth.FirebaseAuth;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, DrawerController{
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, DrawerController {
 
     NavController navController;
     DrawerLayout drawerLayout;
@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     MenuItem actionAccountSettings;
 
     private static void closeDrawer(DrawerLayout drawerLayout) {
-        if(drawerLayout.isDrawerOpen(GravityCompat.START)){
+        if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START);
         }
     }
@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        switch(item.getItemId()) {
+        switch (item.getItemId()) {
             case R.id.nav_home:
                 closeDrawer(drawerLayout);
                 navController.navigate(R.id.mainFragment);
@@ -104,8 +104,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //        Toast.makeText(this, "fragment: " + current.getId() + " R.id blabla: " + R.id.mainFragment, Toast.LENGTH_LONG).show();
         int currentId = current.getId();
 
-        if(currentId == R.id.mainFragment){
-            if(drawerLayout.isDrawerOpen(GravityCompat.START)) {
+        if (currentId == R.id.mainFragment) {
+            if (drawerLayout.isDrawerOpen(GravityCompat.START)) {
                 drawerLayout.closeDrawer(GravityCompat.START);
             } else {
                 userSignOut();

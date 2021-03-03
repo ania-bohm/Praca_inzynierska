@@ -20,6 +20,24 @@ public class ChangePasswordFragment extends Fragment {
     Button confirmChangePasswordButton;
     Button rejectChangePasswordButton;
     ImageView changePasswordShowPasswordButton;
+    private View.OnClickListener confirmChangePasswordOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            navController.popBackStack();
+        }
+    };
+    private View.OnClickListener rejectChangePasswordOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            navController.popBackStack();
+        }
+    };
+    private View.OnClickListener changePasswordShowPasswordOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+
+        }
+    };
 
     public ChangePasswordFragment() {
         // Required empty public constructor
@@ -38,31 +56,10 @@ public class ChangePasswordFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        ((MainActivity)getActivity()).setDrawerLocked();
+        ((MainActivity) getActivity()).setDrawerLocked();
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_change_password, container, false);
     }
-
-    private View.OnClickListener confirmChangePasswordOnClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            navController.popBackStack();
-        }
-    };
-
-    private View.OnClickListener rejectChangePasswordOnClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            navController.popBackStack();
-        }
-    };
-
-    private View.OnClickListener changePasswordShowPasswordOnClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-
-        }
-    };
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {

@@ -35,6 +35,12 @@ import static android.content.ContentValues.TAG;
 
 public class DisplayEventFragment extends Fragment {
 
+    static final String KEY_EVENT_NAME = "event_name";
+    static final String KEY_EVENT_DATE_START = "event_date_start";
+    static final String KEY_EVENT_TIME_START = "event_time_start";
+    static final String KEY_EVENT_DATE_FINISH = "event_date_finish";
+    static final String KEY_EVENT_TIME_FINISH = "event_time_finish";
+    static final String KEY_EVENT_DESCRIPTION = "event_description";
     NavController navController;
     ImageView toDoListButton;
     ImageView shoppingListButton;
@@ -48,15 +54,29 @@ public class DisplayEventFragment extends Fragment {
     TextView showEventTimeFinishTextView;
     TextView showEventLocationTextView;
     TextView showEventDescriptionTextView;
-    static final String KEY_EVENT_NAME = "event_name";
-    static final String KEY_EVENT_DATE_START = "event_date_start";
-    static final String KEY_EVENT_TIME_START = "event_time_start";
-    static final String KEY_EVENT_DATE_FINISH = "event_date_finish";
-    static final String KEY_EVENT_TIME_FINISH = "event_time_finish";
-    static final String KEY_EVENT_DESCRIPTION = "event_description";
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     CollectionReference collectionReference = db.collection("Events");
     DocumentReference documentReference;
+
+    private View.OnClickListener toDoListOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            navController.navigate(R.id.displayEventToToDoList);
+        }
+    };
+    private View.OnClickListener shoppingListOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            navController.navigate(R.id.displayEventToShoppingList);
+        }
+    };
+    private View.OnClickListener editEventOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Toast.makeText(context, "Bundle: " + bundle.getString("path"), Toast.LENGTH_SHORT).show();
+            navController.navigate(R.id.displayEventToEditEvent, bundle);
+        }
+    };
 
     public DisplayEventFragment() {
         // Required empty public constructor
@@ -76,32 +96,10 @@ public class DisplayEventFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        ((MainActivity)getActivity()).setDrawerLocked();
+        ((MainActivity) getActivity()).setDrawerLocked();
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_display_event, container, false);
     }
-
-    private View.OnClickListener toDoListOnClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            navController.navigate(R.id.displayEventToToDoList);
-        }
-    };
-
-    private View.OnClickListener shoppingListOnClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            navController.navigate(R.id.displayEventToShoppingList);
-        }
-    };
-
-    private View.OnClickListener editEventOnClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            Toast.makeText(context, "Bundle: "+bundle.getString("path"), Toast.LENGTH_SHORT).show();
-            navController.navigate(R.id.displayEventToEditEvent, bundle);
-        }
-    };
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {

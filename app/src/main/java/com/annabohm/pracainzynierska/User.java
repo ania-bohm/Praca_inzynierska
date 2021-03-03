@@ -14,6 +14,10 @@ public class User {
     private List<Event> userEvents;
     private List<Invitation> userInvitations;
 
+    public User() {
+
+    }
+
     public User(String userFirstName, String userLastName, String userEmail, String userPhoneNumber, String userPassword) {
         this.userFirstName = userFirstName;
         this.userLastName = userLastName;

@@ -35,6 +35,54 @@ public class LoginFragment extends Fragment {
     ProgressBar loginProgressBar;
     FirebaseAuth firebaseAuth;
     Context context;
+    private View.OnClickListener registerOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            navController.navigate(R.id.loginToRegister);
+        }
+    };
+    private View.OnClickListener loginOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            String loginEmail = loginEmailEditText.getText().toString().trim();
+            String loginPassword = loginPasswordEditText.getText().toString();
+
+
+            if (TextUtils.isEmpty(loginEmail)) {
+                loginEmailEditText.setError("Email is required");
+                return;
+            }
+
+            if (TextUtils.isEmpty(loginPassword)) {
+                loginEmailEditText.setError("Password is required");
+                return;
+            }
+
+            if (loginPassword.length() < 6) {
+                loginPasswordEditText.setError("Password must be at least 6 characters long");
+                return;
+            }
+
+            loginProgressBar.setVisibility(View.VISIBLE);
+
+            //authenticate the user
+            firebaseAuth.signInWithEmailAndPassword(loginEmail, loginPassword).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                @Override
+                public void onComplete(@NonNull Task<AuthResult> task) {
+                    if (task.isSuccessful()) {
+                        Toast.makeText(context, "Logged in successfully!", Toast.LENGTH_SHORT).show();
+                        navController.navigate(R.id.loginToMain);
+                    } else {
+                        Toast.makeText(context, "Error: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                        loginProgressBar.setVisibility(View.INVISIBLE);
+                    }
+                }
+            });
+
+            //checkEmailExistsOrNot(loginEmailEditText, loginPasswordEditText);
+            //navController.navigate(R.id.loginToMain);
+        }
+    };
 
     public LoginFragment() {
         // Required empty public constructor
@@ -54,60 +102,10 @@ public class LoginFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        ((MainActivity)getActivity()).setDrawerLocked();
+        ((MainActivity) getActivity()).setDrawerLocked();
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_login, container, false);
     }
-
-    private View.OnClickListener registerOnClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            navController.navigate(R.id.loginToRegister);
-        }
-    };
-
-    private View.OnClickListener loginOnClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            String loginEmail = loginEmailEditText.getText().toString().trim();
-            String loginPassword = loginPasswordEditText.getText().toString();
-
-
-            if(TextUtils.isEmpty(loginEmail)) {
-                loginEmailEditText.setError("Email is required");
-                return;
-            }
-
-            if(TextUtils.isEmpty(loginPassword)) {
-                loginEmailEditText.setError("Password is required");
-                return;
-            }
-
-            if(loginPassword.length() < 6) {
-                loginPasswordEditText.setError("Password must be at least 6 characters long");
-                return;
-            }
-
-            loginProgressBar.setVisibility(View.VISIBLE);
-
-            //authenticate the user
-            firebaseAuth.signInWithEmailAndPassword(loginEmail, loginPassword).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                @Override
-                public void onComplete(@NonNull Task<AuthResult> task) {
-                    if(task.isSuccessful()) {
-                        Toast.makeText(context, "Logged in successfully!", Toast.LENGTH_SHORT).show();
-                        navController.navigate(R.id.loginToMain);
-                    } else {
-                        Toast.makeText(context, "Error: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                        loginProgressBar.setVisibility(View.INVISIBLE);
-                    }
-                }
-            });
-
-            //checkEmailExistsOrNot(loginEmailEditText, loginPasswordEditText);
-            //navController.navigate(R.id.loginToMain);
-        }
-    };
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {

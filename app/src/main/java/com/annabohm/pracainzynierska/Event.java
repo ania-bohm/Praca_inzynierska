@@ -15,11 +15,11 @@ public class Event {
     private User eventAuthor;
     private List<Invitation> eventInvitations;
 
-    public Event(){
+    public Event() {
 
     }
 
-    public Event(String eventName, Date eventDateStart, Date eventTimeStart, Date eventDateFinish, Date eventTimeFinish, String eventLocation, String eventDescription){
+    public Event(String eventName, Date eventDateStart, Date eventTimeStart, Date eventDateFinish, Date eventTimeFinish, String eventLocation, String eventDescription) {
         this.eventName = eventName;
         this.eventDateStart = eventDateStart;
         this.eventTimeStart = eventTimeStart;

@@ -51,6 +51,12 @@ public class MainFragment extends Fragment {
     DocumentReference documentReference = db.collection("Events").document("My first event!");
     CollectionReference collectionReference = db.collection("Events");
     EventAdapter eventAdapter;
+    private View.OnClickListener addEventOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            navController.navigate(R.id.mainToAddEvent);
+        }
+    };
 
     public MainFragment() {
         // Required empty public constructor
@@ -70,16 +76,9 @@ public class MainFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        ((MainActivity)getActivity()).setDrawerUnlocked();
+        ((MainActivity) getActivity()).setDrawerUnlocked();
         return inflater.inflate(R.layout.fragment_main, container, false);
     }
-
-    private View.OnClickListener addEventOnClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            navController.navigate(R.id.mainToAddEvent);
-        }
-    };
 
     private void setUpAllEventsRecyclerView(final View view) {
         //Query query = collectionReference.orderBy("eventName", Query.Direction.ASCENDING);

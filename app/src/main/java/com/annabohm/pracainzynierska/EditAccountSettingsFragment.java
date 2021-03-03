@@ -21,6 +21,18 @@ public class EditAccountSettingsFragment extends Fragment {
     NavController navController;
     Button confirmEditPersonalDataButton;
     Button rejectEditPersonalDataButton;
+    private View.OnClickListener confirmEditOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            navController.popBackStack();
+        }
+    };
+    private View.OnClickListener rejectEditOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            navController.popBackStack();
+        }
+    };
 
     public EditAccountSettingsFragment() {
         // Required empty public constructor
@@ -39,24 +51,10 @@ public class EditAccountSettingsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        ((MainActivity)getActivity()).setDrawerLocked();
+        ((MainActivity) getActivity()).setDrawerLocked();
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_edit_account_settings, container, false);
     }
-
-    private View.OnClickListener confirmEditOnClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            navController.popBackStack();
-        }
-    };
-
-    private View.OnClickListener rejectEditOnClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            navController.popBackStack();
-        }
-    };
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {

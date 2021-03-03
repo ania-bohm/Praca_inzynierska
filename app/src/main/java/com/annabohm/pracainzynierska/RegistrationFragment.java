@@ -43,6 +43,48 @@ public class RegistrationFragment extends Fragment {
     ProgressBar registerProgressBar;
     Context context;
     String userID, registerFirstName, registerLastName, registerEmail, registerPassword, registerPhoneNumber;
+    private View.OnClickListener registerOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            registerFirstName = registerFirstNameEditText.getText().toString();
+            registerLastName = registerLastNameEditText.getText().toString();
+            registerPhoneNumber = registerPhoneNumberEditText.getText().toString().trim();
+            registerEmail = registerEmailEditText.getText().toString().trim();
+            registerPassword = registerPasswordEditText.getText().toString();
+
+            if (TextUtils.isEmpty(registerFirstName)) {
+                registerFirstNameEditText.setError("First name is required");
+                return;
+            }
+
+            if (TextUtils.isEmpty(registerLastName)) {
+                registerEmailEditText.setError("Last name is required");
+                return;
+            }
+
+            if (TextUtils.isEmpty(registerPhoneNumber)) {
+                registerEmailEditText.setError("Phone number is required");
+                return;
+            }
+
+            if (TextUtils.isEmpty(registerEmail)) {
+                registerEmailEditText.setError("Email is required");
+                return;
+            }
+
+            if (TextUtils.isEmpty(registerPassword)) {
+                registerEmailEditText.setError("Password is required");
+                return;
+            }
+
+            if (registerPassword.length() < 6) {
+                registerPasswordEditText.setError("Password must be at least 6 characters long");
+                return;
+            }
+
+            checkEmailExistsOrNot(registerEmailEditText, registerPasswordEditText, registerFirstNameEditText, registerLastNameEditText, registerPhoneNumberEditText);
+        }
+    };
 
     public RegistrationFragment() {
         // Required empty public constructor
@@ -62,53 +104,10 @@ public class RegistrationFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        ((MainActivity)getActivity()).setDrawerLocked();
+        ((MainActivity) getActivity()).setDrawerLocked();
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_registration, container, false);
     }
-
-    private View.OnClickListener registerOnClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            registerFirstName = registerFirstNameEditText.getText().toString();
-            registerLastName = registerLastNameEditText.getText().toString();
-            registerPhoneNumber = registerPhoneNumberEditText.getText().toString().trim();
-            registerEmail = registerEmailEditText.getText().toString().trim();
-            registerPassword = registerPasswordEditText.getText().toString();
-
-            if(TextUtils.isEmpty(registerFirstName)) {
-                registerFirstNameEditText.setError("First name is required");
-                return;
-            }
-
-            if(TextUtils.isEmpty(registerLastName)) {
-                registerEmailEditText.setError("Last name is required");
-                return;
-            }
-
-            if(TextUtils.isEmpty(registerPhoneNumber)) {
-                registerEmailEditText.setError("Phone number is required");
-                return;
-            }
-
-            if(TextUtils.isEmpty(registerEmail)) {
-                registerEmailEditText.setError("Email is required");
-                return;
-            }
-
-            if(TextUtils.isEmpty(registerPassword)) {
-                registerEmailEditText.setError("Password is required");
-                return;
-            }
-
-            if(registerPassword.length() < 6) {
-                registerPasswordEditText.setError("Password must be at least 6 characters long");
-                return;
-            }
-
-            checkEmailExistsOrNot(registerEmailEditText, registerPasswordEditText, registerFirstNameEditText, registerLastNameEditText, registerPhoneNumberEditText);
-        }
-    };
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
@@ -129,12 +128,12 @@ public class RegistrationFragment extends Fragment {
         createAccountButton.setOnClickListener(registerOnClickListener);
     }
 
-    private void checkEmailExistsOrNot(final EditText registerEmailEditText, final EditText registerPasswordEditText, final EditText registerFirstNameEditText, final EditText registerLastNameEditText, final EditText registerPhoneNumberEditText){
+    private void checkEmailExistsOrNot(final EditText registerEmailEditText, final EditText registerPasswordEditText, final EditText registerFirstNameEditText, final EditText registerLastNameEditText, final EditText registerPhoneNumberEditText) {
         firebaseAuth.fetchSignInMethodsForEmail(registerEmailEditText.getText().toString().trim()).addOnCompleteListener(new OnCompleteListener<SignInMethodQueryResult>() {
             @Override
             public void onComplete(@NonNull Task<SignInMethodQueryResult> task) {
-                Log.d(TAG,"" + task.getResult().getSignInMethods().size());
-                if (task.getResult().getSignInMethods().size() == 0){
+                Log.d(TAG, "" + task.getResult().getSignInMethods().size());
+                if (task.getResult().getSignInMethods().size() == 0) {
                     registerProgressBar.setVisibility(View.VISIBLE);
                     registerUser(registerEmailEditText, registerPasswordEditText, registerFirstNameEditText, registerLastNameEditText, registerPhoneNumberEditText);
                 } else {
@@ -159,7 +158,7 @@ public class RegistrationFragment extends Fragment {
         firebaseAuth.createUserWithEmailAndPassword(registerEmailEditText.getText().toString().trim(), registerPasswordEditText.getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
-                if(task.isSuccessful()) {
+                if (task.isSuccessful()) {
                     userID = firebaseAuth.getCurrentUser().getUid();
                     documentReference = firebaseFirestore.collection("Users").document(userID);
                     User newUser = new User(registerFirstName, registerLastName, registerEmail, registerPhoneNumber, registerPassword);
@@ -167,6 +166,11 @@ public class RegistrationFragment extends Fragment {
                         @Override
                         public void onSuccess(Void aVoid) {
                             Log.d(TAG, "onSuccess: user profile is created for: " + userID);
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.d(TAG, "onFailure: " + e.toString());
                         }
                     });
                     Toast.makeText(context, "User created successfully", Toast.LENGTH_SHORT).show();

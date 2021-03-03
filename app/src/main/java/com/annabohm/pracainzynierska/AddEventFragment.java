@@ -33,17 +33,17 @@ import static android.content.ContentValues.TAG;
 
 public class AddEventFragment extends Fragment {
 
-    NavController navController;
-    Button eventReadyButton;
-    Button eventCancelButton;
-    Button eventImageButton;
-    Context context;
     static final String KEY_EVENT_NAME = "event_name";
     static final String KEY_EVENT_DATE_START = "event_date_start";
     static final String KEY_EVENT_TIME_START = "event_time_start";
     static final String KEY_EVENT_DATE_FINISH = "event_date_finish";
     static final String KEY_EVENT_TIME_FINISH = "event_time_finish";
     static final String KEY_EVENT_DESCRIPTION = "event_description";
+    NavController navController;
+    Button eventReadyButton;
+    Button eventCancelButton;
+    Button eventImageButton;
+    Context context;
     EditText eventNameEditText;
     EditText eventDateStartEditText;
     EditText eventTimeStartEditText;
@@ -52,31 +52,6 @@ public class AddEventFragment extends Fragment {
     EditText eventLocationEditText;
     EditText eventDescriptionEditText;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
-
-    public AddEventFragment() {
-        // Required empty public constructor
-    }
-
-
-    public static AddEventFragment newInstance(String param1, String param2) {
-        AddEventFragment fragment = new AddEventFragment();
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        context = getContext();
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        ((MainActivity)getActivity()).setDrawerLocked();
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_add_event, container, false);
-    }
-
     private View.OnClickListener eventReadyOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -87,7 +62,7 @@ public class AddEventFragment extends Fragment {
             String dateFinishValue = eventDateFinishEditText.getText().toString();
             String timeStartValue = eventTimeStartEditText.getText().toString();
             String timeFinishValue = eventTimeFinishEditText.getText().toString();
-            if(eventName.trim().isEmpty() || eventDescription.trim().isEmpty() || dateStartValue.trim().isEmpty() || dateFinishValue.trim().isEmpty() || timeStartValue.trim().isEmpty() || timeFinishValue.trim().isEmpty()) {
+            if (eventName.trim().isEmpty() || eventDescription.trim().isEmpty() || dateStartValue.trim().isEmpty() || dateFinishValue.trim().isEmpty() || timeStartValue.trim().isEmpty() || timeFinishValue.trim().isEmpty()) {
                 Toast.makeText(context, "Please fill all the fields!", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -98,15 +73,13 @@ public class AddEventFragment extends Fragment {
             Date eventDateFinish = null;
             Date eventTimeStart = null;
             Date eventTimeFinish = null;
-            
+
             try {
                 eventDateStart = dateFormatter.parse(dateStartValue);
-                eventDateFinish= dateFormatter.parse(dateFinishValue);
+                eventDateFinish = dateFormatter.parse(dateFinishValue);
                 eventTimeStart = timeFormatter.parse(timeStartValue);
                 eventTimeFinish = timeFormatter.parse(timeFinishValue);
-            }
-            catch (java.text.ParseException e)
-            {
+            } catch (java.text.ParseException e) {
                 e.printStackTrace();
                 Log.i(TAG, e.toString());
             }
@@ -151,13 +124,35 @@ public class AddEventFragment extends Fragment {
             navController.popBackStack();
         }
     };
-
     private View.OnClickListener eventCancelOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             navController.popBackStack();
         }
     };
+
+    public AddEventFragment() {
+        // Required empty public constructor
+    }
+
+    public static AddEventFragment newInstance(String param1, String param2) {
+        AddEventFragment fragment = new AddEventFragment();
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        context = getContext();
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        ((MainActivity) getActivity()).setDrawerLocked();
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_add_event, container, false);
+    }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {

@@ -45,6 +45,89 @@ public class EditEventFragment extends Fragment {
     Button editEventCancelButton;
     DocumentReference documentReference;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private View.OnClickListener editEventReadyOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            //update fields in firestore if the fields aren't null
+            DateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy");
+            DateFormat timeFormatter = new SimpleDateFormat("HH:mm");
+            Date eventDateStart = null;
+            Date eventDateFinish = null;
+            Date eventTimeStart = null;
+            Date eventTimeFinish = null;
+
+            if (!editEventNameEditText.getText().toString().trim().isEmpty()) {
+                documentReference.update("eventName", editEventNameEditText.getText().toString());
+            }
+
+            if (!editEventDateStartEditText.getText().toString().trim().isEmpty()) {
+                try {
+                    eventDateStart = dateFormatter.parse(editEventDateStartEditText.getText().toString());
+                } catch (java.text.ParseException e) {
+                    e.printStackTrace();
+                    Log.i(TAG, e.toString());
+                }
+                documentReference.update("eventDateStart", eventDateStart);
+            }
+
+            if (!editEventTimeStartEditText.getText().toString().trim().isEmpty()) {
+                try {
+                    eventTimeStart = timeFormatter.parse(editEventTimeStartEditText.getText().toString());
+                } catch (java.text.ParseException e) {
+                    e.printStackTrace();
+                    Log.i(TAG, e.toString());
+                }
+                documentReference.update("eventTimeStart", eventTimeStart);
+            }
+
+            if (!editEventDateFinishEditText.getText().toString().trim().isEmpty()) {
+                try {
+                    eventDateFinish = dateFormatter.parse(editEventDateFinishEditText.getText().toString());
+                } catch (java.text.ParseException e) {
+                    e.printStackTrace();
+                    Log.i(TAG, e.toString());
+                }
+                documentReference.update("eventDateFinish", eventDateFinish);
+            }
+
+            if (!editEventTimeFinishEditText.getText().toString().trim().isEmpty()) {
+                try {
+                    eventTimeFinish = timeFormatter.parse(editEventTimeFinishEditText.getText().toString());
+                } catch (java.text.ParseException e) {
+                    e.printStackTrace();
+                    Log.i(TAG, e.toString());
+                }
+                documentReference.update("eventTimeFinish", eventTimeFinish);
+            }
+
+            if (!editEventLocationEditText.getText().toString().trim().isEmpty()) {
+                documentReference.update("eventLocation", editEventLocationEditText.getText().toString());
+            }
+
+            if (!editEventDescriptionEditText.getText().toString().trim().isEmpty()) {
+                documentReference.update("eventDescription", editEventDescriptionEditText.getText().toString());
+            }
+
+            if (editEventNameEditText.getText().toString().trim().isEmpty()
+                    && editEventDateStartEditText.getText().toString().trim().isEmpty()
+                    && editEventTimeStartEditText.getText().toString().isEmpty()
+                    && editEventDateFinishEditText.getText().toString().isEmpty()
+                    && editEventTimeFinishEditText.getText().toString().isEmpty()
+                    && editEventLocationEditText.getText().toString().isEmpty()
+                    && editEventDescriptionEditText.getText().toString().isEmpty()) {
+                Toast.makeText(context, "You have not changed anything. To escape edit mode, click 'Cancel' button", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            navController.popBackStack();
+        }
+    };
+    private View.OnClickListener editEventCancelOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            navController.popBackStack();
+        }
+    };
 
     public EditEventFragment() {
         // Required empty public constructor
@@ -64,103 +147,10 @@ public class EditEventFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        ((MainActivity)getActivity()).setDrawerLocked();
+        ((MainActivity) getActivity()).setDrawerLocked();
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_edit_event, container, false);
     }
-
-    private View.OnClickListener editEventReadyOnClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            //update fields in firestore if the fields aren't null
-            DateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy");
-            DateFormat timeFormatter = new SimpleDateFormat("HH:mm");
-            Date eventDateStart = null;
-            Date eventDateFinish = null;
-            Date eventTimeStart = null;
-            Date eventTimeFinish = null;
-
-            if(!editEventNameEditText.getText().toString().trim().isEmpty()){
-                documentReference.update("eventName", editEventNameEditText.getText().toString());
-            }
-
-            if(!editEventDateStartEditText.getText().toString().trim().isEmpty()){
-                try {
-                    eventDateStart = dateFormatter.parse(editEventDateStartEditText.getText().toString());
-                }
-                catch (java.text.ParseException e)
-                {
-                    e.printStackTrace();
-                    Log.i(TAG, e.toString());
-                }
-                documentReference.update("eventDateStart", eventDateStart);
-            }
-
-            if(!editEventTimeStartEditText.getText().toString().trim().isEmpty()){
-                try {
-                    eventTimeStart = timeFormatter.parse(editEventTimeStartEditText.getText().toString());
-                }
-                catch (java.text.ParseException e)
-                {
-                    e.printStackTrace();
-                    Log.i(TAG, e.toString());
-                }
-                documentReference.update("eventTimeStart", eventTimeStart);
-            }
-
-            if(!editEventDateFinishEditText.getText().toString().trim().isEmpty()){
-                try {
-                    eventDateFinish = dateFormatter.parse(editEventDateFinishEditText.getText().toString());
-                }
-                catch (java.text.ParseException e)
-                {
-                    e.printStackTrace();
-                    Log.i(TAG, e.toString());
-                }
-                documentReference.update("eventDateFinish", eventDateFinish);
-            }
-
-            if(!editEventTimeFinishEditText.getText().toString().trim().isEmpty()){
-                try {
-                    eventTimeFinish = timeFormatter.parse(editEventTimeFinishEditText.getText().toString());
-                }
-                catch (java.text.ParseException e)
-                {
-                    e.printStackTrace();
-                    Log.i(TAG, e.toString());
-                }
-                documentReference.update("eventTimeFinish", eventTimeFinish);
-            }
-
-            if(!editEventLocationEditText.getText().toString().trim().isEmpty()){
-                documentReference.update("eventLocation", editEventLocationEditText.getText().toString());
-            }
-
-            if(!editEventDescriptionEditText.getText().toString().trim().isEmpty()){
-                documentReference.update("eventDescription", editEventDescriptionEditText.getText().toString());
-            }
-
-            if(editEventNameEditText.getText().toString().trim().isEmpty()
-                    && editEventDateStartEditText.getText().toString().trim().isEmpty()
-                    && editEventTimeStartEditText.getText().toString().isEmpty()
-                    && editEventDateFinishEditText.getText().toString().isEmpty()
-                    && editEventTimeFinishEditText.getText().toString().isEmpty()
-                    && editEventLocationEditText.getText().toString().isEmpty()
-                    && editEventDescriptionEditText.getText().toString().isEmpty()) {
-                Toast.makeText(context, "You have not changed anything. To escape edit mode, click 'Cancel' button", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            navController.popBackStack();
-        }
-    };
-
-    private View.OnClickListener editEventCancelOnClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            navController.popBackStack();
-        }
-    };
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
