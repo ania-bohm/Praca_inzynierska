@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">Praca inzynierska</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="welcome">Witaj ponownie!</string>
     <string name="registration">Rejestracja</string>
@@ -9,6 +8,7 @@
     <string name="password">Hasło</string>
     <string name="login">Zaloguj się</string>
     <string name="no_account">Nie masz konta?</string>
+    <string name="exist_account">Masz już konto?</string>
     <string name="register">Zarejestruj się!</string>
     <string name="example_email">example@gmail.com</string>
     <string name="first_name">Imię*</string>

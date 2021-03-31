@@ -62,9 +62,10 @@
             android:hint="@string/example_email"
             android:inputType="textPersonName|textEmailAddress"
             android:textStyle="bold"
+            android:textColor="#555956"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.484"
+            app:layout_constraintHorizontal_bias="0.470"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.436" />
@@ -117,9 +118,10 @@
             android:ems="10"
             android:fontFamily="@font/montserrat"
             android:inputType="textPassword"
+            android:textColor="#555956"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.484"
+            app:layout_constraintHorizontal_bias="0.470"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.578" />
