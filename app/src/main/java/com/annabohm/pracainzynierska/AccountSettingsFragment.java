@@ -203,22 +203,10 @@ public class AccountSettingsFragment extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        RotateBitmap rotateBitmap = new RotateBitmap();
-        Bitmap bitmap = null;
         if (requestCode == 1 && resultCode == RESULT_OK) {
             if (data.getData() != null) {
                 Uri imageUri = data.getData();
-
                 final StorageReference mRef = storageReference.child(System.currentTimeMillis() + "." + getExtension(imageUri));
-                try {
-                    bitmap = rotateBitmap.HandleSamplingAndRotationBitmap(getActivity(), imageUri);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-                byte[] byteData = baos.toByteArray();
                 mRef.putFile(imageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
