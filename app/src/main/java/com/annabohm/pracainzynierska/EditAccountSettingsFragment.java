@@ -35,7 +35,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import static android.content.ContentValues.TAG;
 
 public class EditAccountSettingsFragment extends Fragment {
-
     NavController navController;
     Button confirmEditPersonalDataButton;
     Button rejectEditPersonalDataButton;
@@ -50,68 +49,6 @@ public class EditAccountSettingsFragment extends Fragment {
     public static final String myPreference = "myPref";
     public static final String Password = "Password";
     public static final String Email = "Email";
-
-
-    private View.OnClickListener confirmEditOnClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            if (!editAccountFirstNameEditText.getText().toString().trim().isEmpty()) {
-                documentReference.update("userFirstName", editAccountFirstNameEditText.getText().toString());
-            }
-
-            if (!editAccountLastNameEditText.getText().toString().trim().isEmpty()) {
-                documentReference.update("userLastName", editAccountLastNameEditText.getText().toString());
-            }
-
-            if (!editAccountEmailEditText.getText().toString().trim().isEmpty()) {
-                firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-                // Get auth credentials from the user for re-authentication
-                authCredential = EmailAuthProvider
-                        .getCredential(sharedPreferences.getString(Email, null), sharedPreferences.getString(Password, null)); // Current Login Credentials \\
-                // Prompt the user to re-provide their sign-in credentials
-                firebaseUser.reauthenticate(authCredential)
-                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                Log.d(TAG, "User re-authenticated.");
-                                //Now change your email address \\
-                                //----------------Code for Changing Email Address----------\\
-                                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                                user.updateEmail(editAccountEmailEditText.getText().toString().trim())
-                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<Void> task) {
-                                                if (task.isSuccessful()) {
-                                                    Log.d(TAG, "User email address updated.");
-                                                }
-                                            }
-                                        });
-                                //----------------------------------------------------------\\
-                            }
-                        });
-                documentReference.update("userEmail", editAccountEmailEditText.getText().toString().trim());
-            }
-
-            if (!editAccountPhoneNumberEditText.getText().toString().trim().isEmpty()) {
-                documentReference.update("userPhoneNumber", editAccountPhoneNumberEditText.getText().toString().trim());
-            }
-
-            if (editAccountFirstNameEditText.getText().toString().trim().isEmpty()
-                    && editAccountLastNameEditText.getText().toString().trim().isEmpty()
-                    && editAccountEmailEditText.getText().toString().isEmpty()
-                    && editAccountPhoneNumberEditText.getText().toString().isEmpty()) {
-                Toast.makeText(context, "You have not changed anything. To escape edit mode, click 'Cancel' button", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            navController.popBackStack();
-        }
-    };
-    private View.OnClickListener rejectEditOnClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            navController.popBackStack();
-        }
-    };
 
     public EditAccountSettingsFragment() {
         // Required empty public constructor
@@ -186,4 +123,65 @@ public class EditAccountSettingsFragment extends Fragment {
             }
         });
     }
+
+    private View.OnClickListener confirmEditOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            if (!editAccountFirstNameEditText.getText().toString().trim().isEmpty()) {
+                documentReference.update("userFirstName", editAccountFirstNameEditText.getText().toString());
+            }
+
+            if (!editAccountLastNameEditText.getText().toString().trim().isEmpty()) {
+                documentReference.update("userLastName", editAccountLastNameEditText.getText().toString());
+            }
+
+            if (!editAccountEmailEditText.getText().toString().trim().isEmpty()) {
+                firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+                // Get auth credentials from the user for re-authentication
+                authCredential = EmailAuthProvider
+                        .getCredential(sharedPreferences.getString(Email, null), sharedPreferences.getString(Password, null)); // Current Login Credentials \\
+                // Prompt the user to re-provide their sign-in credentials
+                firebaseUser.reauthenticate(authCredential)
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                Log.d(TAG, "User re-authenticated.");
+                                //----------------Code for Changing Email Address----------\\
+                                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                                user.updateEmail(editAccountEmailEditText.getText().toString().trim())
+                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                if (task.isSuccessful()) {
+                                                    Log.d(TAG, "User email address updated.");
+                                                }
+                                            }
+                                        });
+                                //----------------------------------------------------------\\
+                            }
+                        });
+                documentReference.update("userEmail", editAccountEmailEditText.getText().toString().trim());
+            }
+
+            if (!editAccountPhoneNumberEditText.getText().toString().trim().isEmpty()) {
+                documentReference.update("userPhoneNumber", editAccountPhoneNumberEditText.getText().toString().trim());
+            }
+
+            if (editAccountFirstNameEditText.getText().toString().trim().isEmpty()
+                    && editAccountLastNameEditText.getText().toString().trim().isEmpty()
+                    && editAccountEmailEditText.getText().toString().isEmpty()
+                    && editAccountPhoneNumberEditText.getText().toString().isEmpty()) {
+                Toast.makeText(context, "You have not changed anything. To escape edit mode, click 'Cancel' button", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            navController.popBackStack();
+        }
+    };
+
+    private View.OnClickListener rejectEditOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            navController.popBackStack();
+        }
+    };
 }

@@ -152,7 +152,21 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.906" />
+            app:layout_constraintVertical_bias="0.895" />
+
+        <Button
+            android:id="@+id/accountPhotoDeleteButton"
+            android:layout_width="291dp"
+            android:layout_height="56dp"
+            android:fontFamily="@font/montserrat"
+            android:text="@string/account_photo_delete"
+            android:textAllCaps="false"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.986" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>
