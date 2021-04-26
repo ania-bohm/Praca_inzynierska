@@ -20,7 +20,7 @@ public class Event {
 
     }
 
-    public Event(String eventName, Date eventDateStart, Date eventTimeStart, Date eventDateFinish, Date eventTimeFinish, String eventLocation, String eventDescription) {
+    public Event(String eventName, Date eventDateStart, Date eventTimeStart, Date eventDateFinish, Date eventTimeFinish, String eventLocation, String eventDescription, Integer eventImage) {
         this.eventName = eventName;
         this.eventDateStart = eventDateStart;
         this.eventTimeStart = eventTimeStart;
@@ -28,6 +28,7 @@ public class Event {
         this.eventTimeFinish = eventTimeFinish;
         this.eventLocation = eventLocation;
         this.eventDescription = eventDescription;
+        this.eventImage = eventImage;
     }
 
     public String getEventName() {
@@ -84,5 +85,29 @@ public class Event {
 
     public void setEventDescription(String eventDescription) {
         this.eventDescription = eventDescription;
+    }
+
+    public Integer getEventImage() {
+        return eventImage;
+    }
+
+    public void setEventImage(Integer eventImage) {
+        this.eventImage = eventImage;
+    }
+
+    public User getEventAuthor() {
+        return eventAuthor;
+    }
+
+    public void setEventAuthor(User eventAuthor) {
+        this.eventAuthor = eventAuthor;
+    }
+
+    public List<Invitation> getEventInvitations() {
+        return eventInvitations;
+    }
+
+    public void setEventInvitations(List<Invitation> eventInvitations) {
+        this.eventInvitations = eventInvitations;
     }
 }

@@ -29,6 +29,7 @@
     <string name="event_description">Opis</string>
     <string name="event_guest_list">Lista gości</string>
     <string name="event_image">Ustaw kolor wydarzenia</string>
+    <string name="edit_event_image">Zmień kolor wydarzenia</string>
     <string name="event_ready">Gotowe</string>
     <string name="event_cancel">Anuluj</string>
     <string name="account_settings">Ustawienia konta</string>

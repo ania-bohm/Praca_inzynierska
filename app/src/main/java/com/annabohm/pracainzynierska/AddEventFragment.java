@@ -35,7 +35,7 @@ import java.util.Map;
 
 import static android.content.ContentValues.TAG;
 
-public class AddEventFragment extends Fragment implements AdapterView.OnItemSelectedListener{
+public class AddEventFragment extends Fragment implements AdapterView.OnItemSelectedListener {
 
     static final String KEY_EVENT_NAME = "event_name";
     static final String KEY_EVENT_DATE_START = "event_date_start";
@@ -61,6 +61,7 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
             String dateFinishValue = eventDateFinishEditText.getText().toString();
             String timeStartValue = eventTimeStartEditText.getText().toString();
             String timeFinishValue = eventTimeFinishEditText.getText().toString();
+            Integer eventImage = chosenImage;
             if (eventName.trim().isEmpty() || eventDescription.trim().isEmpty() || dateStartValue.trim().isEmpty() || dateFinishValue.trim().isEmpty() || timeStartValue.trim().isEmpty() || timeFinishValue.trim().isEmpty()) {
                 Toast.makeText(context, "Please fill all the fields!", Toast.LENGTH_SHORT).show();
                 return;
@@ -90,7 +91,7 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
 //            eventMap.put(KEY_EVENT_DATE_FINISH, eventDateFinish);
 //            eventMap.put(KEY_EVENT_TIME_FINISH, eventTimeFinish);
 //            eventMap.put(KEY_EVENT_DESCRIPTION, eventDescription);
-            Event event = new Event(eventName, eventDateStart, eventTimeStart, eventDateFinish, eventTimeFinish, eventLocation, eventDescription);
+            Event event = new Event(eventName, eventDateStart, eventTimeStart, eventDateFinish, eventTimeFinish, eventLocation, eventDescription, eventImage);
 
             //alternatively - db.document("Events/My first event!");
             //String.valueOf(System.currentTimeMillis()) - as documentPath
@@ -170,7 +171,7 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
         eventDescriptionEditText = view.findViewById(R.id.eventDescriptionEditText);
         eventImageSpinner = view.findViewById(R.id.eventImageSpinner);
         SimpleImageArrayAdapter adapter = new SimpleImageArrayAdapter(context,
-                new Integer[]{R.drawable.circular_background_1, R.drawable.circular_background_2, R.drawable.circular_background, R.drawable.circular_background_3});
+                new Integer[]{R.drawable.rectangular_background_1, R.drawable.rectangular_background, R.drawable.rectangular_background_2, R.drawable.rectangular_background_3});
         eventImageSpinner.setAdapter(adapter);
         eventImageSpinner.setOnItemSelectedListener(this);
 //        ArrayAdapter<CharSequence> arrayAdapter = ArrayAdapter.createFromResource(context, R.array.images, android.R.layout.simple_spinner_item);

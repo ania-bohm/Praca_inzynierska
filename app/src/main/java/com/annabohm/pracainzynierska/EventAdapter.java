@@ -17,7 +17,6 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.TimeZone;
 
 import static android.content.ContentValues.TAG;
 
@@ -45,6 +44,7 @@ public class EventAdapter extends FirestoreRecyclerAdapter<Event, EventAdapter.E
             e.printStackTrace();
             Log.i(TAG, e.toString());
         }
+        holder.miniEventLinearLayout.setBackgroundResource(model.getEventImage());
         holder.miniEventNameTextView.setText(model.getEventName());
         holder.miniEventDateStartTextView.setText(dateFormatterPrint.format(eventDateStart));
         holder.miniEventTimeStartTextView.setText(timeFormatterPrint.format(eventTimeStart));

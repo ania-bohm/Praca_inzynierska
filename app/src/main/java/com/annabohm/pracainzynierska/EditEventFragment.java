@@ -13,8 +13,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -29,20 +31,16 @@ import java.util.Date;
 
 import static android.content.ContentValues.TAG;
 
-public class EditEventFragment extends Fragment {
+public class EditEventFragment extends Fragment implements AdapterView.OnItemSelectedListener {
 
     NavController navController;
     Bundle bundle;
     Context context;
-    EditText editEventNameEditText;
-    EditText editEventDateStartEditText;
-    EditText editEventTimeStartEditText;
-    EditText editEventDateFinishEditText;
-    EditText editEventTimeFinishEditText;
-    EditText editEventLocationEditText;
-    EditText editEventDescriptionEditText;
-    Button editEventReadyButton;
-    Button editEventCancelButton;
+    EditText editEventNameEditText, editEventDateStartEditText, editEventTimeStartEditText, editEventDateFinishEditText, editEventTimeFinishEditText, editEventLocationEditText, editEventDescriptionEditText;
+    Button editEventReadyButton, editEventCancelButton;
+    Spinner editEventImageSpinner;
+    Integer chosenImage = 0;
+    Integer selectionCount = 0;
     DocumentReference documentReference;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -109,13 +107,18 @@ public class EditEventFragment extends Fragment {
                 documentReference.update("eventDescription", editEventDescriptionEditText.getText().toString());
             }
 
+            if (chosenImage != 0) {
+                documentReference.update("eventImage", chosenImage);
+            }
+
             if (editEventNameEditText.getText().toString().trim().isEmpty()
                     && editEventDateStartEditText.getText().toString().trim().isEmpty()
                     && editEventTimeStartEditText.getText().toString().isEmpty()
                     && editEventDateFinishEditText.getText().toString().isEmpty()
                     && editEventTimeFinishEditText.getText().toString().isEmpty()
                     && editEventLocationEditText.getText().toString().isEmpty()
-                    && editEventDescriptionEditText.getText().toString().isEmpty()) {
+                    && editEventDescriptionEditText.getText().toString().isEmpty()
+                    && chosenImage == 0) {
                 Toast.makeText(context, "You have not changed anything. To escape edit mode, click 'Cancel' button", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -166,6 +169,13 @@ public class EditEventFragment extends Fragment {
         editEventDescriptionEditText = view.findViewById(R.id.editEventDescriptionEditText);
         editEventReadyButton = view.findViewById(R.id.editEventReadyButton);
         editEventCancelButton = view.findViewById(R.id.editEventCancelButton);
+        editEventImageSpinner = view.findViewById(R.id.editEventImageSpinner);
+
+        SimpleImageArrayAdapter adapter = new SimpleImageArrayAdapter(context,
+                new Integer[]{R.drawable.rectangular_background_1, R.drawable.rectangular_background, R.drawable.rectangular_background_2, R.drawable.rectangular_background_3});
+        editEventImageSpinner.setAdapter(adapter);
+        editEventImageSpinner.setOnItemSelectedListener(this);
+
         editEventReadyButton.setOnClickListener(editEventReadyOnClickListener);
         editEventCancelButton.setOnClickListener(editEventCancelOnClickListener);
 
@@ -200,5 +210,19 @@ public class EditEventFragment extends Fragment {
                 Toast.makeText(context, "Reading data from Firestore failed", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        if (selectionCount == 0) {
+            chosenImage = 0;
+            selectionCount++;
+        } else {
+            chosenImage = (Integer) parent.getItemAtPosition(position);
+        }
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
     }
 }
