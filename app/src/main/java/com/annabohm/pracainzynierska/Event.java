@@ -12,6 +12,7 @@ public class Event {
     private Date eventTimeFinish;
     private String eventLocation;
     private String eventDescription;
+    private Integer eventImage;
     private User eventAuthor;
     private List<Invitation> eventInvitations;
 

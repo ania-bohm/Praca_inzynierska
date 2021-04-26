@@ -13,8 +13,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
@@ -31,7 +35,7 @@ import java.util.Map;
 
 import static android.content.ContentValues.TAG;
 
-public class AddEventFragment extends Fragment {
+public class AddEventFragment extends Fragment implements AdapterView.OnItemSelectedListener{
 
     static final String KEY_EVENT_NAME = "event_name";
     static final String KEY_EVENT_DATE_START = "event_date_start";
@@ -40,18 +44,13 @@ public class AddEventFragment extends Fragment {
     static final String KEY_EVENT_TIME_FINISH = "event_time_finish";
     static final String KEY_EVENT_DESCRIPTION = "event_description";
     NavController navController;
-    Button eventReadyButton;
-    Button eventCancelButton;
-    Button eventImageButton;
     Context context;
-    EditText eventNameEditText;
-    EditText eventDateStartEditText;
-    EditText eventTimeStartEditText;
-    EditText eventDateFinishEditText;
-    EditText eventTimeFinishEditText;
-    EditText eventLocationEditText;
-    EditText eventDescriptionEditText;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
+    Button eventReadyButton, eventCancelButton;
+    EditText eventNameEditText, eventDateStartEditText, eventTimeStartEditText, eventDateFinishEditText, eventTimeFinishEditText, eventLocationEditText, eventDescriptionEditText;
+    Spinner eventImageSpinner;
+    Integer chosenImage;
+
     private View.OnClickListener eventReadyOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -66,7 +65,7 @@ public class AddEventFragment extends Fragment {
                 Toast.makeText(context, "Please fill all the fields!", Toast.LENGTH_SHORT).show();
                 return;
             }
-            //
+
             DateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy");
             DateFormat timeFormatter = new SimpleDateFormat("HH:mm");
             Date eventDateStart = null;
@@ -160,7 +159,6 @@ public class AddEventFragment extends Fragment {
         navController = Navigation.findNavController(view);
         eventReadyButton = view.findViewById(R.id.eventReadyButton);
         eventCancelButton = view.findViewById(R.id.eventCancelButton);
-        eventImageButton = view.findViewById(R.id.eventImageButton);
         eventReadyButton.setOnClickListener(eventReadyOnClickListener);
         eventCancelButton.setOnClickListener(eventCancelOnClickListener);
         eventNameEditText = view.findViewById(R.id.eventNameEditText);
@@ -170,5 +168,23 @@ public class AddEventFragment extends Fragment {
         eventTimeFinishEditText = view.findViewById(R.id.eventTimeFinishEditText);
         eventLocationEditText = view.findViewById(R.id.eventLocationEditText);
         eventDescriptionEditText = view.findViewById(R.id.eventDescriptionEditText);
+        eventImageSpinner = view.findViewById(R.id.eventImageSpinner);
+        SimpleImageArrayAdapter adapter = new SimpleImageArrayAdapter(context,
+                new Integer[]{R.drawable.circular_background_1, R.drawable.circular_background_2, R.drawable.circular_background, R.drawable.circular_background_3});
+        eventImageSpinner.setAdapter(adapter);
+        eventImageSpinner.setOnItemSelectedListener(this);
+//        ArrayAdapter<CharSequence> arrayAdapter = ArrayAdapter.createFromResource(context, R.array.images, android.R.layout.simple_spinner_item);
+//        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+//        eventImageSpinner.setAdapter(arrayAdapter);
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        chosenImage = (Integer) parent.getItemAtPosition(position);
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+        chosenImage = (Integer) parent.getItemAtPosition(0);
     }
 }

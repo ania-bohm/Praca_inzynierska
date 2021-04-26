@@ -28,7 +28,7 @@
     <string name="event_location">Lokalizacja</string>
     <string name="event_description">Opis</string>
     <string name="event_guest_list">Lista gości</string>
-    <string name="event_image">Ustaw zdjęcie wydarzenia</string>
+    <string name="event_image">Ustaw kolor wydarzenia</string>
     <string name="event_ready">Gotowe</string>
     <string name="event_cancel">Anuluj</string>
     <string name="account_settings">Ustawienia konta</string>
@@ -46,7 +46,7 @@
     <string name="account_email">Adres email</string>
     <string name="account_phone_number">Numer telefonu</string>
     <string name="account_change_password">Zmień hasło</string>
-    <string name="account_photo_delete">Usuń zdjęcie</string>
+    <string name="account_photo_delete">Usuń zdjęcie profilowe</string>
     <string name="confirm_edit_personal_data">Zatwierdź zmiany</string>
     <string name="reject_edit_personal_data">Odrzuć zmiany</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
