@@ -15,6 +15,7 @@ import androidx.annotation.Nullable;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import jp.wasabeef.picasso.transformations.CropCircleTransformation;
@@ -24,6 +25,7 @@ import static android.content.ContentValues.TAG;
 public class UserSearchListAdapter extends ArrayAdapter<User> implements View.OnClickListener {
 
     private ArrayList<User> userList;
+    private HashMap<User, String> userMap;
     private Context context;
 
     public UserSearchListAdapter(@NonNull Context context, @NonNull List<User> userList) {

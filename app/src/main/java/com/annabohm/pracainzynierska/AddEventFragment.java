@@ -42,15 +42,13 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.SetOptions;
 
-import java.sql.Time;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -62,6 +60,8 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     CollectionReference events = db.collection("Events");
     CollectionReference users = db.collection("Users");
+    CollectionReference eventAttendees = db.collection("EventAttendees");
+    CollectionReference attendeeEvents = db.collection("AttendeeEvents");
     Button eventReadyButton, eventCancelButton;
     EditText eventNameEditText, eventDateStartEditText, eventTimeStartEditText, eventDateFinishEditText, eventTimeFinishEditText, eventLocationEditText, eventDescriptionEditText;
     SearchView eventGuestListSearchView;
@@ -71,6 +71,7 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
     Spinner eventImageSpinner;
     Integer chosenImage;
     ArrayList<User> invitedUsersList, foundUsersList;
+    ArrayList<String> invitedUsersIdList, foundUsersIdList;
     UserSearchListAdapter invitedUsersAdapter, foundUsersAdapter;
 
     private View.OnClickListener eventReadyOnClickListener = new View.OnClickListener() {
@@ -114,6 +115,39 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
                     //setGuestList(eventGuestList, documentReference);
                     Toast.makeText(context, "Event saved successfully", Toast.LENGTH_SHORT).show();
                     Toast.makeText(context, "Id: " + documentReference.getId(), Toast.LENGTH_SHORT).show();
+                    String eventId = documentReference.getId();
+                    if (!invitedUsersIdList.isEmpty()) {
+                        Map<String, ArrayList<String>> docDataUserId = new HashMap<>();
+                        docDataUserId.put("Attendees", invitedUsersIdList);
+                        eventAttendees.document(eventId).set(docDataUserId).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                Toast.makeText(context, "EventAttendees saved successfully", Toast.LENGTH_SHORT).show();
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(context, "EventAttendees failed!", Toast.LENGTH_SHORT).show();
+                                Log.d(TAG, e.toString());
+                            }
+                        });
+                        for (int i = 0; i < invitedUsersIdList.size(); i++) {
+                            Map<String, String> docDataEventId = new HashMap<>();
+                            docDataEventId.put("Events", eventId);
+                            attendeeEvents.document(invitedUsersIdList.get(i)).set(docDataEventId, SetOptions.merge()).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Toast.makeText(context, "AttendeeEvents failed!", Toast.LENGTH_SHORT).show();
+                                    Log.d(TAG, e.toString());
+                                }
+                            });
+                        }
+                    }
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
@@ -125,6 +159,7 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
             navController.popBackStack();
         }
     };
+
     private View.OnClickListener eventCancelOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -180,6 +215,9 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
         invitedUsersList = new ArrayList<>();
         foundUsersList = new ArrayList<>();
 
+        invitedUsersIdList = new ArrayList<>();
+        foundUsersIdList = new ArrayList<>();
+
         hideEventUserSearchListView();
 
         invitedUsersAdapter = new UserSearchListAdapter(context, invitedUsersList);
@@ -214,8 +252,10 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 User user = foundUsersList.get(position);
-                if (!containsUser(user)) {
+                String userId = foundUsersIdList.get(position);
+                if (!containsUserId(userId)) {
                     invitedUsersList.add(user);
+                    invitedUsersIdList.add(userId);
                 }
                 invitedUsersAdapter.notifyDataSetChanged();
             }
@@ -246,6 +286,8 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
         switch (item.getItemId()) {
             case R.id.deleteGuest:
                 invitedUsersAdapter.remove(invitedUsersAdapter.getItem(info.position));
+                Toast.makeText(context, "Position: " + info.position, Toast.LENGTH_SHORT).show();
+                invitedUsersIdList.remove(info.position);
                 return true;
             case R.id.cancelDeleteGuest:
                 Toast.makeText(context, "Cancelled deleting", Toast.LENGTH_SHORT).show();
@@ -255,42 +297,57 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
         }
     }
 
-    public void showEventUserSearchListView(){
+    public void showEventUserSearchListView() {
         eventUserSearchScrollView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 180));
     }
 
-    public void hideEventUserSearchListView(){
+    public void hideEventUserSearchListView() {
         eventUserSearchScrollView.setLayoutParams(new LinearLayout.LayoutParams(0, 0));
     }
 
-    public boolean containsUser(User user) {
-        for (int i = 0; i < invitedUsersList.size(); i++) {
-            if (invitedUsersList.get(i).getUserEmail().equals(user.getUserEmail())) {
+//    public boolean containsUser(User user) {
+//        for (int i = 0; i < invitedUsersList.size(); i++) {
+//            if (invitedUsersList.get(i).getUserEmail().equals(user.getUserEmail())) {
+//                return true;
+//            }
+//        }
+//        return false;
+//    }
+
+    public boolean containsUserId(String userId) {
+        for (int i = 0; i < invitedUsersIdList.size(); i++) {
+            if (invitedUsersIdList.get(i).equals(userId)) {
                 return true;
             }
         }
         return false;
     }
 
-    public void setFoundUsersList(ArrayList<User> userList) {
+    public void setFoundUsersList(ArrayList<User> userList, ArrayList<String> userIdList) {
         foundUsersList.clear();
+        foundUsersIdList.clear();
         for (int i = 0; i < userList.size(); i++) {
             foundUsersList.add(userList.get(i));
         }
+
+        for (int i = 0; i < userIdList.size(); i++) {
+            foundUsersIdList.add(userIdList.get(i));
+        }
     }
 
-    public void loadUsers(final ArrayList<User> userList) {
-        if(userList.size()==0){
+    public void loadUsers(final ArrayList<User> userList, ArrayList<String> userIdList) {
+        if (userList.size() == 0) {
             hideEventUserSearchListView();
-        } else{
+        } else {
             showEventUserSearchListView();
-            setFoundUsersList(userList);
+            setFoundUsersList(userList, userIdList);
             foundUsersAdapter.notifyDataSetChanged();
         }
     }
 
     public void clearList() {
         foundUsersList.clear();
+        foundUsersIdList.clear();
         foundUsersAdapter.notifyDataSetChanged();
     }
 
@@ -307,6 +364,7 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
 
         ArrayList<Task> taskList = new ArrayList<>();
         final ArrayList<User> userList = new ArrayList<>();
+        final ArrayList<String> userIdList = new ArrayList<>();
         for (int i = 0; i < inputArray.length; i++) {
             String firstPart = "", secondPart = "";
             for (int j = 0; j < i; j++) {
@@ -351,9 +409,10 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
                         User user = document.toObject(User.class);
                         Toast.makeText(context, "User: " + user.toString(), Toast.LENGTH_SHORT).show();
                         userList.add(user);
+                        userIdList.add(document.getId());
                     }
                 }
-                loadUsers(userList);
+                loadUsers(userList, userIdList);
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
