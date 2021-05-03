@@ -18,19 +18,34 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.sql.Time;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import static android.content.ContentValues.TAG;
@@ -46,8 +61,12 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
     NavController navController;
     Context context;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
+    CollectionReference events = db.collection("Events");
+    CollectionReference users = db.collection("Users");
     Button eventReadyButton, eventCancelButton;
     EditText eventNameEditText, eventDateStartEditText, eventTimeStartEditText, eventDateFinishEditText, eventTimeFinishEditText, eventLocationEditText, eventDescriptionEditText;
+    SearchView eventGuestListSearchView;
+    ListView eventUserSearchListView;
     Spinner eventImageSpinner;
     Integer chosenImage;
 
@@ -62,6 +81,7 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
             String timeStartValue = eventTimeStartEditText.getText().toString();
             String timeFinishValue = eventTimeFinishEditText.getText().toString();
             Integer eventImage = chosenImage;
+
             if (eventName.trim().isEmpty() || eventDescription.trim().isEmpty() || dateStartValue.trim().isEmpty() || dateFinishValue.trim().isEmpty() || timeStartValue.trim().isEmpty() || timeFinishValue.trim().isEmpty()) {
                 Toast.makeText(context, "Please fill all the fields!", Toast.LENGTH_SHORT).show();
                 return;
@@ -96,10 +116,12 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
             //alternatively - db.document("Events/My first event!");
             //String.valueOf(System.currentTimeMillis()) - as documentPath
             //db.collection("Events").add(eventMap);
-            db.collection("Events").add(event).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+            events.add(event).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                 @Override
                 public void onSuccess(DocumentReference documentReference) {
+                    //setGuestList(eventGuestList, documentReference);
                     Toast.makeText(context, "Event saved successfully", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, "Id: " + documentReference.getId(), Toast.LENGTH_SHORT).show();
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
@@ -169,7 +191,32 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
         eventTimeFinishEditText = view.findViewById(R.id.eventTimeFinishEditText);
         eventLocationEditText = view.findViewById(R.id.eventLocationEditText);
         eventDescriptionEditText = view.findViewById(R.id.eventDescriptionEditText);
+        eventGuestListSearchView = view.findViewById(R.id.eventGuestListSearchView);
+        eventUserSearchListView = view.findViewById(R.id.eventUserSearchListView);
         eventImageSpinner = view.findViewById(R.id.eventImageSpinner);
+
+        eventGuestListSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                clearList();
+//                Toast.makeText(context, "Length query: " + query.trim().length(), Toast.LENGTH_SHORT).show();
+                if (query.trim().length() > 2) {
+                    searchUsers(query.trim());
+                }
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                clearList();
+//                Toast.makeText(context, "Length text: " + newText.trim().length(), Toast.LENGTH_SHORT).show();
+                if (newText.trim().length() > 2) {
+                    searchUsers(newText.trim());
+                }
+                return false;
+            }
+        });
+
         SimpleImageArrayAdapter adapter = new SimpleImageArrayAdapter(context,
                 new Integer[]{R.drawable.rectangular_background_1, R.drawable.rectangular_background, R.drawable.rectangular_background_2, R.drawable.rectangular_background_3});
         eventImageSpinner.setAdapter(adapter);
@@ -177,6 +224,116 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
 //        ArrayAdapter<CharSequence> arrayAdapter = ArrayAdapter.createFromResource(context, R.array.images, android.R.layout.simple_spinner_item);
 //        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 //        eventImageSpinner.setAdapter(arrayAdapter);
+    }
+
+    public void loadUsers(List<User> userList) {
+        eventUserSearchListView.setAdapter(new UserSearchListAdapter(context, userList));
+    }
+
+    public void clearList() {
+        eventUserSearchListView.setAdapter(new UserSearchListAdapter(context, new ArrayList<User>()));
+    }
+
+    public void searchUsers(String text) {
+        String[] inputArray = text.trim().split(" ");
+        for (int i = 0; i < inputArray.length; i++) {
+            if (inputArray[i].length() > 0) {
+                String s = inputArray[i];
+                s = s.substring(0, 1).toUpperCase() + s.substring(1).toLowerCase();
+                inputArray[i] = s;
+            }
+        }
+//        if (inputArray.length == 1 && inputArray[0].trim() != "") {
+//            final ArrayList<User> userList = new ArrayList<>();
+////            Toast.makeText(context, "Nie weszłeś!", Toast.LENGTH_SHORT).show();
+//            Query firstQuery = users.whereGreaterThanOrEqualTo("userFirstName", inputArray[0]);
+//            Query secondQuery = users.whereGreaterThanOrEqualTo("userLastName", inputArray[0]);
+//
+//            Task firstTask = firstQuery.get();
+//            Task secondTask = secondQuery.get();
+//
+//            Task<List<QuerySnapshot>> allTasks = Tasks.whenAllSuccess(firstTask, secondTask);
+//            allTasks.addOnSuccessListener(new OnSuccessListener<List<QuerySnapshot>>() {
+//                @Override
+//                public void onSuccess(List<QuerySnapshot> querySnapshots) {
+//                    for (QuerySnapshot querySnapshot : querySnapshots) {
+//                        for (DocumentSnapshot document : (QuerySnapshot) querySnapshot) {
+//                            User user = document.toObject(User.class);
+//                            Toast.makeText(context, "User: " + user.toString(), Toast.LENGTH_SHORT).show();
+//                            userList.add(user);
+//                        }
+//                    }
+//                    loadUsers(userList);
+//                }
+//            }).addOnFailureListener(new OnFailureListener() {
+//                @Override
+//                public void onFailure(@NonNull Exception e) {
+//                    Toast.makeText(context, "User search failed!", Toast.LENGTH_SHORT).show();
+//                    Log.d(TAG, e.toString());
+//                }
+//            });
+//        } else {
+
+        ArrayList<Task> taskList = new ArrayList<>();
+        final ArrayList<User> userList = new ArrayList<>();
+        for (int i = 0; i < inputArray.length; i++) {
+            String firstPart = "", secondPart = "";
+            for (int j = 0; j < i; j++) {
+                firstPart += inputArray[j];
+                firstPart += " ";
+            }
+            firstPart = firstPart.trim();
+
+            for (int j = i; j < inputArray.length; j++) {
+                secondPart += inputArray[j];
+                secondPart += " ";
+            }
+            secondPart = secondPart.trim();
+
+            Query firstQuery = users.whereEqualTo("userFirstName", firstPart).whereGreaterThanOrEqualTo("userLastName",secondPart).whereLessThanOrEqualTo("userLastName", secondPart+'\uf8ff');
+            Query secondQuery = users.whereEqualTo("userLastName", firstPart).whereGreaterThanOrEqualTo("userFirstName", secondPart).whereLessThanOrEqualTo("userFirstName", secondPart+'\uf8ff');
+            Task firstTask = firstQuery.get();
+            Task secondTask = secondQuery.get();
+
+            taskList.add(firstTask);
+            taskList.add(secondTask);
+        }
+
+        if(inputArray.length == 1) {
+            text = text.trim();
+            text = text.substring(0, 1).toUpperCase() + text.substring(1).toLowerCase();
+            Query firstQuery = users.whereGreaterThanOrEqualTo("userLastName", text);
+            Query secondQuery = users.whereGreaterThanOrEqualTo("userFirstName", text);
+            Task firstTask = firstQuery.get();
+            Task secondTask = secondQuery.get();
+
+            taskList.add(firstTask);
+            taskList.add(secondTask);
+        }
+
+        Task<List<QuerySnapshot>> allTasks = Tasks.whenAllSuccess(taskList.toArray(new Task[taskList.size()]));
+        allTasks.addOnSuccessListener(new OnSuccessListener<List<QuerySnapshot>>() {
+            @Override
+            public void onSuccess(List<QuerySnapshot> querySnapshots) {
+                for (QuerySnapshot querySnapshot : querySnapshots) {
+                    for (DocumentSnapshot document : (QuerySnapshot) querySnapshot) {
+                        User user = document.toObject(User.class);
+                        Toast.makeText(context, "User: " + user.toString(), Toast.LENGTH_SHORT).show();
+                        userList.add(user);
+                    }
+                }
+                loadUsers(userList);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(context, "User search failed!", Toast.LENGTH_SHORT).show();
+                Log.d(TAG, e.toString());
+            }
+        });
+//        }
+
+
     }
 
     @Override

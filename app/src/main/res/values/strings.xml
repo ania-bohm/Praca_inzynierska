@@ -28,6 +28,7 @@
     <string name="event_location">Lokalizacja</string>
     <string name="event_description">Opis</string>
     <string name="event_guest_list">Lista gości</string>
+    <string name="event_guest_search">Wyszukaj użytkownika...</string>
     <string name="event_image">Ustaw kolor wydarzenia</string>
     <string name="edit_event_image">Zmień kolor wydarzenia</string>
     <string name="event_ready">Gotowe</string>
