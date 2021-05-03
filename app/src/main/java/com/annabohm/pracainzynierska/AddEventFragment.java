@@ -22,7 +22,9 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ScrollView;
 import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -63,6 +65,7 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
     Button eventReadyButton, eventCancelButton;
     EditText eventNameEditText, eventDateStartEditText, eventTimeStartEditText, eventDateFinishEditText, eventTimeFinishEditText, eventLocationEditText, eventDescriptionEditText;
     SearchView eventGuestListSearchView;
+    ScrollView eventUserSearchScrollView;
     ListView eventUserSearchListView;
     ListView eventGuestListListView;
     Spinner eventImageSpinner;
@@ -169,11 +172,16 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
         eventLocationEditText = view.findViewById(R.id.eventLocationEditText);
         eventDescriptionEditText = view.findViewById(R.id.eventDescriptionEditText);
         eventGuestListSearchView = view.findViewById(R.id.eventGuestListSearchView);
+        eventUserSearchScrollView = view.findViewById(R.id.eventUserSearchScrollView);
         eventUserSearchListView = view.findViewById(R.id.eventUserSearchListView);
         eventImageSpinner = view.findViewById(R.id.eventImageSpinner);
         eventGuestListListView = view.findViewById(R.id.eventGuestListListView);
+
         invitedUsersList = new ArrayList<>();
         foundUsersList = new ArrayList<>();
+
+        hideEventUserSearchListView();
+
         invitedUsersAdapter = new UserSearchListAdapter(context, invitedUsersList);
         foundUsersAdapter = new UserSearchListAdapter(context, foundUsersList);
         eventGuestListListView.setAdapter(invitedUsersAdapter);
@@ -184,6 +192,7 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
             @Override
             public boolean onQueryTextSubmit(String query) {
                 clearList();
+                hideEventUserSearchListView();
                 if (query.trim().length() > 2) {
                     searchUsers(query.trim());
                 }
@@ -193,6 +202,7 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
             @Override
             public boolean onQueryTextChange(String newText) {
                 clearList();
+                hideEventUserSearchListView();
                 if (newText.trim().length() > 2) {
                     searchUsers(newText.trim());
                 }
@@ -245,6 +255,14 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
         }
     }
 
+    public void showEventUserSearchListView(){
+        eventUserSearchScrollView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 180));
+    }
+
+    public void hideEventUserSearchListView(){
+        eventUserSearchScrollView.setLayoutParams(new LinearLayout.LayoutParams(0, 0));
+    }
+
     public boolean containsUser(User user) {
         for (int i = 0; i < invitedUsersList.size(); i++) {
             if (invitedUsersList.get(i).getUserEmail().equals(user.getUserEmail())) {
@@ -262,8 +280,13 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
     }
 
     public void loadUsers(final ArrayList<User> userList) {
-        setFoundUsersList(userList);
-        foundUsersAdapter.notifyDataSetChanged();
+        if(userList.size()==0){
+            hideEventUserSearchListView();
+        } else{
+            showEventUserSearchListView();
+            setFoundUsersList(userList);
+            foundUsersAdapter.notifyDataSetChanged();
+        }
     }
 
     public void clearList() {

@@ -181,13 +181,13 @@
             android:layout_marginStart="10dp" />
 
         <TextView
-            android:id="@+id/eventGuestListTextView"
-            android:layout_width="90dp"
+            android:id="@+id/eventGuestSearchListTextView"
+            android:layout_width="wrap_content"
             android:layout_height="28dp"
             android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
             android:fontFamily="@font/montserrat"
-            android:text="@string/event_guest_list"
+            android:text="@string/event_guest_search_list"
             android:textSize="16sp"
             android:textStyle="bold" />
 
@@ -201,6 +201,7 @@
             />
 
         <ScrollView
+            android:id="@+id/eventUserSearchScrollView"
             android:layout_width="match_parent"
             android:layout_height="180dp"
             android:layout_marginStart="10dp"
@@ -212,6 +213,17 @@
                 android:layout_height="wrap_content" />
 
         </ScrollView>
+
+        <TextView
+            android:id="@+id/eventGuestListTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="28dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/montserrat"
+            android:text="@string/event_guest_list"
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
         <ListView
             android:id="@+id/eventGuestListListView"

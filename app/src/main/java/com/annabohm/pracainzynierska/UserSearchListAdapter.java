@@ -1,6 +1,7 @@
 package com.annabohm.pracainzynierska;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jp.wasabeef.picasso.transformations.CropCircleTransformation;
+
+import static android.content.ContentValues.TAG;
 
 public class UserSearchListAdapter extends ArrayAdapter<User> implements View.OnClickListener {
 
@@ -49,10 +52,10 @@ public class UserSearchListAdapter extends ArrayAdapter<User> implements View.On
         userListItemUserFirstNameTextView.setText(user.getUserFirstName());
         userListItemUserLastNameTextView.setText(user.getUserLastName());
 
-        String photoUri = user.getUserPhoto().trim();
+        String photoUri = user.getUserPhoto();
         if (photoUri != null && photoUri != "") {
             Picasso.get()
-                    .load(photoUri)
+                    .load(user.getUserPhoto().trim())
                     .transform(new CropCircleTransformation())
                     .into(userListItemUserPhotoImageView);
 //                        Picasso.get().load(user.getUserPhoto().trim()).resize(400, 400).centerCrop().into(accountPhotoImageView);
