@@ -49,14 +49,28 @@ public class UserSearchListAdapter extends ArrayAdapter<User> implements View.On
         userListItemUserFirstNameTextView.setText(user.getUserFirstName());
         userListItemUserLastNameTextView.setText(user.getUserLastName());
 
-        String photoUri = user.getUserPhoto();
+        String photoUri = user.getUserPhoto().trim();
         if (photoUri != null && photoUri != "") {
             Picasso.get()
-                    .load(user.getUserPhoto().trim())
+                    .load(photoUri)
                     .transform(new CropCircleTransformation())
                     .into(userListItemUserPhotoImageView);
 //                        Picasso.get().load(user.getUserPhoto().trim()).resize(400, 400).centerCrop().into(accountPhotoImageView);
+        } else {
+            userListItemUserPhotoImageView.setBackgroundResource(R.drawable.ic_account);
         }
         return convertView;
+    }
+
+    public void setUserList(ArrayList<User> userList) {
+        this.userList.clear();
+        for (User user : userList) {
+            this.userList.add(user);
+        }
+    }
+
+    @Override
+    public void remove(@Nullable User object) {
+        super.remove(object);
     }
 }

@@ -8,11 +8,15 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Adapter;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -51,13 +55,6 @@ import java.util.Map;
 import static android.content.ContentValues.TAG;
 
 public class AddEventFragment extends Fragment implements AdapterView.OnItemSelectedListener {
-
-    static final String KEY_EVENT_NAME = "event_name";
-    static final String KEY_EVENT_DATE_START = "event_date_start";
-    static final String KEY_EVENT_TIME_START = "event_time_start";
-    static final String KEY_EVENT_DATE_FINISH = "event_date_finish";
-    static final String KEY_EVENT_TIME_FINISH = "event_time_finish";
-    static final String KEY_EVENT_DESCRIPTION = "event_description";
     NavController navController;
     Context context;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -67,8 +64,11 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
     EditText eventNameEditText, eventDateStartEditText, eventTimeStartEditText, eventDateFinishEditText, eventTimeFinishEditText, eventLocationEditText, eventDescriptionEditText;
     SearchView eventGuestListSearchView;
     ListView eventUserSearchListView;
+    ListView eventGuestListListView;
     Spinner eventImageSpinner;
     Integer chosenImage;
+    ArrayList<User> invitedUsersList, foundUsersList;
+    UserSearchListAdapter invitedUsersAdapter, foundUsersAdapter;
 
     private View.OnClickListener eventReadyOnClickListener = new View.OnClickListener() {
         @Override
@@ -103,19 +103,8 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
                 e.printStackTrace();
                 Log.i(TAG, e.toString());
             }
-            //
-//            Map<String, Object> eventMap = new HashMap<>();
-//            eventMap.put(KEY_EVENT_NAME, eventName);
-//            eventMap.put(KEY_EVENT_DATE_START, eventDateStart);
-//            eventMap.put(KEY_EVENT_TIME_START, eventTimeStart);
-//            eventMap.put(KEY_EVENT_DATE_FINISH, eventDateFinish);
-//            eventMap.put(KEY_EVENT_TIME_FINISH, eventTimeFinish);
-//            eventMap.put(KEY_EVENT_DESCRIPTION, eventDescription);
-            Event event = new Event(eventName, eventDateStart, eventTimeStart, eventDateFinish, eventTimeFinish, eventLocation, eventDescription, eventImage);
 
-            //alternatively - db.document("Events/My first event!");
-            //String.valueOf(System.currentTimeMillis()) - as documentPath
-            //db.collection("Events").add(eventMap);
+            Event event = new Event(eventName, eventDateStart, eventTimeStart, eventDateFinish, eventTimeFinish, eventLocation, eventDescription, eventImage);
             events.add(event).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                 @Override
                 public void onSuccess(DocumentReference documentReference) {
@@ -130,19 +119,6 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
                     Log.d(TAG, e.toString());
                 }
             });
-
-//            db.collection("Events").document("My first event!").set(event).addOnSuccessListener(new OnSuccessListener<Void>() {
-//                @Override
-//                public void onSuccess(Void aVoid) {
-//                    Toast.makeText(context, "Event saved successfully", Toast.LENGTH_SHORT).show();
-//                }
-//            }).addOnFailureListener(new OnFailureListener() {
-//                @Override
-//                public void onFailure(@NonNull Exception e) {
-//                    Toast.makeText(context, "Event save failed!", Toast.LENGTH_SHORT).show();
-//                    Log.d(TAG, e.toString());
-//                }
-//            });
             navController.popBackStack();
         }
     };
@@ -166,6 +142,7 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         context = getContext();
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -194,12 +171,19 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
         eventGuestListSearchView = view.findViewById(R.id.eventGuestListSearchView);
         eventUserSearchListView = view.findViewById(R.id.eventUserSearchListView);
         eventImageSpinner = view.findViewById(R.id.eventImageSpinner);
+        eventGuestListListView = view.findViewById(R.id.eventGuestListListView);
+        invitedUsersList = new ArrayList<>();
+        foundUsersList = new ArrayList<>();
+        invitedUsersAdapter = new UserSearchListAdapter(context, invitedUsersList);
+        foundUsersAdapter = new UserSearchListAdapter(context, foundUsersList);
+        eventGuestListListView.setAdapter(invitedUsersAdapter);
+        eventUserSearchListView.setAdapter(foundUsersAdapter);
+        registerForContextMenu(eventGuestListListView);
 
         eventGuestListSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 clearList();
-//                Toast.makeText(context, "Length query: " + query.trim().length(), Toast.LENGTH_SHORT).show();
                 if (query.trim().length() > 2) {
                     searchUsers(query.trim());
                 }
@@ -209,10 +193,27 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
             @Override
             public boolean onQueryTextChange(String newText) {
                 clearList();
-//                Toast.makeText(context, "Length text: " + newText.trim().length(), Toast.LENGTH_SHORT).show();
                 if (newText.trim().length() > 2) {
                     searchUsers(newText.trim());
                 }
+                return false;
+            }
+        });
+
+        eventUserSearchListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                User user = foundUsersList.get(position);
+                if (!containsUser(user)) {
+                    invitedUsersList.add(user);
+                }
+                invitedUsersAdapter.notifyDataSetChanged();
+            }
+        });
+
+        eventGuestListListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 return false;
             }
         });
@@ -221,21 +222,58 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
                 new Integer[]{R.drawable.rectangular_background_1, R.drawable.rectangular_background, R.drawable.rectangular_background_2, R.drawable.rectangular_background_3});
         eventImageSpinner.setAdapter(adapter);
         eventImageSpinner.setOnItemSelectedListener(this);
-//        ArrayAdapter<CharSequence> arrayAdapter = ArrayAdapter.createFromResource(context, R.array.images, android.R.layout.simple_spinner_item);
-//        arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//        eventImageSpinner.setAdapter(arrayAdapter);
     }
 
-    public void loadUsers(List<User> userList) {
-        eventUserSearchListView.setAdapter(new UserSearchListAdapter(context, userList));
+    @Override
+    public void onCreateContextMenu(@NonNull ContextMenu menu, @NonNull View v, @Nullable ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        getActivity().getMenuInflater().inflate(R.menu.floating_context_menu, menu);
+    }
+
+    @Override
+    public boolean onContextItemSelected(@NonNull MenuItem item) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        switch (item.getItemId()) {
+            case R.id.deleteGuest:
+                invitedUsersAdapter.remove(invitedUsersAdapter.getItem(info.position));
+                return true;
+            case R.id.cancelDeleteGuest:
+                Toast.makeText(context, "Cancelled deleting", Toast.LENGTH_SHORT).show();
+                return true;
+            default:
+                return super.onContextItemSelected(item);
+        }
+    }
+
+    public boolean containsUser(User user) {
+        for (int i = 0; i < invitedUsersList.size(); i++) {
+            if (invitedUsersList.get(i).getUserEmail().equals(user.getUserEmail())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void setFoundUsersList(ArrayList<User> userList) {
+        foundUsersList.clear();
+        for (int i = 0; i < userList.size(); i++) {
+            foundUsersList.add(userList.get(i));
+        }
+    }
+
+    public void loadUsers(final ArrayList<User> userList) {
+        setFoundUsersList(userList);
+        foundUsersAdapter.notifyDataSetChanged();
     }
 
     public void clearList() {
-        eventUserSearchListView.setAdapter(new UserSearchListAdapter(context, new ArrayList<User>()));
+        foundUsersList.clear();
+        foundUsersAdapter.notifyDataSetChanged();
     }
 
     public void searchUsers(String text) {
         String[] inputArray = text.trim().split(" ");
+
         for (int i = 0; i < inputArray.length; i++) {
             if (inputArray[i].length() > 0) {
                 String s = inputArray[i];
@@ -243,36 +281,6 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
                 inputArray[i] = s;
             }
         }
-//        if (inputArray.length == 1 && inputArray[0].trim() != "") {
-//            final ArrayList<User> userList = new ArrayList<>();
-////            Toast.makeText(context, "Nie weszłeś!", Toast.LENGTH_SHORT).show();
-//            Query firstQuery = users.whereGreaterThanOrEqualTo("userFirstName", inputArray[0]);
-//            Query secondQuery = users.whereGreaterThanOrEqualTo("userLastName", inputArray[0]);
-//
-//            Task firstTask = firstQuery.get();
-//            Task secondTask = secondQuery.get();
-//
-//            Task<List<QuerySnapshot>> allTasks = Tasks.whenAllSuccess(firstTask, secondTask);
-//            allTasks.addOnSuccessListener(new OnSuccessListener<List<QuerySnapshot>>() {
-//                @Override
-//                public void onSuccess(List<QuerySnapshot> querySnapshots) {
-//                    for (QuerySnapshot querySnapshot : querySnapshots) {
-//                        for (DocumentSnapshot document : (QuerySnapshot) querySnapshot) {
-//                            User user = document.toObject(User.class);
-//                            Toast.makeText(context, "User: " + user.toString(), Toast.LENGTH_SHORT).show();
-//                            userList.add(user);
-//                        }
-//                    }
-//                    loadUsers(userList);
-//                }
-//            }).addOnFailureListener(new OnFailureListener() {
-//                @Override
-//                public void onFailure(@NonNull Exception e) {
-//                    Toast.makeText(context, "User search failed!", Toast.LENGTH_SHORT).show();
-//                    Log.d(TAG, e.toString());
-//                }
-//            });
-//        } else {
 
         ArrayList<Task> taskList = new ArrayList<>();
         final ArrayList<User> userList = new ArrayList<>();
@@ -290,8 +298,8 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
             }
             secondPart = secondPart.trim();
 
-            Query firstQuery = users.whereEqualTo("userFirstName", firstPart).whereGreaterThanOrEqualTo("userLastName",secondPart).whereLessThanOrEqualTo("userLastName", secondPart+'\uf8ff');
-            Query secondQuery = users.whereEqualTo("userLastName", firstPart).whereGreaterThanOrEqualTo("userFirstName", secondPart).whereLessThanOrEqualTo("userFirstName", secondPart+'\uf8ff');
+            Query firstQuery = users.whereEqualTo("userFirstName", firstPart).whereGreaterThanOrEqualTo("userLastName", secondPart).whereLessThanOrEqualTo("userLastName", secondPart + '\uf8ff');
+            Query secondQuery = users.whereEqualTo("userLastName", firstPart).whereGreaterThanOrEqualTo("userFirstName", secondPart).whereLessThanOrEqualTo("userFirstName", secondPart + '\uf8ff');
             Task firstTask = firstQuery.get();
             Task secondTask = secondQuery.get();
 
@@ -299,11 +307,11 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
             taskList.add(secondTask);
         }
 
-        if(inputArray.length == 1) {
+        if (inputArray.length == 1) {
             text = text.trim();
             text = text.substring(0, 1).toUpperCase() + text.substring(1).toLowerCase();
-            Query firstQuery = users.whereGreaterThanOrEqualTo("userLastName", text);
-            Query secondQuery = users.whereGreaterThanOrEqualTo("userFirstName", text);
+            Query firstQuery = users.whereGreaterThanOrEqualTo("userLastName", text).whereLessThanOrEqualTo("userLastName", text + '\uf8ff');
+            Query secondQuery = users.whereGreaterThanOrEqualTo("userFirstName", text).whereLessThanOrEqualTo("userFirstName", text + '\uf8ff');
             Task firstTask = firstQuery.get();
             Task secondTask = secondQuery.get();
 
@@ -331,9 +339,6 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
                 Log.d(TAG, e.toString());
             }
         });
-//        }
-
-
     }
 
     @Override

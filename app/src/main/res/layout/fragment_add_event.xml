@@ -197,7 +197,8 @@
             android:layout_height="wrap_content"
             android:focusable="true"
             android:iconifiedByDefault="false"
-            android:queryHint="@string/event_guest_search" />
+            android:queryHint="@string/event_guest_search"
+            />
 
         <ScrollView
             android:layout_width="match_parent"
@@ -212,8 +213,8 @@
 
         </ScrollView>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/eventGuestListRecyclerView"
+        <ListView
+            android:id="@+id/eventGuestListListView"
             android:layout_width="387dp"
             android:layout_height="131dp"
             android:layout_marginStart="10dp"

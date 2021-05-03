@@ -63,5 +63,7 @@
     <string name="notifications">Powiadomienia</string>
     <string name="sound">Dźwięk aplikacji</string>
     <string name="editEvent">Edytuj wydarzenie</string>
+    <string name="deleteGuest">Usuń gościa</string>
+    <string name="cancelDeleteGuest">Anuluj</string>
 
 </resources>

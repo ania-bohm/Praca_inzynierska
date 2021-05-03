@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/deleteGuest"
+        android:title="@string/deleteGuest"/>
+
+    <item
+        android:id="@+id/cancelDeleteGuest"
+        android:title="@string/cancelDeleteGuest"/>
+
+</menu>
