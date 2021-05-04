@@ -43,6 +43,67 @@ public class RegistrationFragment extends Fragment {
     ProgressBar registerProgressBar;
     Context context;
     String userID, registerFirstName, registerLastName, registerEmail, registerPassword, registerPhoneNumber;
+    private View.OnClickListener backToLoginOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            navController.popBackStack();
+        }
+    };
+    private View.OnClickListener registerOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            registerFirstName = registerFirstNameEditText.getText().toString();
+            registerLastName = registerLastNameEditText.getText().toString();
+            registerPhoneNumber = registerPhoneNumberEditText.getText().toString().trim();
+            registerEmail = registerEmailEditText.getText().toString().trim();
+            registerPassword = registerPasswordEditText.getText().toString();
+
+            registerFirstName = formatString(registerFirstName);
+            registerLastName = formatString(registerLastName);
+
+            if (TextUtils.isEmpty(registerFirstName)) {
+                registerFirstNameEditText.setError("First name is required");
+                return;
+            }
+
+            if (TextUtils.isEmpty(registerLastName)) {
+                registerEmailEditText.setError("Last name is required");
+                return;
+            }
+
+            if (TextUtils.isEmpty(registerPhoneNumber)) {
+                registerEmailEditText.setError("Phone number is required");
+                return;
+            }
+
+            if (TextUtils.isEmpty(registerEmail)) {
+                registerEmailEditText.setError("Email is required");
+                return;
+            }
+
+            if (TextUtils.isEmpty(registerPassword)) {
+                registerEmailEditText.setError("Password is required");
+                return;
+            }
+
+            if (registerPassword.length() < 6) {
+                registerPasswordEditText.setError("Password must be at least 6 characters long");
+                return;
+            }
+
+            checkEmailExistsOrNot(registerEmailEditText, registerPasswordEditText, registerFirstNameEditText, registerLastNameEditText, registerPhoneNumberEditText);
+        }
+    };
+
+    public String formatString(String text){
+        String[] textArray = text.split(" ");
+        String formattedText = "";
+        for (int i = 0; i < textArray.length; i++) {
+            formattedText += textArray[i].substring(0, 1).toUpperCase() + textArray[i].substring(1).toLowerCase() + " ";
+        }
+        formattedText = formattedText.trim();
+        return formattedText;
+    }
 
     public RegistrationFragment() {
         // Required empty public constructor
@@ -88,56 +149,6 @@ public class RegistrationFragment extends Fragment {
         backToLoginButton.setOnClickListener(backToLoginOnClickListener);
     }
 
-    private View.OnClickListener backToLoginOnClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            navController.popBackStack();
-        }
-    };
-
-    private View.OnClickListener registerOnClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            registerFirstName = registerFirstNameEditText.getText().toString();
-            registerLastName = registerLastNameEditText.getText().toString();
-            registerPhoneNumber = registerPhoneNumberEditText.getText().toString().trim();
-            registerEmail = registerEmailEditText.getText().toString().trim();
-            registerPassword = registerPasswordEditText.getText().toString();
-
-            if (TextUtils.isEmpty(registerFirstName)) {
-                registerFirstNameEditText.setError("First name is required");
-                return;
-            }
-
-            if (TextUtils.isEmpty(registerLastName)) {
-                registerEmailEditText.setError("Last name is required");
-                return;
-            }
-
-            if (TextUtils.isEmpty(registerPhoneNumber)) {
-                registerEmailEditText.setError("Phone number is required");
-                return;
-            }
-
-            if (TextUtils.isEmpty(registerEmail)) {
-                registerEmailEditText.setError("Email is required");
-                return;
-            }
-
-            if (TextUtils.isEmpty(registerPassword)) {
-                registerEmailEditText.setError("Password is required");
-                return;
-            }
-
-            if (registerPassword.length() < 6) {
-                registerPasswordEditText.setError("Password must be at least 6 characters long");
-                return;
-            }
-
-            checkEmailExistsOrNot(registerEmailEditText, registerPasswordEditText, registerFirstNameEditText, registerLastNameEditText, registerPhoneNumberEditText);
-        }
-    };
-
     private void checkEmailExistsOrNot(final EditText registerEmailEditText, final EditText registerPasswordEditText, final EditText registerFirstNameEditText, final EditText registerLastNameEditText, final EditText registerPhoneNumberEditText) {
         firebaseAuth.fetchSignInMethodsForEmail(registerEmailEditText.getText().toString().trim()).addOnCompleteListener(new OnCompleteListener<SignInMethodQueryResult>() {
             @Override
@@ -160,11 +171,7 @@ public class RegistrationFragment extends Fragment {
     }
 
     private void registerUser(EditText registerEmailEditText, EditText registerPasswordEditText, EditText registerFirstNameEditText, EditText registerLastNameEditText, EditText registerPhoneNumberEditText) {
-//        registerFirstName = registerFirstNameEditText.getText().toString();
-//        registerLastName = registerLastNameEditText.getText().toString();
-//        registerPhoneNumber = registerPhoneNumberEditText.getText().toString().trim();
-//        registerEmail = registerEmailEditText.getText().toString().trim();
-//        registerPassword = registerPasswordEditText.getText().toString();
+
         firebaseAuth.createUserWithEmailAndPassword(registerEmailEditText.getText().toString().trim(), registerPasswordEditText.getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {

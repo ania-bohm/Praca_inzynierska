@@ -14,7 +14,6 @@ public class Event {
     private String eventDescription;
     private Integer eventImage;
     private User eventAuthor;
-    private List<Invitation> eventInvitations;
 
     public Event() {
 
@@ -101,13 +100,5 @@ public class Event {
 
     public void setEventAuthor(User eventAuthor) {
         this.eventAuthor = eventAuthor;
-    }
-
-    public List<Invitation> getEventInvitations() {
-        return eventInvitations;
-    }
-
-    public void setEventInvitations(List<Invitation> eventInvitations) {
-        this.eventInvitations = eventInvitations;
     }
 }

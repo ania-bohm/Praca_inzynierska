@@ -11,7 +11,6 @@ public class User {
     private String userPhoneNumber;
     private String userPhoto;
     private List<Event> userEvents;
-    private List<Invitation> userInvitations;
 
     public User() {
 
@@ -23,7 +22,6 @@ public class User {
         this.userEmail = userEmail;
         this.userPhoneNumber = userPhoneNumber;
         userEvents = new ArrayList<>();
-        userInvitations = new ArrayList<>();
     }
 
     public String getUserFirstName() {
@@ -72,14 +70,6 @@ public class User {
 
     public void setUserEvents(List<Event> userEvents) {
         this.userEvents = userEvents;
-    }
-
-    public List<Invitation> getUserInvitations() {
-        return userInvitations;
-    }
-
-    public void setUserInvitations(List<Invitation> userInvitations) {
-        this.userInvitations = userInvitations;
     }
 
 }
