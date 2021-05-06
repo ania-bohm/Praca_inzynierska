@@ -1,7 +1,6 @@
 package com.annabohm.pracainzynierska;
 
 import java.util.Date;
-import java.util.List;
 
 public class Event {
 
@@ -13,13 +12,13 @@ public class Event {
     private String eventLocation;
     private String eventDescription;
     private Integer eventImage;
-    private User eventAuthor;
+    private String eventAuthor;
 
     public Event() {
 
     }
 
-    public Event(String eventName, Date eventDateStart, Date eventTimeStart, Date eventDateFinish, Date eventTimeFinish, String eventLocation, String eventDescription, Integer eventImage) {
+    public Event(String eventName, Date eventDateStart, Date eventTimeStart, Date eventDateFinish, Date eventTimeFinish, String eventLocation, String eventDescription, Integer eventImage, String eventAuthor) {
         this.eventName = eventName;
         this.eventDateStart = eventDateStart;
         this.eventTimeStart = eventTimeStart;
@@ -28,6 +27,7 @@ public class Event {
         this.eventLocation = eventLocation;
         this.eventDescription = eventDescription;
         this.eventImage = eventImage;
+        this.eventAuthor = eventAuthor;
     }
 
     public String getEventName() {
@@ -94,11 +94,11 @@ public class Event {
         this.eventImage = eventImage;
     }
 
-    public User getEventAuthor() {
+    public String getEventAuthor() {
         return eventAuthor;
     }
 
-    public void setEventAuthor(User eventAuthor) {
+    public void setEventAuthor(String eventAuthor) {
         this.eventAuthor = eventAuthor;
     }
 }

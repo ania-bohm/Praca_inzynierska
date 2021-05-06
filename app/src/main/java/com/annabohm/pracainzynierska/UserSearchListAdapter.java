@@ -25,7 +25,6 @@ import static android.content.ContentValues.TAG;
 public class UserSearchListAdapter extends ArrayAdapter<User> implements View.OnClickListener {
 
     private ArrayList<User> userList;
-    private HashMap<User, String> userMap;
     private Context context;
 
     public UserSearchListAdapter(@NonNull Context context, @NonNull List<User> userList) {

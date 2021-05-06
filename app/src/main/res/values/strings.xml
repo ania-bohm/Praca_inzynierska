@@ -66,5 +66,6 @@
     <string name="editEvent">Edytuj wydarzenie</string>
     <string name="deleteGuest">Usuń gościa</string>
     <string name="cancelDeleteGuest">Anuluj</string>
+    <string name="myInvitationsList">Moje zaproszenia</string>
 
 </resources>
