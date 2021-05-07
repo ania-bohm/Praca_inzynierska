@@ -10,7 +10,6 @@ public class User {
     private String userEmail;
     private String userPhoneNumber;
     private String userPhoto;
-    private List<Event> userEvents;
 
     public User() {
 
@@ -21,7 +20,6 @@ public class User {
         this.userLastName = userLastName;
         this.userEmail = userEmail;
         this.userPhoneNumber = userPhoneNumber;
-        userEvents = new ArrayList<>();
     }
 
     public String getUserFirstName() {
@@ -62,14 +60,6 @@ public class User {
 
     public void setUserPhoto(String userPhoto) {
         this.userPhoto = userPhoto;
-    }
-
-    public List<Event> getUserEvents() {
-        return userEvents;
-    }
-
-    public void setUserEvents(List<Event> userEvents) {
-        this.userEvents = userEvents;
     }
 
 }

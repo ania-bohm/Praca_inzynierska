@@ -108,24 +108,26 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
                 public void onSuccess(DocumentReference documentReference) {
                     //setGuestList(eventGuestList, documentReference);
                     Toast.makeText(context, "Event saved successfully", Toast.LENGTH_SHORT).show();
-                    Toast.makeText(context, "Id: " + documentReference.getId(), Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(context, "Id: " + documentReference.getId(), Toast.LENGTH_SHORT).show();
                     String eventId = documentReference.getId();
                     if (!invitedUsersIdList.isEmpty()) {
-                        Map<String, ArrayList<String>> docDataUserId = new HashMap<>();
-                        docDataUserId.put("Attendees", invitedUsersIdList);
+                        for (int i = 0; i < invitedUsersIdList.size(); i++) {
+                            Map<String, String> docDataUserId = new HashMap<>();
+                            docDataUserId.put("User", invitedUsersIdList.get(i));
 
-                        eventAttendees.document(eventId).collection("Invited").add(docDataUserId).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                            @Override
-                            public void onSuccess(DocumentReference documentReference) {
-                                Toast.makeText(context, "EventAttendee added", Toast.LENGTH_SHORT).show();
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(context, "EventAttendee adding failed!", Toast.LENGTH_SHORT).show();
-                                Log.d(TAG, e.toString());
-                            }
-                        });
+                            eventAttendees.document(eventId).collection("Invited").add(docDataUserId).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                @Override
+                                public void onSuccess(DocumentReference documentReference) {
+//                                    Toast.makeText(context, "EventAttendee added", Toast.LENGTH_SHORT).show();
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+//                                    Toast.makeText(context, "EventAttendee adding failed!", Toast.LENGTH_SHORT).show();
+                                    Log.d(TAG, e.toString());
+                                }
+                            });
+                        }
 
                         for (int i = 0; i < invitedUsersIdList.size(); i++) {
                             Map<String, String> docDataEventId = new HashMap<>();
@@ -133,12 +135,12 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
                             attendeeEvents.document(invitedUsersIdList.get(i)).collection("Invited").add(docDataEventId).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                                 @Override
                                 public void onSuccess(DocumentReference documentReference) {
-                                    Toast.makeText(context, "AttendeesEvent added", Toast.LENGTH_SHORT).show();
+//                                    Toast.makeText(context, "AttendeesEvent added", Toast.LENGTH_SHORT).show();
                                 }
                             }).addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
-                                    Toast.makeText(context, "AttendeesEvent adding failed!", Toast.LENGTH_SHORT).show();
+//                                    Toast.makeText(context, "AttendeesEvent adding failed!", Toast.LENGTH_SHORT).show();
                                     Log.d(TAG, e.toString());
                                 }
                             });
@@ -282,7 +284,7 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
         switch (item.getItemId()) {
             case R.id.deleteGuest:
                 invitedUsersAdapter.remove(invitedUsersAdapter.getItem(info.position));
-                Toast.makeText(context, "Position: " + info.position, Toast.LENGTH_SHORT).show();
+//                Toast.makeText(context, "Position: " + info.position, Toast.LENGTH_SHORT).show();
                 invitedUsersIdList.remove(info.position);
                 return true;
             case R.id.cancelDeleteGuest:
@@ -403,7 +405,7 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
                 for (QuerySnapshot querySnapshot : querySnapshots) {
                     for (DocumentSnapshot document : (QuerySnapshot) querySnapshot) {
                         User user = document.toObject(User.class);
-                        Toast.makeText(context, "User: " + user.toString(), Toast.LENGTH_SHORT).show();
+//                        Toast.makeText(context, "User: " + user.toString(), Toast.LENGTH_SHORT).show();
                         userList.add(user);
                         userIdList.add(document.getId());
                     }

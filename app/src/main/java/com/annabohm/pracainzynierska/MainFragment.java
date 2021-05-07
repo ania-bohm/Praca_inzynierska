@@ -58,6 +58,7 @@ public class MainFragment extends Fragment {
     CollectionReference attendeeEvents = db.collection("AttendeeEvents");
     EventAdapter yourEventsAdapter;
     ConfirmedEventAdapter allEventsAdapter;
+    HashMap<String, Event> confirmedEvents;
     Context context;
 
     private View.OnClickListener addEventOnClickListener = new View.OnClickListener() {
@@ -91,30 +92,29 @@ public class MainFragment extends Fragment {
     }
 
     private void setUpAllEventsRecyclerView(final View view) {
-        //Query query = collectionReference.orderBy("eventName", Query.Direction.ASCENDING);
-        //FirestoreRecyclerOptions<Event> events = new FirestoreRecyclerOptions.Builder<Event>().setQuery(query, Event.class).build();
         String currentUserId = firebaseAuth.getCurrentUser().getUid();
-        Query queryAttendeeEvents = attendeeEvents.document(currentUserId).collection("Confirmed");
-        queryAttendeeEvents.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+        attendeeEvents.document(currentUserId).collection("Confirmed").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 List<DocumentSnapshot> documentSnapshots = queryDocumentSnapshots.getDocuments();
-                final HashMap<String, Event> confirmedEvents = new HashMap<>();
                 for (DocumentSnapshot documentSnapshot : documentSnapshots) {
-                    final String eventId = documentSnapshot.toObject(String.class);
-                    events.document(eventId).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                        @Override
-                        public void onSuccess(DocumentSnapshot documentSnapshot) {
-                            confirmedEvents.put(eventId, documentSnapshot.toObject(Event.class));
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Log.d(TAG, e.toString());
-                        }
-                    });
+                    if (documentSnapshot.exists()) {
+                        final String eventId = documentSnapshot.get("Event").toString();
+                        events.document(eventId).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                            @Override
+                            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                confirmedEvents.put(eventId, documentSnapshot.toObject(Event.class));
+                                allEventsAdapter.notifyDataSetChanged();
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.d(TAG, e.toString());
+                            }
+                        });
+                    }
                 }
-                allEventsAdapter = new ConfirmedEventAdapter(confirmedEvents);
+                allEventsRecyclerView.setAdapter(allEventsAdapter);
                 allEventsAdapter.setOnItemClickListener(new ConfirmedEventAdapter.OnItemClickListener() {
                     @Override
                     public void onItemClick(final int position) {
@@ -139,9 +139,7 @@ public class MainFragment extends Fragment {
                         });
                     }
                 });
-                allEventsRecyclerView.setHasFixedSize(false);
-                allEventsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));//<----------
-                allEventsRecyclerView.setAdapter(allEventsAdapter);
+
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -152,8 +150,6 @@ public class MainFragment extends Fragment {
     }
 
     private void setUpYourEventsRecyclerView(final View view) {
-        //Query query = collectionReference.orderBy("eventName", Query.Direction.ASCENDING);
-        //FirestoreRecyclerOptions<Event> events = new FirestoreRecyclerOptions.Builder<Event>().setQuery(query, Event.class).build();
         String currentUserId = firebaseAuth.getCurrentUser().getUid();
         Query query = events.orderBy("eventDateStart", Query.Direction.ASCENDING).whereEqualTo("eventAuthor", currentUserId);
         final FirestoreRecyclerOptions<Event> events = new FirestoreRecyclerOptions.Builder<Event>().setQuery(query, Event.class).build();
@@ -193,10 +189,15 @@ public class MainFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         navController = Navigation.findNavController(view);
+        confirmedEvents = new HashMap<>();
+        allEventsAdapter = new ConfirmedEventAdapter(confirmedEvents);
         yourEventsRecyclerView = view.findViewById(R.id.yourEventsRecyclerView);
         allEventsRecyclerView = view.findViewById(R.id.allEventsRecyclerView);
         addEventButton = view.findViewById(R.id.addEventButton);
         addEventButton.setOnClickListener(addEventOnClickListener);
+        allEventsRecyclerView.setHasFixedSize(false);
+        allEventsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));//<----------
+
         setUpAllEventsRecyclerView(view);
         setUpYourEventsRecyclerView(view);
     }

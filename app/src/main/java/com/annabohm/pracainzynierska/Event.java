@@ -1,5 +1,7 @@
 package com.annabohm.pracainzynierska;
 
+import androidx.annotation.NonNull;
+
 import java.util.Date;
 
 public class Event {
@@ -100,5 +102,11 @@ public class Event {
 
     public void setEventAuthor(String eventAuthor) {
         this.eventAuthor = eventAuthor;
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "Event name: " + eventName + " by author: " + eventAuthor;
     }
 }

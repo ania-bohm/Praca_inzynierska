@@ -46,33 +46,37 @@ public class ConfirmedEventAdapter extends RecyclerView.Adapter<ConfirmedEventAd
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, final int position) {
-        Date eventDateStart = sortedEventsList.get(position).getEventDateStart();
-        Date eventTimeStart = sortedEventsList.get(position).getEventTimeStart();
-        Date eventTimeFinish = sortedEventsList.get(position).getEventTimeFinish();
-        DateFormat dateFormatterRead = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy");
-        DateFormat dateFormatterPrint = new SimpleDateFormat("dd/MM/yyyy");
-        DateFormat timeFormatterPrint = new SimpleDateFormat("HH:mm");
+        sortedEventsList = new ArrayList<>(eventMap.values());
+        sortByDate();
+        if (sortedEventsList.size() > 0) {
+            Date eventDateStart = sortedEventsList.get(position).getEventDateStart();
+            Date eventTimeStart = sortedEventsList.get(position).getEventTimeStart();
+            Date eventTimeFinish = sortedEventsList.get(position).getEventTimeFinish();
+            DateFormat dateFormatterRead = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy");
+            DateFormat dateFormatterPrint = new SimpleDateFormat("dd/MM/yyyy");
+            DateFormat timeFormatterPrint = new SimpleDateFormat("HH:mm");
 
-        try {
-            eventDateStart = dateFormatterRead.parse(eventDateStart.toString());
-            eventTimeStart = dateFormatterRead.parse(eventTimeStart.toString());
-            eventTimeFinish = dateFormatterRead.parse(eventTimeFinish.toString());
-        } catch (ParseException e) {
-            e.printStackTrace();
-            Log.i(TAG, e.toString());
-        }
-        viewHolder.miniEventLinearLayout.setBackgroundResource(sortedEventsList.get(position).getEventImage());
-        viewHolder.miniEventNameTextView.setText(sortedEventsList.get(position).getEventName());
-        viewHolder.miniEventDateStartTextView.setText(dateFormatterPrint.format(eventDateStart));
-        viewHolder.miniEventTimeStartTextView.setText(timeFormatterPrint.format(eventTimeStart));
-        viewHolder.miniEventTimeFinishTextView.setText(timeFormatterPrint.format(eventTimeFinish));
-
-        viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                listener.onItemClick(position);
+            try {
+                eventDateStart = dateFormatterRead.parse(eventDateStart.toString());
+                eventTimeStart = dateFormatterRead.parse(eventTimeStart.toString());
+                eventTimeFinish = dateFormatterRead.parse(eventTimeFinish.toString());
+            } catch (ParseException e) {
+                e.printStackTrace();
+                Log.i(TAG, e.toString());
             }
-        });
+            viewHolder.miniEventLinearLayout.setBackgroundResource(sortedEventsList.get(position).getEventImage());
+            viewHolder.miniEventNameTextView.setText(sortedEventsList.get(position).getEventName());
+            viewHolder.miniEventDateStartTextView.setText(dateFormatterPrint.format(eventDateStart));
+            viewHolder.miniEventTimeStartTextView.setText(timeFormatterPrint.format(eventTimeStart));
+            viewHolder.miniEventTimeFinishTextView.setText(timeFormatterPrint.format(eventTimeFinish));
+
+            viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listener.onItemClick(position);
+                }
+            });
+        }
     }
 
     @Override
@@ -89,9 +93,9 @@ public class ConfirmedEventAdapter extends RecyclerView.Adapter<ConfirmedEventAd
         });
     }
 
-    public String getEventId(int position){
+    public String getEventId(int position) {
         for (Map.Entry<String, Event> set : eventMap.entrySet()) {
-            if(sortedEventsList.get(position) == set.getValue()){
+            if (sortedEventsList.get(position) == set.getValue()) {
                 return set.getKey();
             }
         }

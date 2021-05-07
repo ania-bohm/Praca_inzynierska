@@ -19,26 +19,34 @@ import androidx.navigation.Navigation;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import jp.wasabeef.picasso.transformations.CropCircleTransformation;
 
 import static android.content.ContentValues.TAG;
 
-public class InvitationListAdapter extends ArrayAdapter<Event> implements View.OnClickListener{
+public class InvitationListAdapter extends ArrayAdapter<Event> implements View.OnClickListener {
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+    CollectionReference events = db.collection("Events");
+    CollectionReference attendeeEvents = db.collection("AttendeeEvents");
+    CollectionReference eventAttendees = db.collection("EventAttendees");
+    ArrayList<String> eventAttendeesList;
+    NavController navController;
     private ArrayList<Event> eventList;
     private ArrayList<String> eventIdList;
     private Context context;
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
-    CollectionReference events = db.collection("Events");
-    NavController navController;
 
     public InvitationListAdapter(@NonNull Context context, @NonNull List<Event> eventList, List<String> eventIdList, NavController navController) {
         super(context, R.layout.invitation, eventList);
@@ -56,6 +64,7 @@ public class InvitationListAdapter extends ArrayAdapter<Event> implements View.O
     @NonNull
     @Override
     public View getView(final int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+        this.eventAttendeesList = new ArrayList<>();
         final Event event = getItem(position);
         if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(R.layout.invitation, parent, false);
@@ -109,14 +118,142 @@ public class InvitationListAdapter extends ArrayAdapter<Event> implements View.O
         invitationConfirmEventButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                final String eventId = eventIdList.get(position);
+                final String currentUser = firebaseAuth.getCurrentUser().getUid();
 
+                eventAttendees.document(eventId).collection("Invited").whereEqualTo("User", currentUser).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                            if (documentSnapshot.exists()) {
+                                documentSnapshot.getReference().delete();
+                            }
+                        }
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d(TAG, e.toString());
+                    }
+                });
+
+                Map<String, String> docDataUserId = new HashMap<>();
+                docDataUserId.put("User", currentUser);
+                eventAttendees.document(eventId).collection("Confirmed").add(docDataUserId).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+//                        Toast.makeText(context, "Invitation confirmed in eventAttendees!", Toast.LENGTH_SHORT).show();
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d(TAG, e.toString());
+                    }
+                });
+
+                attendeeEvents.document(currentUser).collection("Invited").whereEqualTo("Event", eventId).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                            if (documentSnapshot.exists()) {
+                                documentSnapshot.getReference().delete();
+                            }
+                        }
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d(TAG, e.toString());
+                    }
+                });
+                Map<String, String> docDataEventId = new HashMap<>();
+                docDataEventId.put("Event", eventId);
+                attendeeEvents.document(currentUser).collection("Confirmed").add(docDataEventId).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+                        Toast.makeText(context, "Invitation confirmed in attendeeEvents!", Toast.LENGTH_SHORT).show();
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d(TAG, e.toString());
+                    }
+                });
+                eventList.remove(position);
+                eventIdList.remove(position);
+                notifyDataSetChanged();
             }
         });
 
         invitationDeclineEventButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                final String eventId = eventIdList.get(position);
+                final String currentUser = firebaseAuth.getCurrentUser().getUid();
 
+                eventAttendees.document(eventId).collection("Invited").whereEqualTo("User", currentUser).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                            if (documentSnapshot.exists()) {
+                                documentSnapshot.getReference().delete();
+                            }
+                        }
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d(TAG, e.toString());
+                    }
+                });
+
+                Map<String, String> docDataUserId = new HashMap<>();
+                docDataUserId.put("User", currentUser);
+                eventAttendees.document(eventId).collection("Declined").add(docDataUserId).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+                        Toast.makeText(context, "Invitation declined in eventAttendees!", Toast.LENGTH_SHORT).show();
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d(TAG, e.toString());
+                    }
+                });
+
+                attendeeEvents.document(currentUser).collection("Invited").whereEqualTo("Event", eventId).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                            if (documentSnapshot.exists()) {
+                                documentSnapshot.getReference().delete();
+                            }
+                        }
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d(TAG, e.toString());
+                    }
+                });
+
+                Map<String, String> docDataEventId = new HashMap<>();
+                docDataUserId.put("Event", eventId);
+                attendeeEvents.document(currentUser).collection("Declined").add(docDataEventId).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+                        Toast.makeText(context, "Invitation declined in attendeeEvents!", Toast.LENGTH_SHORT).show();
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d(TAG, e.toString());
+                    }
+                });
+
+                eventList.remove(position);
+                eventIdList.remove(position);
+                notifyDataSetChanged();
             }
         });
 

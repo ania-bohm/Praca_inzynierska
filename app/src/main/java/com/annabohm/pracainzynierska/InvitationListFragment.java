@@ -94,7 +94,6 @@ public class InvitationListFragment extends Fragment {
     }
 
     public void loadEventsToListView() {
-        Log.d(TAG, "Jestem w loadEventsToListView----------------------------------");
         attendeeEvents.document(currentUserId).collection("Invited").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
