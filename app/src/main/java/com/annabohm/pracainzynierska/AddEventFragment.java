@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -58,14 +59,13 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
     Button eventReadyButton, eventCancelButton;
     EditText eventNameEditText, eventDateStartEditText, eventTimeStartEditText, eventDateFinishEditText, eventTimeFinishEditText, eventLocationEditText, eventDescriptionEditText;
     SearchView eventGuestListSearchView;
-    ScrollView eventUserSearchScrollView;
-    ListView eventUserSearchListView;
-    ListView eventGuestListListView;
+    ListView eventUserSearchListView, eventGuestListListView;
     Spinner eventImageSpinner;
     Integer chosenImage;
     ArrayList<User> invitedUsersList, foundUsersList;
     ArrayList<String> invitedUsersIdList, foundUsersIdList;
     UserSearchListAdapter invitedUsersAdapter, foundUsersAdapter;
+    InputMethodManager imm;
 
     private View.OnClickListener eventReadyOnClickListener = new View.OnClickListener() {
         @Override
@@ -185,6 +185,7 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         ((MainActivity) getActivity()).setDrawerLocked();
+        imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_add_event, container, false);
     }
@@ -205,7 +206,6 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
         eventLocationEditText = view.findViewById(R.id.eventLocationEditText);
         eventDescriptionEditText = view.findViewById(R.id.eventDescriptionEditText);
         eventGuestListSearchView = view.findViewById(R.id.eventGuestListSearchView);
-        eventUserSearchScrollView = view.findViewById(R.id.eventUserSearchScrollView);
         eventUserSearchListView = view.findViewById(R.id.eventUserSearchListView);
         eventImageSpinner = view.findViewById(R.id.eventImageSpinner);
         eventGuestListListView = view.findViewById(R.id.eventGuestListListView);
@@ -227,6 +227,7 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
         eventGuestListSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
+                eventGuestListSearchView.clearFocus();
                 clearList();
                 hideEventUserSearchListView();
                 if (query.trim().length() > 2) {
@@ -249,6 +250,7 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
         eventUserSearchListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                hideKeyboard();
                 User user = foundUsersList.get(position);
                 String userId = foundUsersIdList.get(position);
                 if (!containsUserId(userId)) {
@@ -256,6 +258,7 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
                     invitedUsersIdList.add(userId);
                 }
                 invitedUsersAdapter.notifyDataSetChanged();
+                extendEventGuestListListView();
             }
         });
 
@@ -286,6 +289,8 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
                 invitedUsersAdapter.remove(invitedUsersAdapter.getItem(info.position));
 //                Toast.makeText(context, "Position: " + info.position, Toast.LENGTH_SHORT).show();
                 invitedUsersIdList.remove(info.position);
+                invitedUsersAdapter.notifyDataSetChanged();
+                extendEventGuestListListView();
                 return true;
             case R.id.cancelDeleteGuest:
                 Toast.makeText(context, "Cancelled deleting", Toast.LENGTH_SHORT).show();
@@ -295,22 +300,22 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
         }
     }
 
+    public void hideKeyboard() {
+        imm.hideSoftInputFromWindow(eventUserSearchListView.getWindowToken(), InputMethodManager.RESULT_UNCHANGED_SHOWN);
+    }
+
     public void showEventUserSearchListView() {
-        eventUserSearchScrollView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 180));
+        eventUserSearchListView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 350));
     }
 
     public void hideEventUserSearchListView() {
-        eventUserSearchScrollView.setLayoutParams(new LinearLayout.LayoutParams(0, 0));
+        eventUserSearchListView.setLayoutParams(new LinearLayout.LayoutParams(0, 0));
     }
 
-//    public boolean containsUser(User user) {
-//        for (int i = 0; i < invitedUsersList.size(); i++) {
-//            if (invitedUsersList.get(i).getUserEmail().equals(user.getUserEmail())) {
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
+    public void extendEventGuestListListView() {
+        int numberOfGuests = invitedUsersIdList.size();
+        eventGuestListListView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, numberOfGuests * 160));
+    }
 
     public boolean containsUserId(String userId) {
         for (int i = 0; i < invitedUsersIdList.size(); i++) {

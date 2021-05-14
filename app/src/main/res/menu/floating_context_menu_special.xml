@@ -2,11 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/deleteGuest"
-        android:title="@string/delete_guest"/>
+        android:id="@+id/deleteGuestSpecial"
+        android:title="@string/delete_old_guest"/>
 
     <item
-        android:id="@+id/cancelDeleteGuest"
+        android:id="@+id/cancelDeleteGuestSpecial"
         android:title="@string/cancel_delete_guest"/>
 
 </menu>

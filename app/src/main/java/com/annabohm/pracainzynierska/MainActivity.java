@@ -132,15 +132,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         new AlertDialog.Builder(MainActivity.this)
                 .setTitle("Wylogowywanie")
                 .setMessage("Czy chcesz się wylogować?")
+                .setNegativeButton("Nie", null)
                 .setPositiveButton("Tak", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         FirebaseAuth.getInstance().signOut();
                         Toast.makeText(MainActivity.this, "You logged out successfully!", Toast.LENGTH_SHORT).show();
                         navController.popBackStack();
-//                        navController.navigate(R.id.mainToLogin);
                     }
                 })
-                .setNegativeButton("Nie", null)
                 .setIcon(R.drawable.ic_logout_gray)
                 .show();
     }

@@ -16,12 +16,12 @@
             android:id="@+id/yourEventsTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
             android:fontFamily="@font/montserrat"
             android:text="@string/your_events"
             android:textSize="18sp"
-            android:textStyle="bold"
-            android:layout_marginTop="10dp"
-            android:layout_marginStart="10dp"/>
+            android:textStyle="bold" />
 
         <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:layout_width="match_parent"
@@ -31,42 +31,44 @@
                 android:id="@+id/yourEventsRecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:scrollbars="horizontal"
+                android:layout_marginStart="10dp"
                 android:layout_marginTop="10dp"
-                android:layout_marginStart="10dp"/>
+                android:scrollbars="horizontal" />
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
         <TextView
             android:id="@+id/countdownTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
             android:fontFamily="@font/montserrat"
             android:text="@string/countdown"
-            android:textSize="18sp"
-            android:layout_marginTop="10dp"
-            android:layout_marginStart="10dp"/>
+            android:textSize="18sp" />
 
         <TextView
             android:id="@+id/allEventsTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
             android:fontFamily="@font/montserrat"
             android:text="@string/all_events"
             android:textSize="18sp"
-            android:textStyle="bold"
-            android:layout_marginTop="10dp"
-            android:layout_marginStart="10dp"/>
+            android:textStyle="bold" />
 
         <androidx.coordinatorlayout.widget.CoordinatorLayout
+            android:id="@+id/coordinatorLayout"
             android:layout_width="match_parent"
-            android:layout_height="177dp"
-            android:id="@+id/coordinatorLayout">
+            android:layout_height="177dp">
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/allEventsRecyclerView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:scrollbars="horizontal"/>
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:scrollbars="horizontal" />
 
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
@@ -74,11 +76,11 @@
             android:id="@+id/addEventButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/circular_background"
-            android:src="@drawable/ic_add"
-            android:elevation="10dp"
+            android:layout_marginStart="280dp"
             android:layout_marginTop="10dp"
-            android:layout_marginStart="280dp"/>
+            android:background="@drawable/circular_background"
+            android:elevation="10dp"
+            android:src="@drawable/ic_add" />
 
     </LinearLayout>
 </FrameLayout>

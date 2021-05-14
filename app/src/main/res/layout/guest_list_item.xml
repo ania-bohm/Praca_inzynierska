@@ -7,39 +7,51 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_height="70dp"
         android:orientation="horizontal"
-        android:padding="7dp"
+        android:padding="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.0">
 
+        <ImageView
+            android:id="@+id/guestListItemUserPhotoImageView"
+            android:layout_width="40dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:background="@drawable/ic_no_photo" />
+
         <TextView
-            android:id="@+id/userListItemUserFirstNameTextView"
-            android:layout_width="175dp"
+            android:id="@+id/guestListItemUserFirstNameTextView"
+            android:layout_marginStart="5dp"
+            android:layout_width="105dp"
             android:layout_height="match_parent"
+            android:layout_weight="1"
             android:fontFamily="@font/montserrat"
             android:gravity="center_vertical"
             android:text=""
             android:textSize="20dp" />
 
         <TextView
-            android:id="@+id/userListItemUserLastNameTextView"
-            android:layout_width="175dp"
+            android:id="@+id/guestListItemUserLastNameTextView"
+            android:layout_width="105dp"
             android:layout_height="match_parent"
+            android:layout_weight="1"
             android:fontFamily="@font/montserrat"
             android:gravity="center_vertical"
             android:text=""
             android:textSize="20dp" />
 
         <ImageView
-            android:id="@+id/userListItemUserPhotoImageView"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:gravity="center_vertical"
-            android:background="@drawable/ic_no_photo" />
+            android:id="@+id/guestListItemUserStatusImageView"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/ic_unknown" />
+
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

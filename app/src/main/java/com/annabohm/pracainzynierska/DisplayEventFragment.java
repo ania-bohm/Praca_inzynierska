@@ -15,6 +15,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,10 +25,12 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
@@ -35,28 +38,21 @@ import static android.content.ContentValues.TAG;
 
 public class DisplayEventFragment extends Fragment {
 
-    static final String KEY_EVENT_NAME = "event_name";
-    static final String KEY_EVENT_DATE_START = "event_date_start";
-    static final String KEY_EVENT_TIME_START = "event_time_start";
-    static final String KEY_EVENT_DATE_FINISH = "event_date_finish";
-    static final String KEY_EVENT_TIME_FINISH = "event_time_finish";
-    static final String KEY_EVENT_DESCRIPTION = "event_description";
     NavController navController;
-    ImageView toDoListButton;
-    ImageView shoppingListButton;
-    ImageView editEventButton;
+    ImageView toDoListButton, shoppingListButton, editEventButton;
+    TextView showEventNameTextView, showEventDateStartTextView, showEventTimeStartTextView, showEventDateFinishTextView, showEventTimeFinishTextView, showEventLocationTextView, showEventDescriptionTextView;
+    ListView displayEventGuestListListView;
+    ArrayList<User> userList;
+    ArrayList<String> userStatusList;
+    String eventId;
+    GuestListAdapter adapter;
     Context context;
     Bundle bundle;
-    TextView showEventNameTextView;
-    TextView showEventDateStartTextView;
-    TextView showEventTimeStartTextView;
-    TextView showEventDateFinishTextView;
-    TextView showEventTimeFinishTextView;
-    TextView showEventLocationTextView;
-    TextView showEventDescriptionTextView;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
-    CollectionReference collectionReference = db.collection("Events");
-    DocumentReference documentReference;
+    CollectionReference events = db.collection("Events");
+    CollectionReference users = db.collection("Users");
+    CollectionReference eventAttendees = db.collection("EventAttendees");
+    DocumentReference event;
 
     private View.OnClickListener toDoListOnClickListener = new View.OnClickListener() {
         @Override
@@ -73,7 +69,7 @@ public class DisplayEventFragment extends Fragment {
     private View.OnClickListener editEventOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            Toast.makeText(context, "Bundle: " + bundle.getString("path"), Toast.LENGTH_SHORT).show();
+            //Toast.makeText(context, "Bundle: " + bundle.getString("path"), Toast.LENGTH_SHORT).show();
             navController.navigate(R.id.displayEventToEditEvent, bundle);
         }
     };
@@ -105,6 +101,7 @@ public class DisplayEventFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         navController = Navigation.findNavController(view);
+
         toDoListButton = view.findViewById(R.id.toDoListButton);
         shoppingListButton = view.findViewById(R.id.shoppingListButton);
         editEventButton = view.findViewById(R.id.editEventButton);
@@ -115,20 +112,27 @@ public class DisplayEventFragment extends Fragment {
         showEventTimeFinishTextView = view.findViewById(R.id.showEventTimeFinishTextView);
         showEventLocationTextView = view.findViewById(R.id.showEventLocationTextView);
         showEventDescriptionTextView = view.findViewById(R.id.showEventDescriptionTextView);
+        displayEventGuestListListView = view.findViewById(R.id.displayEventGuestListListView);
+
+        bundle = this.getArguments();
+        String path = bundle.getString("path");
+        event = db.document(path);
+        eventId = event.getId();
+
+        userList = new ArrayList<>();
+        userStatusList = new ArrayList<>();
+        adapter = new GuestListAdapter(context, userList, userStatusList);
+        displayEventGuestListListView.setAdapter(adapter);
+
         toDoListButton.setOnClickListener(toDoListOnClickListener);
         shoppingListButton.setOnClickListener(shoppingListOnClickListener);
         editEventButton.setOnClickListener(editEventOnClickListener);
 
-        bundle = this.getArguments();
-        String path = bundle.getString("path");
-        documentReference = db.document(path);
-
-        documentReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+        event.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
-                Event event = new Event();
                 if (documentSnapshot.exists()) {
-                    event = documentSnapshot.toObject(Event.class);
+                    Event event = documentSnapshot.toObject(Event.class);
                     DateFormat dateFormatterPrint = new SimpleDateFormat("dd/MM/yyyy");
                     DateFormat timeFormatterPrint = new SimpleDateFormat("HH:mm");
 
@@ -139,7 +143,6 @@ public class DisplayEventFragment extends Fragment {
                     showEventTimeFinishTextView.setText(timeFormatterPrint.format(event.getEventTimeFinish()));
                     showEventLocationTextView.setText(event.getEventLocation());
                     showEventDescriptionTextView.setText(event.getEventDescription());
-                    //Map<String, Object> events = documentSnapshot.getData();
                 } else {
                     Toast.makeText(context, "Document does not exist", Toast.LENGTH_SHORT).show();
                 }
@@ -148,6 +151,99 @@ public class DisplayEventFragment extends Fragment {
             @Override
             public void onFailure(@NonNull Exception e) {
                 Toast.makeText(context, "Reading data from Firestore failed", Toast.LENGTH_SHORT).show();
+            }
+        });
+        initialiseGuestList();
+    }
+
+    public void initialiseGuestList() {
+        eventAttendees.document(eventId).collection("Invited").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                if (!queryDocumentSnapshots.getDocuments().isEmpty()) {
+                    for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                        String guestId = documentSnapshot.get("User").toString();
+                        users.document(guestId).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                            @Override
+                            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                User guest = documentSnapshot.toObject(User.class);
+                                userList.add(guest);
+                                userStatusList.add("Invited");
+                                adapter.notifyDataSetChanged();
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.d(TAG, e.toString());
+                            }
+                        });
+                    }
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d(TAG, e.toString());
+            }
+        });
+
+        eventAttendees.document(eventId).collection("Confirmed").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                if (!queryDocumentSnapshots.getDocuments().isEmpty()) {
+                    for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                        String guestId = documentSnapshot.get("User").toString();
+                        users.document(guestId).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                            @Override
+                            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                User guest = documentSnapshot.toObject(User.class);
+                                userList.add(guest);
+                                userStatusList.add("Confirmed");
+                                adapter.notifyDataSetChanged();
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.d(TAG, e.toString());
+                            }
+                        });
+                    }
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d(TAG, e.toString());
+            }
+        });
+
+        eventAttendees.document(eventId).collection("Declined").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                if (!queryDocumentSnapshots.getDocuments().isEmpty()) {
+                    for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                        String guestId = documentSnapshot.get("User").toString();
+                        users.document(guestId).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                            @Override
+                            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                User guest = documentSnapshot.toObject(User.class);
+                                userList.add(guest);
+                                userStatusList.add("Declined");
+                                adapter.notifyDataSetChanged();
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.d(TAG, e.toString());
+                            }
+                        });
+                    }
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d(TAG, e.toString());
             }
         });
     }

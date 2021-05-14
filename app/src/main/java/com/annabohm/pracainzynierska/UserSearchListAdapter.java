@@ -15,12 +15,9 @@ import androidx.annotation.Nullable;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import jp.wasabeef.picasso.transformations.CropCircleTransformation;
-
-import static android.content.ContentValues.TAG;
 
 public class UserSearchListAdapter extends ArrayAdapter<User> implements View.OnClickListener {
 
@@ -59,9 +56,8 @@ public class UserSearchListAdapter extends ArrayAdapter<User> implements View.On
                     .load(user.getUserPhoto().trim())
                     .transform(new CropCircleTransformation())
                     .into(userListItemUserPhotoImageView);
-//                        Picasso.get().load(user.getUserPhoto().trim()).resize(400, 400).centerCrop().into(accountPhotoImageView);
         } else {
-            userListItemUserPhotoImageView.setBackgroundResource(R.drawable.ic_account);
+            userListItemUserPhotoImageView.setBackgroundResource(R.drawable.ic_no_photo);
         }
         return convertView;
     }

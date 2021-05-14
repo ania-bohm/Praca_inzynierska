@@ -15,6 +15,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -37,6 +38,7 @@ public class LoginFragment extends Fragment {
     FirebaseAuth firebaseAuth;
     Context context;
     SharedPreferences sharedPreferences;
+    InputMethodManager imm;
     public static final String myPreference = "myPref";
     public static final String Password = "Password";
     public static final String Email = "Email";
@@ -53,6 +55,7 @@ public class LoginFragment extends Fragment {
             final String loginEmail = loginEmailEditText.getText().toString().trim();
             final String loginPassword = loginPasswordEditText.getText().toString();
 
+            hideKeyboard();
 
             if (TextUtils.isEmpty(loginEmail)) {
                 loginEmailEditText.setError("Email is required");
@@ -116,6 +119,7 @@ public class LoginFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         ((MainActivity) getActivity()).setDrawerLocked();
+        imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_login, container, false);
     }
@@ -136,5 +140,8 @@ public class LoginFragment extends Fragment {
         loginButton.setOnClickListener(loginOnClickListener);
     }
 
+    public void hideKeyboard() {
+        imm.hideSoftInputFromWindow(loginButton.getWindowToken(), InputMethodManager.RESULT_UNCHANGED_SHOWN);
+    }
 
 }

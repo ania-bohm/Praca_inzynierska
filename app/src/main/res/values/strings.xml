@@ -28,7 +28,10 @@
     <string name="event_location">Lokalizacja</string>
     <string name="event_description">Opis</string>
     <string name="event_guest_list">Lista gości</string>
+    <string name="event_new_guest_list">Lista nowych gości</string>
+    <string name="edit_event_guest_list">Edytuj dotychczasową listę gości</string>
     <string name="event_guest_search_list">Dodaj gości</string>
+    <string name="edit_event_guest_search_list">Dodaj nowych gości</string>
     <string name="event_guest_search">Wyszukaj użytkownika...</string>
     <string name="event_image">Ustaw kolor wydarzenia</string>
     <string name="edit_event_image">Zmień kolor wydarzenia</string>
@@ -63,9 +66,10 @@
     <string name="mini_event_dash">-</string>
     <string name="notifications">Powiadomienia</string>
     <string name="sound">Dźwięk aplikacji</string>
-    <string name="editEvent">Edytuj wydarzenie</string>
-    <string name="deleteGuest">Usuń gościa</string>
-    <string name="cancelDeleteGuest">Anuluj</string>
-    <string name="myInvitationsList">Moje zaproszenia</string>
+    <string name="edit_event">Edytuj wydarzenie</string>
+    <string name="delete_guest">Usuń gościa</string>
+    <string name="delete_old_guest">Usuń zaproszonego gościa</string>
+    <string name="cancel_delete_guest">Anuluj</string>
+    <string name="my_invitations_list">Moje zaproszenia</string>
 
 </resources>

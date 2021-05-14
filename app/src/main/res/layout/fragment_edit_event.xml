@@ -19,7 +19,7 @@
             android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
             android:fontFamily="@font/montserrat"
-            android:text="@string/editEvent"
+            android:text="@string/edit_event"
             android:textSize="18sp"
             android:textStyle="bold" />
 
@@ -99,8 +99,8 @@
                     android:layout_width="180dp"
                     android:layout_height="40dp"
                     android:ems="10"
-                    android:inputType="text"
                     android:fontFamily="@font/montserrat"
+                    android:inputType="text"
                     android:textSize="14dp" />
 
 
@@ -109,8 +109,8 @@
                     android:layout_width="180dp"
                     android:layout_height="40dp"
                     android:ems="10"
-                    android:inputType="date"
                     android:fontFamily="@font/montserrat"
+                    android:inputType="date"
                     android:textSize="14dp"
                     app:mask="##/##/####" />
 
@@ -119,8 +119,8 @@
                     android:layout_width="180dp"
                     android:layout_height="40dp"
                     android:ems="10"
-                    android:inputType="time"
                     android:fontFamily="@font/montserrat"
+                    android:inputType="time"
                     android:textSize="14dp"
                     app:mask="##:##" />
 
@@ -129,8 +129,8 @@
                     android:layout_width="180dp"
                     android:layout_height="40dp"
                     android:ems="10"
-                    android:inputType="date"
                     android:fontFamily="@font/montserrat"
+                    android:inputType="date"
                     android:textSize="14dp"
                     app:mask="##/##/####" />
 
@@ -139,8 +139,8 @@
                     android:layout_width="180dp"
                     android:layout_height="40dp"
                     android:ems="10"
-                    android:inputType="time"
                     android:fontFamily="@font/montserrat"
+                    android:inputType="time"
                     android:textSize="14dp"
                     app:mask="##:##" />
 
@@ -149,8 +149,8 @@
                     android:layout_width="180dp"
                     android:layout_height="40dp"
                     android:ems="10"
-                    android:inputType="text"
                     android:fontFamily="@font/montserrat"
+                    android:inputType="text"
                     android:textSize="14dp" />
 
                 <EditText
@@ -158,9 +158,9 @@
                     android:layout_width="180dp"
                     android:layout_height="wrap_content"
                     android:ems="10"
-                    android:inputType="textMultiLine"
                     android:fontFamily="@font/montserrat"
-                    android:textSize="14dp"/>
+                    android:inputType="textMultiLine"
+                    android:textSize="14dp" />
 
             </LinearLayout>
         </LinearLayout>
@@ -169,10 +169,10 @@
             android:id="@+id/editEventImageTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/montserrat"
-            android:text="@string/edit_event_image"
             android:layout_marginStart="10dp"
             android:layout_marginTop="10dp"
+            android:fontFamily="@font/montserrat"
+            android:text="@string/edit_event_image"
             android:textSize="16sp"
             android:textStyle="bold" />
 
@@ -181,6 +181,67 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp" />
+
+        <TextView
+            android:id="@+id/editEventNewGuestSearchListTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="28dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/montserrat"
+            android:text="@string/edit_event_guest_search_list"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <SearchView
+            android:id="@+id/editEventGuestListSearchView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusable="true"
+            android:iconifiedByDefault="false"
+            android:queryHint="@string/event_guest_search" />
+
+        <ListView
+            android:id="@+id/editEventUserSearchListView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="true" />
+
+        <TextView
+            android:id="@+id/editEventNewGuestListTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="28dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/montserrat"
+            android:text="@string/event_new_guest_list"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+
+        <ListView
+            android:id="@+id/editEventNewGuestListListView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="true" />
+
+
+        <TextView
+            android:id="@+id/editEventGuestListTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="28dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/montserrat"
+            android:text="@string/edit_event_guest_list"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <ListView
+            android:id="@+id/editEventGuestListListView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="true" />
 
         <LinearLayout
             android:layout_width="match_parent"
