@@ -1,12 +1,14 @@
 package com.annabohm.pracainzynierska;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.view.GravityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
@@ -56,6 +58,8 @@ public class MainFragment extends Fragment {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     CollectionReference events = db.collection("Events");
     CollectionReference attendeeEvents = db.collection("AttendeeEvents");
+    CollectionReference eventAttendees = db.collection("EventAttendees");
+    ArrayList<String> attendeesToDeleteIdList = new ArrayList<>();
     EventAdapter yourEventsAdapter;
     ConfirmedEventAdapter allEventsAdapter;
     HashMap<String, Event> confirmedEvents;
@@ -152,8 +156,8 @@ public class MainFragment extends Fragment {
     private void setUpYourEventsRecyclerView(final View view) {
         String currentUserId = firebaseAuth.getCurrentUser().getUid();
         Query query = events.orderBy("eventDateStart", Query.Direction.ASCENDING).whereEqualTo("eventAuthor", currentUserId);
-        final FirestoreRecyclerOptions<Event> events = new FirestoreRecyclerOptions.Builder<Event>().setQuery(query, Event.class).build();
-        yourEventsAdapter = new EventAdapter(events);
+        final FirestoreRecyclerOptions<Event> eventOptions = new FirestoreRecyclerOptions.Builder<Event>().setQuery(query, Event.class).build();
+        yourEventsAdapter = new EventAdapter(eventOptions);
         yourEventsRecyclerView.setHasFixedSize(false);
         yourEventsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));//<----------
         yourEventsRecyclerView.setAdapter(yourEventsAdapter);
@@ -165,8 +169,25 @@ public class MainFragment extends Fragment {
             }
 
             @Override
-            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-                yourEventsAdapter.deleteItem(viewHolder.getAdapterPosition());
+            public void onSwiped(@NonNull final RecyclerView.ViewHolder viewHolder, int direction) {
+                new AlertDialog.Builder(context)
+                        .setTitle("Usunięcie wydarzenia")
+                        .setMessage("Czy na pewno chcesz usunąć wydarzenie?")
+                        .setNegativeButton("Nie", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                yourEventsAdapter.notifyDataSetChanged();
+                            }
+                        })
+                        .setPositiveButton("Tak", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                final String eventToDeleteId = eventOptions.getSnapshots().getSnapshot(viewHolder.getAdapterPosition()).getId();
+                                getAttendeesToDeleteIdList(eventToDeleteId);
+                                yourEventsAdapter.deleteItem(viewHolder.getAdapterPosition());
+                                Toast.makeText(context, "Usunięto wydarzenie", Toast.LENGTH_SHORT).show();
+                            }
+                        })
+                        .setIcon(R.drawable.ic_decline)
+                        .show();
             }
         }).attachToRecyclerView(yourEventsRecyclerView);
 
@@ -183,6 +204,211 @@ public class MainFragment extends Fragment {
                 navController.navigate(R.id.mainToDisplayEvent, bundle);
             }
         });
+    }
+
+    public void getAttendeesToDeleteIdList(final String eventToDeleteId) {
+        Toast.makeText(context, "Jestem w getAtToDel", Toast.LENGTH_SHORT).show();
+        eventAttendees.document(eventToDeleteId).collection("Invited").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                if (!queryDocumentSnapshots.isEmpty()) {
+                    for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                        eventAttendees.document(eventToDeleteId).collection("Invited").document(documentSnapshot.getId()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                            @Override
+                            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                if (documentSnapshot.exists()) {
+                                    attendeesToDeleteIdList.add(documentSnapshot.get("User").toString());
+                                }
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.d(TAG, e.toString());
+                            }
+                        });
+                    }
+                }
+                eventAttendees.document(eventToDeleteId).collection("Confirmed").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        if (!queryDocumentSnapshots.isEmpty()) {
+                            for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                                eventAttendees.document(eventToDeleteId).collection("Confirmed").document(documentSnapshot.getId()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                    @Override
+                                    public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                        if (documentSnapshot.exists()) {
+                                            attendeesToDeleteIdList.add(documentSnapshot.get("User").toString());
+                                        }
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Log.d(TAG, e.toString());
+                                    }
+                                });
+                            }
+                        }
+                        eventAttendees.document(eventToDeleteId).collection("Declined").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                            @Override
+                            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                if (!queryDocumentSnapshots.isEmpty()) {
+                                    for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                                        eventAttendees.document(eventToDeleteId).collection("Declined").document(documentSnapshot.getId()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                            @Override
+                                            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                                if (documentSnapshot.exists()) {
+                                                    attendeesToDeleteIdList.add(documentSnapshot.get("User").toString());
+                                                }
+                                            }
+                                        }).addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Log.d(TAG, e.toString());
+                                            }
+                                        });
+                                    }
+                                }
+                                updateEventAttendees(eventToDeleteId);
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.d(TAG, e.toString());
+                            }
+                        });
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d(TAG, e.toString());
+                    }
+                });
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d(TAG, e.toString());
+            }
+        });
+    }
+
+    public void updateEventAttendees(final String eventToDeleteId) {
+        Toast.makeText(context, "Jestem w upEvAt", Toast.LENGTH_SHORT).show();
+        eventAttendees.document(eventToDeleteId).collection("Invited").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                if (!queryDocumentSnapshots.isEmpty()) {
+                    for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                        if (documentSnapshot.exists()) {
+                            eventAttendees.document(eventToDeleteId).collection("Invited").document(documentSnapshot.getId()).delete();
+                        }
+                    }
+                }
+                eventAttendees.document(eventToDeleteId).collection("Confirmed").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        if (!queryDocumentSnapshots.isEmpty()) {
+                            for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                                if (documentSnapshot.exists()) {
+                                    eventAttendees.document(eventToDeleteId).collection("Confirmed").document(documentSnapshot.getId()).delete();
+                                }
+                            }
+                        }
+                        eventAttendees.document(eventToDeleteId).collection("Declined").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                            @Override
+                            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                if (!queryDocumentSnapshots.isEmpty()) {
+                                    for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                                        if (documentSnapshot.exists()) {
+                                            eventAttendees.document(eventToDeleteId).collection("Declined").document(documentSnapshot.getId()).delete();
+                                        }
+                                    }
+                                }
+                                updateAttendeeEvents(eventToDeleteId);
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.d(TAG, e.toString());
+                            }
+                        });
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.d(TAG, e.toString());
+                    }
+                });
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d(TAG, e.toString());
+            }
+        });
+    }
+
+    public void updateAttendeeEvents(final String eventToDeleteId) {
+        Toast.makeText(context, "Jestem w upAtEv", Toast.LENGTH_SHORT).show();
+        for (final String userId : attendeesToDeleteIdList) {
+            attendeeEvents.document(userId).collection("Invited").whereEqualTo("Event", eventToDeleteId).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                @Override
+                public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                    if (!queryDocumentSnapshots.isEmpty()) {
+                        for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                            if (documentSnapshot.exists()) {
+                                Toast.makeText(context, "Jestem w upAtEv w Invited onSucc!", Toast.LENGTH_SHORT).show();
+                                attendeeEvents.document(userId).collection("Invited").document(documentSnapshot.getId()).delete();
+                            }
+                        }
+                    } else {
+                        attendeeEvents.document(userId).collection("Confirmed").whereEqualTo("Event", eventToDeleteId).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                            @Override
+                            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                if (!queryDocumentSnapshots.isEmpty()) {
+                                    for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                                        if (documentSnapshot.exists()) {
+                                            Toast.makeText(context, "Jestem w upAtEv w Confirmed onSucc!", Toast.LENGTH_SHORT).show();
+                                            attendeeEvents.document(userId).collection("Confirmed").document(documentSnapshot.getId()).delete();
+                                        }
+                                    }
+                                } else {
+                                    attendeeEvents.document(userId).collection("Declined").whereEqualTo("Event", eventToDeleteId).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                                        @Override
+                                        public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                                            if (!queryDocumentSnapshots.isEmpty()) {
+                                                for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                                                    if (documentSnapshot.exists()) {
+                                                        Toast.makeText(context, "Jestem w upAtEv w Declined onSucc!", Toast.LENGTH_SHORT).show();
+                                                        attendeeEvents.document(userId).collection("Declined").document(documentSnapshot.getId()).delete();
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }).addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            Log.d(TAG, e.toString());
+                                        }
+                                    });
+                                }
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.d(TAG, e.toString());
+                            }
+                        });
+                    }
+
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.d(TAG, e.toString());
+                }
+            });
+        }
     }
 
     @Override
@@ -213,5 +439,4 @@ public class MainFragment extends Fragment {
         super.onStop();
         yourEventsAdapter.stopListening();
     }
-
 }
