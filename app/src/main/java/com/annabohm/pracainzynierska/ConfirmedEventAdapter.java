@@ -51,7 +51,6 @@ public class ConfirmedEventAdapter extends RecyclerView.Adapter<ConfirmedEventAd
         if (sortedEventsList.size() > 0) {
             Date eventDateStart = sortedEventsList.get(position).getEventDateStart();
             Date eventTimeStart = sortedEventsList.get(position).getEventTimeStart();
-            Date eventTimeFinish = sortedEventsList.get(position).getEventTimeFinish();
             DateFormat dateFormatterRead = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy");
             DateFormat dateFormatterPrint = new SimpleDateFormat("dd/MM/yyyy");
             DateFormat timeFormatterPrint = new SimpleDateFormat("HH:mm");
@@ -59,7 +58,6 @@ public class ConfirmedEventAdapter extends RecyclerView.Adapter<ConfirmedEventAd
             try {
                 eventDateStart = dateFormatterRead.parse(eventDateStart.toString());
                 eventTimeStart = dateFormatterRead.parse(eventTimeStart.toString());
-                eventTimeFinish = dateFormatterRead.parse(eventTimeFinish.toString());
             } catch (ParseException e) {
                 e.printStackTrace();
                 Log.i(TAG, e.toString());
@@ -68,7 +66,6 @@ public class ConfirmedEventAdapter extends RecyclerView.Adapter<ConfirmedEventAd
             viewHolder.miniEventNameTextView.setText(sortedEventsList.get(position).getEventName());
             viewHolder.miniEventDateStartTextView.setText(dateFormatterPrint.format(eventDateStart));
             viewHolder.miniEventTimeStartTextView.setText(timeFormatterPrint.format(eventTimeStart));
-            viewHolder.miniEventTimeFinishTextView.setText(timeFormatterPrint.format(eventTimeFinish));
 
             viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -111,7 +108,6 @@ public class ConfirmedEventAdapter extends RecyclerView.Adapter<ConfirmedEventAd
         TextView miniEventNameTextView;
         TextView miniEventDateStartTextView;
         TextView miniEventTimeStartTextView;
-        TextView miniEventTimeFinishTextView;
 
         public ViewHolder(View view) {
             super(view);
@@ -119,7 +115,6 @@ public class ConfirmedEventAdapter extends RecyclerView.Adapter<ConfirmedEventAd
             miniEventNameTextView = view.findViewById(R.id.miniEventNameTextView);
             miniEventDateStartTextView = view.findViewById(R.id.miniEventDateStartTextView);
             miniEventTimeStartTextView = view.findViewById(R.id.miniEventTimeStartTextView);
-            miniEventTimeFinishTextView = view.findViewById(R.id.miniEventTimeFinishTextView);
         }
 
     }

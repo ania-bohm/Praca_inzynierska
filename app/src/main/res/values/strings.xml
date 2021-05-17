@@ -17,10 +17,12 @@
     <string name="phone_number">Numer telefonu*</string>
     <string name="password1">Hasło*</string>
     <string name="your_events">Twoje wydarzenia</string>
-    <string name="all_events">Wszystkie wydarzenia</string>
+    <string name="all_events">Zaakceptowane wydarzenia</string>
     <string name="countdown">Najbliższe wydarzenie już za:</string>
     <string name="new_event">Nowe wydarzenie</string>
+    <string name="event">Wydarzenie</string>
     <string name="event_name">Nazwa</string>
+    <string name="event_author">Autor</string>
     <string name="event_date_start">Data rozpoczęcia</string>
     <string name="event_date_finish">Data zakończenia</string>
     <string name="event_time_start">Godzina rozpoczęcia</string>
@@ -59,7 +61,7 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="navigation_drawer_home">Strona główna</string>
     <string name="navigation_drawer_my_invitations">Moje zaproszenia</string>
-    <string name="navigation_drawer_calendar">Kalendarz wydarzeń</string>
+    <string name="navigation_drawer_past_events">Twoje zakończone wydarzenia</string>
     <string name="navigation_drawer_account_settings">Ustawienia konta</string>
     <string name="navigation_drawer_app_settings">Ustawienia</string>
     <string name="navigation_drawer_logout">Wyloguj się</string>
@@ -71,5 +73,8 @@
     <string name="delete_old_guest">Usuń zaproszonego gościa</string>
     <string name="cancel_delete_guest">Anuluj</string>
     <string name="my_invitations_list">Moje zaproszenia</string>
+    <string name="past_events">Moje zakończone wydarzenia</string>
+    <string name="past_events_start">Początek</string>
+    <string name="past_events_finish">Koniec</string>
 
 </resources>

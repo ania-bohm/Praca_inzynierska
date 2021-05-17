@@ -13,7 +13,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -21,6 +20,7 @@ import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -28,19 +28,16 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.Locale;
 
 import static android.content.ContentValues.TAG;
 
 public class DisplayEventFragment extends Fragment {
 
     NavController navController;
-    ImageView toDoListButton, shoppingListButton, editEventButton;
-    TextView showEventNameTextView, showEventDateStartTextView, showEventTimeStartTextView, showEventDateFinishTextView, showEventTimeFinishTextView, showEventLocationTextView, showEventDescriptionTextView;
+    ImageView toDoListButton, eventBudgetButton, editEventButton;
+    TextView showEventAuthorTextView, showEventNameTextView, showEventDateStartTextView, showEventTimeStartTextView, showEventDateFinishTextView, showEventTimeFinishTextView, showEventLocationTextView, showEventDescriptionTextView;
     ListView displayEventGuestListListView;
     ArrayList<User> userList;
     ArrayList<String> userStatusList;
@@ -52,7 +49,8 @@ public class DisplayEventFragment extends Fragment {
     CollectionReference events = db.collection("Events");
     CollectionReference users = db.collection("Users");
     CollectionReference eventAttendees = db.collection("EventAttendees");
-    DocumentReference event;
+    FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+    DocumentReference eventReference;
 
     private View.OnClickListener toDoListOnClickListener = new View.OnClickListener() {
         @Override
@@ -60,10 +58,10 @@ public class DisplayEventFragment extends Fragment {
             navController.navigate(R.id.displayEventToToDoList);
         }
     };
-    private View.OnClickListener shoppingListOnClickListener = new View.OnClickListener() {
+    private View.OnClickListener eventBudgetOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            navController.navigate(R.id.displayEventToShoppingList);
+            navController.navigate(R.id.displayEventToEventBudget);
         }
     };
     private View.OnClickListener editEventOnClickListener = new View.OnClickListener() {
@@ -103,8 +101,9 @@ public class DisplayEventFragment extends Fragment {
         navController = Navigation.findNavController(view);
 
         toDoListButton = view.findViewById(R.id.toDoListButton);
-        shoppingListButton = view.findViewById(R.id.shoppingListButton);
+        eventBudgetButton = view.findViewById(R.id.eventBudgetButton);
         editEventButton = view.findViewById(R.id.editEventButton);
+        showEventAuthorTextView = view.findViewById(R.id.showEventAuthorTextView);
         showEventNameTextView = view.findViewById(R.id.showEventNameTextView);
         showEventDateStartTextView = view.findViewById(R.id.showEventDateStartTextView);
         showEventTimeStartTextView = view.findViewById(R.id.showEventTimeStartTextView);
@@ -116,8 +115,8 @@ public class DisplayEventFragment extends Fragment {
 
         bundle = this.getArguments();
         String path = bundle.getString("path");
-        event = db.document(path);
-        eventId = event.getId();
+        eventReference = db.document(path);
+        eventId = eventReference.getId();
 
         userList = new ArrayList<>();
         userStatusList = new ArrayList<>();
@@ -125,24 +124,41 @@ public class DisplayEventFragment extends Fragment {
         displayEventGuestListListView.setAdapter(adapter);
 
         toDoListButton.setOnClickListener(toDoListOnClickListener);
-        shoppingListButton.setOnClickListener(shoppingListOnClickListener);
-        editEventButton.setOnClickListener(editEventOnClickListener);
+        eventBudgetButton.setOnClickListener(eventBudgetOnClickListener);
 
-        event.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+        eventReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 if (documentSnapshot.exists()) {
-                    Event event = documentSnapshot.toObject(Event.class);
-                    DateFormat dateFormatterPrint = new SimpleDateFormat("dd/MM/yyyy");
-                    DateFormat timeFormatterPrint = new SimpleDateFormat("HH:mm");
+                    final Event event = documentSnapshot.toObject(Event.class);
+                    if (event.getEventAuthor().equals(firebaseAuth.getCurrentUser().getUid())) {
+                        editEventButton.setVisibility(View.VISIBLE);
+                        editEventButton.setOnClickListener(editEventOnClickListener);
+                    } else {
+                        editEventButton.setVisibility(View.GONE);
+                    }
+                    final DateFormat dateFormatterPrint = new SimpleDateFormat("dd/MM/yyyy");
+                    final DateFormat timeFormatterPrint = new SimpleDateFormat("HH:mm");
+                    users.document(event.getEventAuthor()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                        @Override
+                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                            User userAuthor = documentSnapshot.toObject(User.class);
+                            showEventAuthorTextView.setText(userAuthor.getUserFirstName() + " " + userAuthor.getUserLastName());
+                            showEventNameTextView.setText(event.getEventName());
+                            showEventDateStartTextView.setText(dateFormatterPrint.format(event.getEventDateStart()));
+                            showEventTimeStartTextView.setText(timeFormatterPrint.format(event.getEventTimeStart()));
+                            showEventDateFinishTextView.setText(dateFormatterPrint.format(event.getEventDateFinish()));
+                            showEventTimeFinishTextView.setText(timeFormatterPrint.format(event.getEventTimeFinish()));
+                            showEventLocationTextView.setText(event.getEventLocation());
+                            showEventDescriptionTextView.setText(event.getEventDescription());
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.d(TAG, e.toString());
+                        }
+                    });
 
-                    showEventNameTextView.setText(event.getEventName());
-                    showEventDateStartTextView.setText(dateFormatterPrint.format(event.getEventDateStart()));
-                    showEventTimeStartTextView.setText(timeFormatterPrint.format(event.getEventTimeStart()));
-                    showEventDateFinishTextView.setText(dateFormatterPrint.format(event.getEventDateFinish()));
-                    showEventTimeFinishTextView.setText(timeFormatterPrint.format(event.getEventTimeFinish()));
-                    showEventLocationTextView.setText(event.getEventLocation());
-                    showEventDescriptionTextView.setText(event.getEventDescription());
                 } else {
                     Toast.makeText(context, "Document does not exist", Toast.LENGTH_SHORT).show();
                 }

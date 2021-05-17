@@ -37,9 +37,6 @@
             android:id="@+id/mainToInvitationList"
             app:destination="@id/invitationListFragment" />
         <action
-            android:id="@+id/mainToCalendar"
-            app:destination="@id/calendarFragment" />
-        <action
             android:id="@+id/mainToAccountSettings"
             app:destination="@id/accountSettingsFragment" />
         <action
@@ -48,6 +45,9 @@
         <action
             android:id="@+id/mainToDisplayEvent"
             app:destination="@id/displayEventFragment" />
+        <action
+            android:id="@+id/mainToPastEvents"
+            app:destination="@id/pastEventsFragment" />
     </fragment>
     <fragment
         android:id="@+id/accountSettingsFragment"
@@ -91,11 +91,6 @@
             app:destination="@id/displayEventFragment" />
     </fragment>
     <fragment
-        android:id="@+id/calendarFragment"
-        android:name="com.annabohm.pracainzynierska.CalendarFragment"
-        android:label="fragment_calendar"
-        tools:layout="@layout/fragment_calendar" />
-    <fragment
         android:id="@+id/displayEventFragment"
         android:name="com.annabohm.pracainzynierska.DisplayEventFragment"
         android:label="fragment_display_event"
@@ -107,8 +102,8 @@
             android:id="@+id/displayEventToToDoList"
             app:destination="@id/toDoFragment" />
         <action
-            android:id="@+id/displayEventToShoppingList"
-            app:destination="@id/shoppingListFragment" />
+            android:id="@+id/displayEventToEventBudget"
+            app:destination="@id/eventBudgetFragment" />
     </fragment>
     <fragment
         android:id="@+id/editEventFragment"
@@ -116,13 +111,22 @@
         android:label="fragment_edit_event"
         tools:layout="@layout/fragment_edit_event" />
     <fragment
-        android:id="@+id/shoppingListFragment"
-        android:name="com.annabohm.pracainzynierska.ShoppingListFragment"
-        android:label="fragment_shopping_list"
-        tools:layout="@layout/fragment_shopping_list" />
-    <fragment
         android:id="@+id/toDoFragment"
         android:name="com.annabohm.pracainzynierska.ToDoFragment"
         android:label="fragment_to_do"
         tools:layout="@layout/fragment_to_do" />
+    <fragment
+        android:id="@+id/pastEventsFragment"
+        android:name="com.annabohm.pracainzynierska.PastEventsFragment"
+        android:label="fragment_past_events"
+        tools:layout="@layout/fragment_past_events" >
+        <action
+            android:id="@+id/pastEventsToDisplayEvent"
+            app:destination="@id/displayEventFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/eventBudgetFragment"
+        android:name="com.annabohm.pracainzynierska.EventBudgetFragment"
+        android:label="fragment_event_budget"
+        tools:layout="@layout/fragment_event_budget" />
 </navigation>

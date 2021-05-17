@@ -82,7 +82,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
             case R.id.nav_calendar:
                 closeDrawer(drawerLayout);
-                navController.navigate(R.id.mainToCalendar);
+                navController.navigate(R.id.mainToPastEvents);
                 break;
 
             case R.id.nav_account_settings:

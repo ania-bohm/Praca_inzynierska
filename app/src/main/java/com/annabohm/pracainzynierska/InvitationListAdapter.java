@@ -8,14 +8,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -25,14 +23,11 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import jp.wasabeef.picasso.transformations.CropCircleTransformation;
 
 import static android.content.ContentValues.TAG;
 
@@ -49,7 +44,7 @@ public class InvitationListAdapter extends ArrayAdapter<Event> implements View.O
     private Context context;
 
     public InvitationListAdapter(@NonNull Context context, @NonNull List<Event> eventList, List<String> eventIdList, NavController navController) {
-        super(context, R.layout.invitation, eventList);
+        super(context, R.layout.invitation_list_item, eventList);
         this.eventList = (ArrayList) eventList;
         this.context = context;
         this.eventIdList = (ArrayList) eventIdList;
@@ -64,12 +59,11 @@ public class InvitationListAdapter extends ArrayAdapter<Event> implements View.O
     @NonNull
     @Override
     public View getView(final int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-        this.eventAttendeesList = new ArrayList<>();
         final Event event = getItem(position);
         if (convertView == null) {
-            convertView = LayoutInflater.from(getContext()).inflate(R.layout.invitation, parent, false);
+            convertView = LayoutInflater.from(getContext()).inflate(R.layout.invitation_list_item, parent, false);
         }
-        TextView invitationEventNameTextView = convertView.findViewById(R.id.invitationEventNameTextView);
+        final TextView invitationEventNameTextView = convertView.findViewById(R.id.invitationEventNameTextView);
         final TextView invitationEventAuthorTextView = convertView.findViewById(R.id.invitationEventAuthorTextView);
         Button invitationDisplayEventButton = convertView.findViewById(R.id.invitationDisplayEventButton);
         Button invitationConfirmEventButton = convertView.findViewById(R.id.invitationConfirmEventButton);
@@ -80,6 +74,7 @@ public class InvitationListAdapter extends ArrayAdapter<Event> implements View.O
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 User user = documentSnapshot.toObject(User.class);
                 invitationEventAuthorTextView.setText("Autor: " + user.getUserFirstName() + " " + user.getUserLastName());
+                invitationEventNameTextView.setText(event.getEventName());
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -87,9 +82,6 @@ public class InvitationListAdapter extends ArrayAdapter<Event> implements View.O
                 Log.d(TAG, e.toString());
             }
         });
-
-        invitationEventNameTextView.setText(event.getEventName());
-
 
         invitationDisplayEventButton.setOnClickListener(new View.OnClickListener() {
             @Override
