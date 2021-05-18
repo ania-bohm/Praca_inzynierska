@@ -25,7 +25,6 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="15dp"
             android:fontFamily="@font/montserrat"
-            android:text="@string/event_name"
             android:textAlignment="center"
             android:textSize="20dp"
             android:textStyle="bold" />
@@ -36,7 +35,6 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:fontFamily="@font/montserrat"
-            android:text="@string/event_author"
             android:textAlignment="center"
             android:textSize="18dp" />
 
@@ -47,7 +45,6 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:fontFamily="@font/montserrat"
-            android:text="@string/event_date_start"
             android:textAlignment="center"
             android:textSize="18dp" />
 
@@ -58,7 +55,6 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
             android:fontFamily="@font/montserrat"
-            android:text="@string/event_time_start"
             android:textAlignment="center"
             android:textSize="18dp" />
 

@@ -76,5 +76,7 @@
     <string name="past_events">Moje zakończone wydarzenia</string>
     <string name="past_events_start">Początek</string>
     <string name="past_events_finish">Koniec</string>
+    <string name="to_do_title">Tytuł</string>
+    <string name="to_do_description">Opis</string>
 
 </resources>

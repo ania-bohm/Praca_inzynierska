@@ -118,8 +118,7 @@ public class PastEventsFragment extends Fragment {
                             eventList.add(pastEvent);
                             eventIdList.add(documentSnapshot.getId());
                             pastEventsListAdapter.notifyDataSetChanged();
-                        }
-                        if (pastEvent.getEventDateFinish().equals(new Date())) {
+                        } else if (pastEvent.getEventDateFinish().equals(new Date())) {
                             if (hourNow == 0) {
                                 if (hour == 0) {
                                     if (minute < minuteNow) {
@@ -128,7 +127,11 @@ public class PastEventsFragment extends Fragment {
                                         pastEventsListAdapter.notifyDataSetChanged();
                                     }
                                 }
-                            } else if (hour <= hourNow && minute < minuteNow) {
+                            } else if (hour == hourNow && minute < minuteNow) {
+                                eventList.add(pastEvent);
+                                eventIdList.add(documentSnapshot.getId());
+                                pastEventsListAdapter.notifyDataSetChanged();
+                            } else if (hour < hourNow) {
                                 eventList.add(pastEvent);
                                 eventIdList.add(documentSnapshot.getId());
                                 pastEventsListAdapter.notifyDataSetChanged();

@@ -41,7 +41,10 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -52,7 +55,8 @@ import static android.content.ContentValues.TAG;
 public class MainFragment extends Fragment {
     NavController navController;
     ImageView addEventButton;
-    RecyclerView yourEventsRecyclerView;
+    //RecyclerView yourEventsRecyclerView;
+    RecyclerView yourCurrentEventsRecyclerView;
     RecyclerView allEventsRecyclerView;
     FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
     FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -60,9 +64,11 @@ public class MainFragment extends Fragment {
     CollectionReference attendeeEvents = db.collection("AttendeeEvents");
     CollectionReference eventAttendees = db.collection("EventAttendees");
     ArrayList<String> attendeesToDeleteIdList = new ArrayList<>();
-    EventAdapter yourEventsAdapter;
+    //EventAdapter yourEventsAdapter;
     ConfirmedEventAdapter allEventsAdapter;
+    ConfirmedEventAdapter yourCurrentEventsAdapter;
     HashMap<String, Event> confirmedEvents;
+    HashMap<String, Event> yourCurrentEvents;
     Context context;
 
     private View.OnClickListener addEventOnClickListener = new View.OnClickListener() {
@@ -107,8 +113,37 @@ public class MainFragment extends Fragment {
                         events.document(eventId).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                             @Override
                             public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                confirmedEvents.put(eventId, documentSnapshot.toObject(Event.class));
-                                allEventsAdapter.notifyDataSetChanged();
+                                //
+                                Event eventToCheck = documentSnapshot.toObject(Event.class);
+                                Date dateNow = new Date();
+                                final DateFormat timeFormatterPrint = new SimpleDateFormat("HH:mm");
+                                String newString = timeFormatterPrint.format(eventToCheck.getEventTimeFinish());
+                                String newStringNow = timeFormatterPrint.format(dateNow);
+
+                                int hourNow = Integer.parseInt(newStringNow.substring(0, 2));
+                                int hour = Integer.parseInt(newString.substring(0, 2));
+                                int minuteNow = Integer.parseInt(newStringNow.substring(3, 5));
+                                int minute = Integer.parseInt(newString.substring(3, 5));
+
+                                if (eventToCheck.getEventDateFinish().after(new Date())) {
+                                    confirmedEvents.put(eventId, documentSnapshot.toObject(Event.class));
+                                    allEventsAdapter.notifyDataSetChanged();
+                                } else if (eventToCheck.getEventDateFinish().equals(new Date())) {
+                                    if (hourNow == 0) {
+                                        if (hour == 0) {
+                                            if (minute > minuteNow) {
+                                                confirmedEvents.put(eventId, documentSnapshot.toObject(Event.class));
+                                                allEventsAdapter.notifyDataSetChanged();
+                                            }
+                                        }
+                                    } else if (hour == hourNow && minute > minuteNow) {
+                                        confirmedEvents.put(eventId, documentSnapshot.toObject(Event.class));
+                                        allEventsAdapter.notifyDataSetChanged();
+                                    } else if (hour > hourNow) {
+                                        confirmedEvents.put(eventId, documentSnapshot.toObject(Event.class));
+                                        allEventsAdapter.notifyDataSetChanged();
+                                    }
+                                }
                             }
                         }).addOnFailureListener(new OnFailureListener() {
                             @Override
@@ -129,7 +164,7 @@ public class MainFragment extends Fragment {
                             public void onSuccess(DocumentSnapshot documentSnapshot) {
                                 if (documentSnapshot.exists()) {
                                     String path = documentSnapshot.getReference().getPath();
-                                    Toast.makeText(getContext(), "Position clicked: " + position, Toast.LENGTH_SHORT).show();
+//                                    Toast.makeText(getContext(), "Position clicked: " + position, Toast.LENGTH_SHORT).show();
                                     Bundle bundle = new Bundle();
                                     bundle.putString("path", path);
                                     navController.navigate(R.id.mainToDisplayEvent, bundle);
@@ -143,7 +178,6 @@ public class MainFragment extends Fragment {
                         });
                     }
                 });
-
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -153,55 +187,107 @@ public class MainFragment extends Fragment {
         });
     }
 
-    private void setUpYourEventsRecyclerView(final View view) {
+    private void setUpYourCurrentEventsRecyclerView(final View view) {
         String currentUserId = firebaseAuth.getCurrentUser().getUid();
-        Query query = events.orderBy("eventDateStart", Query.Direction.ASCENDING).whereEqualTo("eventAuthor", currentUserId);
-        final FirestoreRecyclerOptions<Event> eventOptions = new FirestoreRecyclerOptions.Builder<Event>().setQuery(query, Event.class).build();
-        yourEventsAdapter = new EventAdapter(eventOptions);
-        yourEventsRecyclerView.setHasFixedSize(false);
-        yourEventsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));//<----------
-        yourEventsRecyclerView.setAdapter(yourEventsAdapter);
-
-        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.UP | ItemTouchHelper.DOWN) {
+        events.orderBy("eventDateStart", Query.Direction.ASCENDING).whereEqualTo("eventAuthor", currentUserId).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
-            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
-                return false;
-            }
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                List<DocumentSnapshot> documentSnapshots = queryDocumentSnapshots.getDocuments();
+                for (DocumentSnapshot documentSnapshot : documentSnapshots) {
+                    if (documentSnapshot.exists()) {
+                        final String eventId = documentSnapshot.getId();
+                        Event eventToCheck = documentSnapshot.toObject(Event.class);
+                        Date dateNow = new Date();
+                        final DateFormat timeFormatterPrint = new SimpleDateFormat("HH:mm");
+                        String newString = timeFormatterPrint.format(eventToCheck.getEventTimeFinish());
+                        String newStringNow = timeFormatterPrint.format(dateNow);
 
-            @Override
-            public void onSwiped(@NonNull final RecyclerView.ViewHolder viewHolder, int direction) {
-                new AlertDialog.Builder(context)
-                        .setTitle("Usunięcie wydarzenia")
-                        .setMessage("Czy na pewno chcesz usunąć wydarzenie?")
-                        .setNegativeButton("Nie", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                yourEventsAdapter.notifyDataSetChanged();
+                        int hourNow = Integer.parseInt(newStringNow.substring(0, 2));
+                        int hour = Integer.parseInt(newString.substring(0, 2));
+                        int minuteNow = Integer.parseInt(newStringNow.substring(3, 5));
+                        int minute = Integer.parseInt(newString.substring(3, 5));
+
+                        if (eventToCheck.getEventDateFinish().after(new Date())) {
+                            yourCurrentEvents.put(eventId, documentSnapshot.toObject(Event.class));
+                            yourCurrentEventsAdapter.notifyDataSetChanged();
+                        } else if (eventToCheck.getEventDateFinish().equals(new Date())) {
+                            if (hourNow == 0) {
+                                if (hour == 0) {
+                                    if (minute > minuteNow) {
+                                        yourCurrentEvents.put(eventId, documentSnapshot.toObject(Event.class));
+                                        yourCurrentEventsAdapter.notifyDataSetChanged();
+                                    }
+                                }
+                            } else if (hour == hourNow && minute > minuteNow) {
+                                yourCurrentEvents.put(eventId, documentSnapshot.toObject(Event.class));
+                                yourCurrentEventsAdapter.notifyDataSetChanged();
+                            } else if (hour > hourNow) {
+                                yourCurrentEvents.put(eventId, documentSnapshot.toObject(Event.class));
+                                yourCurrentEventsAdapter.notifyDataSetChanged();
                             }
-                        })
-                        .setPositiveButton("Tak", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                final String eventToDeleteId = eventOptions.getSnapshots().getSnapshot(viewHolder.getAdapterPosition()).getId();
-                                getAttendeesToDeleteIdList(eventToDeleteId);
-                                yourEventsAdapter.deleteItem(viewHolder.getAdapterPosition());
-                                Toast.makeText(context, "Usunięto wydarzenie", Toast.LENGTH_SHORT).show();
-                            }
-                        })
-                        .setIcon(R.drawable.ic_decline)
-                        .show();
-            }
-        }).attachToRecyclerView(yourEventsRecyclerView);
+                        }
+                    }
+                }
 
-        yourEventsAdapter.setOnItemClickListener(new EventAdapter.OnItemClickListener() {
+                yourCurrentEventsRecyclerView.setAdapter(yourCurrentEventsAdapter);
+                yourCurrentEventsAdapter.setOnItemClickListener(new ConfirmedEventAdapter.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(int position) {
+                        String eventId = yourCurrentEventsAdapter.getEventId(position);
+
+                        events.document(eventId).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                            @Override
+                            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                if (documentSnapshot.exists()) {
+                                    String path = documentSnapshot.getReference().getPath();
+//                                    Toast.makeText(getContext(), "Position clicked: " + position, Toast.LENGTH_SHORT).show();
+                                    Bundle bundle = new Bundle();
+                                    bundle.putString("path", path);
+                                    navController.navigate(R.id.mainToDisplayEvent, bundle);
+                                }
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.d(TAG, e.toString());
+                            }
+                        });
+                    }
+                });
+                new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.UP | ItemTouchHelper.DOWN) {
+
+                    @Override
+                    public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                        return false;
+                    }
+
+                    @Override
+                    public void onSwiped(@NonNull final RecyclerView.ViewHolder viewHolder, int direction) {
+                        new AlertDialog.Builder(context)
+                                .setTitle("Usunięcie wydarzenia")
+                                .setMessage("Czy na pewno chcesz usunąć wydarzenie?")
+                                .setNegativeButton("Nie", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        yourCurrentEventsAdapter.notifyDataSetChanged();
+                                    }
+                                })
+                                .setPositiveButton("Tak", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        final String eventToDeleteId = yourCurrentEventsAdapter.getEventId(viewHolder.getAdapterPosition());
+                                        getAttendeesToDeleteIdList(eventToDeleteId);
+                                        yourCurrentEventsAdapter.deleteItem(viewHolder.getAdapterPosition());
+                                        Toast.makeText(context, "Usunięto wydarzenie", Toast.LENGTH_SHORT).show();
+                                    }
+                                })
+                                .setIcon(R.drawable.ic_decline)
+                                .show();
+                    }
+                }).attachToRecyclerView(yourCurrentEventsRecyclerView);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
             @Override
-            public void onItemClick(DocumentSnapshot documentSnapshot, int position) {
-                Event event = documentSnapshot.toObject(Event.class);
-                String path = documentSnapshot.getReference().getPath();
-                String id = documentSnapshot.getId();
-                DocumentReference documentReference = documentSnapshot.getReference();
-                Toast.makeText(getContext(), "Position clicked: " + position, Toast.LENGTH_SHORT).show();
-                Bundle bundle = new Bundle();
-                bundle.putString("path", path);
-                navController.navigate(R.id.mainToDisplayEvent, bundle);
+            public void onFailure(@NonNull Exception e) {
+                Log.d(TAG, e.toString());
             }
         });
     }
@@ -415,28 +501,36 @@ public class MainFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         navController = Navigation.findNavController(view);
+
         confirmedEvents = new HashMap<>();
+        yourCurrentEvents = new HashMap<>();
+
         allEventsAdapter = new ConfirmedEventAdapter(confirmedEvents);
-        yourEventsRecyclerView = view.findViewById(R.id.yourEventsRecyclerView);
+        yourCurrentEventsAdapter = new ConfirmedEventAdapter(yourCurrentEvents);
+        yourCurrentEventsRecyclerView = view.findViewById(R.id.yourCurrentEventsRecyclerView);
         allEventsRecyclerView = view.findViewById(R.id.allEventsRecyclerView);
         addEventButton = view.findViewById(R.id.addEventButton);
         addEventButton.setOnClickListener(addEventOnClickListener);
+
         allEventsRecyclerView.setHasFixedSize(false);
         allEventsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));//<----------
 
+        yourCurrentEventsRecyclerView.setHasFixedSize(false);
+        yourCurrentEventsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));//<----------
+
         setUpAllEventsRecyclerView(view);
-        setUpYourEventsRecyclerView(view);
+        setUpYourCurrentEventsRecyclerView(view);
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        yourEventsAdapter.startListening();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        yourEventsAdapter.stopListening();
-    }
+//    @Override
+//    public void onStart() {
+//        super.onStart();
+//        yourEventsAdapter.startListening();
+//    }
+//
+//    @Override
+//    public void onStop() {
+//        super.onStop();
+//        yourEventsAdapter.stopListening();
+//    }
 }

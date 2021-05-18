@@ -8,7 +8,15 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -26,6 +34,10 @@ public class ConfirmedEventAdapter extends RecyclerView.Adapter<ConfirmedEventAd
     HashMap<String, Event> eventMap;
     ArrayList<Event> sortedEventsList;
     OnItemClickListener listener;
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    CollectionReference events = db.collection("Events");
+    CollectionReference users = db.collection("Users");
+    DocumentReference userAuthor;
 
     public ConfirmedEventAdapter(HashMap<String, Event> eventMap) {
         this.eventMap = eventMap;
@@ -45,15 +57,15 @@ public class ConfirmedEventAdapter extends RecyclerView.Adapter<ConfirmedEventAd
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder viewHolder, final int position) {
+    public void onBindViewHolder(final ViewHolder viewHolder, final int position) {
         sortedEventsList = new ArrayList<>(eventMap.values());
         sortByDate();
         if (sortedEventsList.size() > 0) {
             Date eventDateStart = sortedEventsList.get(position).getEventDateStart();
             Date eventTimeStart = sortedEventsList.get(position).getEventTimeStart();
             DateFormat dateFormatterRead = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy");
-            DateFormat dateFormatterPrint = new SimpleDateFormat("dd/MM/yyyy");
-            DateFormat timeFormatterPrint = new SimpleDateFormat("HH:mm");
+            final DateFormat dateFormatterPrint = new SimpleDateFormat("dd/MM/yyyy");
+            final DateFormat timeFormatterPrint = new SimpleDateFormat("HH:mm");
 
             try {
                 eventDateStart = dateFormatterRead.parse(eventDateStart.toString());
@@ -62,17 +74,34 @@ public class ConfirmedEventAdapter extends RecyclerView.Adapter<ConfirmedEventAd
                 e.printStackTrace();
                 Log.i(TAG, e.toString());
             }
-            viewHolder.miniEventLinearLayout.setBackgroundResource(sortedEventsList.get(position).getEventImage());
-            viewHolder.miniEventNameTextView.setText(sortedEventsList.get(position).getEventName());
-            viewHolder.miniEventDateStartTextView.setText(dateFormatterPrint.format(eventDateStart));
-            viewHolder.miniEventTimeStartTextView.setText(timeFormatterPrint.format(eventTimeStart));
-
-            viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+            userAuthor = users.document(sortedEventsList.get(position).getEventAuthor());
+            final Date finalEventDateStart = eventDateStart;
+            final Date finalEventTimeStart = eventTimeStart;
+            userAuthor.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                 @Override
-                public void onClick(View v) {
-                    listener.onItemClick(position);
+                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                    if (documentSnapshot.exists()) {
+                        User user = documentSnapshot.toObject(User.class);
+                        viewHolder.miniEventLinearLayout.setBackgroundResource(sortedEventsList.get(position).getEventImage());
+                        viewHolder.miniEventNameTextView.setText(sortedEventsList.get(position).getEventName());
+                        viewHolder.miniEventDateStartTextView.setText(dateFormatterPrint.format(finalEventDateStart));
+                        viewHolder.miniEventTimeStartTextView.setText(timeFormatterPrint.format(finalEventTimeStart));
+                        viewHolder.miniEventAuthorTextView.setText(user.getUserFirstName() + " " + user.getUserLastName());
+                        viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                listener.onItemClick(position);
+                            }
+                        });
+                    }
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.i(TAG, e.toString());
                 }
             });
+
         }
     }
 
@@ -99,6 +128,10 @@ public class ConfirmedEventAdapter extends RecyclerView.Adapter<ConfirmedEventAd
         return null;
     }
 
+    public void deleteItem(int position) {
+        events.document(getEventId(position)).delete();
+    }
+
     public interface OnItemClickListener {
         void onItemClick(int position);
     }
@@ -108,6 +141,7 @@ public class ConfirmedEventAdapter extends RecyclerView.Adapter<ConfirmedEventAd
         TextView miniEventNameTextView;
         TextView miniEventDateStartTextView;
         TextView miniEventTimeStartTextView;
+        TextView miniEventAuthorTextView;
 
         public ViewHolder(View view) {
             super(view);
@@ -115,6 +149,7 @@ public class ConfirmedEventAdapter extends RecyclerView.Adapter<ConfirmedEventAd
             miniEventNameTextView = view.findViewById(R.id.miniEventNameTextView);
             miniEventDateStartTextView = view.findViewById(R.id.miniEventDateStartTextView);
             miniEventTimeStartTextView = view.findViewById(R.id.miniEventTimeStartTextView);
+            miniEventAuthorTextView = view.findViewById(R.id.miniEventAuthorTextView);
         }
 
     }
