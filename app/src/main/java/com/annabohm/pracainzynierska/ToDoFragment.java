@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -23,13 +24,16 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import dmax.dialog.SpotsDialog;
 
@@ -37,6 +41,7 @@ import static android.content.ContentValues.TAG;
 
 public class ToDoFragment extends Fragment {
 
+    ToDoFragment fragmentThis;
     ArrayList<ToDo> toDoList;
     RecyclerView toDoRecyclerView;
     RecyclerView.LayoutManager layoutManager;
@@ -66,12 +71,16 @@ public class ToDoFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         context = getContext();
+        fragmentThis = this;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         ((MainActivity) getActivity()).setDrawerLocked();
+        if (((MainActivity) getActivity()).getSupportActionBar() != null) {
+            ((MainActivity) getActivity()).getSupportActionBar().hide();
+        }
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_to_do, container, false);
     }
@@ -95,6 +104,9 @@ public class ToDoFragment extends Fragment {
             public void onClick(View v) {
                 if (!isUpdate) {
                     setData(toDoTitleMaterialEditText.getText().toString().trim(), toDoDescriptionMaterialEditText.getText().toString().trim());
+                } else {
+                    updateData(toDoTitleMaterialEditText.getText().toString().trim(), toDoDescriptionMaterialEditText.getText().toString().trim());
+                    isUpdate = !isUpdate;
                 }
             }
         });
@@ -106,13 +118,62 @@ public class ToDoFragment extends Fragment {
         loadData();
     }
 
+    @Override
+    public boolean onContextItemSelected(@NonNull MenuItem item) {
+        if (item.getTitle().equals("Usuń")) {
+            deleteItem(item.getOrder());
+        }
+        return super.onContextItemSelected(item);
+    }
+
+    private void deleteItem(int index) {
+        toDoLists.document(eventId).collection("ToDoList").document(toDoList.get(index).getToDoId()).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                loadData();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d(TAG, e.toString());
+            }
+        });
+    }
+
+    private void updateData(String title, String description) {
+        toDoLists.document(eventId)
+                .collection("ToDoList")
+                .document(toDoItemToUpdateId)
+                .update("toDoTitle", title, "toDoDescription", description)
+                .addOnSuccessListener(new OnSuccessListener<Void>() {
+                    @Override
+                    public void onSuccess(Void aVoid) {
+
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d(TAG, e.toString());
+            }
+        });
+        toDoLists.document(eventId).collection("ToDoList").document(toDoItemToUpdateId).addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
+                loadData();
+            }
+        });
+    }
+
     private void setData(String title, String description) {
         Map<String, Object> toDoObject = new HashMap<>();
+        String id = UUID.randomUUID().toString();
+        toDoObject.put("toDoId", id);
         toDoObject.put("toDoTitle", title);
         toDoObject.put("toDoDescription", description);
-        toDoLists.document(eventId).collection("ToDoList").add(toDoObject).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+        toDoObject.put("toDoChecked", false);
+        toDoLists.document(eventId).collection("ToDoList").document(id).set(toDoObject).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
-            public void onSuccess(DocumentReference documentReference) {
+            public void onSuccess(Void aVoid) {
                 loadData();
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -137,7 +198,7 @@ public class ToDoFragment extends Fragment {
                         toDoList.add(toDoItem);
                     }
                 }
-                toDoAdapter = new ToDoAdapter(toDoList);
+                toDoAdapter = new ToDoAdapter(fragmentThis, toDoList, eventId);
                 toDoRecyclerView.setAdapter(toDoAdapter);
                 alertDialog.dismiss();
             }

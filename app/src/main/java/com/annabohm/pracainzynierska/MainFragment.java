@@ -103,10 +103,10 @@ public class MainFragment extends Fragment {
 
     private void setUpAllEventsRecyclerView(final View view) {
         String currentUserId = firebaseAuth.getCurrentUser().getUid();
-        attendeeEvents.document(currentUserId).collection("Confirmed").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+        attendeeEvents.document(currentUserId).collection("Confirmed").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                List<DocumentSnapshot> documentSnapshots = queryDocumentSnapshots.getDocuments();
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                List<DocumentSnapshot> documentSnapshots = task.getResult().getDocuments();
                 for (DocumentSnapshot documentSnapshot : documentSnapshots) {
                     if (documentSnapshot.exists()) {
                         final String eventId = documentSnapshot.get("Event").toString();
@@ -189,10 +189,10 @@ public class MainFragment extends Fragment {
 
     private void setUpYourCurrentEventsRecyclerView(final View view) {
         String currentUserId = firebaseAuth.getCurrentUser().getUid();
-        events.orderBy("eventDateStart", Query.Direction.ASCENDING).whereEqualTo("eventAuthor", currentUserId).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+        events.orderBy("eventDateStart", Query.Direction.ASCENDING).whereEqualTo("eventAuthor", currentUserId).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                List<DocumentSnapshot> documentSnapshots = queryDocumentSnapshots.getDocuments();
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                List<DocumentSnapshot> documentSnapshots = task.getResult().getDocuments();
                 for (DocumentSnapshot documentSnapshot : documentSnapshots) {
                     if (documentSnapshot.exists()) {
                         final String eventId = documentSnapshot.getId();

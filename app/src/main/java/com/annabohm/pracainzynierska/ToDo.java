@@ -1,6 +1,7 @@
 package com.annabohm.pracainzynierska;
 
 public class ToDo {
+    private String toDoId;
     private String toDoTitle;
     private String toDoDescription;
     private boolean toDoChecked;
@@ -8,10 +9,18 @@ public class ToDo {
     public ToDo() {
     }
 
-    public ToDo(String toDoTitle, String toDoDescription, boolean toDoChecked) {
+    public ToDo(String toDoId, String toDoTitle, String toDoDescription, boolean toDoChecked) {
         this.toDoTitle = toDoTitle;
         this.toDoDescription = toDoDescription;
         this.toDoChecked = toDoChecked;
+    }
+
+    public String getToDoId() {
+        return toDoId;
+    }
+
+    public void setToDoId(String toDoId) {
+        this.toDoId = toDoId;
     }
 
     public String getToDoTitle() {

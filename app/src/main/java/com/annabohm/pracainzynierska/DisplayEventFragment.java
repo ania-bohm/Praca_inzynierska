@@ -18,8 +18,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
@@ -55,13 +57,13 @@ public class DisplayEventFragment extends Fragment {
     private View.OnClickListener toDoListOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            navController.navigate(R.id.displayEventToToDoList);
+            navController.navigate(R.id.displayEventToToDoList, bundle);
         }
     };
     private View.OnClickListener eventBudgetOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            navController.navigate(R.id.displayEventToEventBudget);
+            navController.navigate(R.id.displayEventToEventBudget, bundle);
         }
     };
     private View.OnClickListener editEventOnClickListener = new View.OnClickListener() {
@@ -126,9 +128,10 @@ public class DisplayEventFragment extends Fragment {
         toDoListButton.setOnClickListener(toDoListOnClickListener);
         eventBudgetButton.setOnClickListener(eventBudgetOnClickListener);
 
-        eventReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+        eventReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                DocumentSnapshot documentSnapshot = task.getResult();
                 if (documentSnapshot.exists()) {
                     final Event event = documentSnapshot.toObject(Event.class);
                     if (event.getEventAuthor().equals(firebaseAuth.getCurrentUser().getUid())) {
@@ -173,9 +176,10 @@ public class DisplayEventFragment extends Fragment {
     }
 
     public void initialiseGuestList() {
-        eventAttendees.document(eventId).collection("Invited").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+        eventAttendees.document(eventId).collection("Invited").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                QuerySnapshot queryDocumentSnapshots = task.getResult();
                 if (!queryDocumentSnapshots.getDocuments().isEmpty()) {
                     for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
                         String guestId = documentSnapshot.get("User").toString();
@@ -203,9 +207,10 @@ public class DisplayEventFragment extends Fragment {
             }
         });
 
-        eventAttendees.document(eventId).collection("Confirmed").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+        eventAttendees.document(eventId).collection("Confirmed").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                QuerySnapshot queryDocumentSnapshots = task.getResult();
                 if (!queryDocumentSnapshots.getDocuments().isEmpty()) {
                     for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
                         String guestId = documentSnapshot.get("User").toString();
@@ -233,10 +238,10 @@ public class DisplayEventFragment extends Fragment {
             }
         });
 
-        eventAttendees.document(eventId).collection("Declined").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+        eventAttendees.document(eventId).collection("Declined").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                if (!queryDocumentSnapshots.getDocuments().isEmpty()) {
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                QuerySnapshot queryDocumentSnapshots = task.getResult();if (!queryDocumentSnapshots.getDocuments().isEmpty()) {
                     for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
                         String guestId = documentSnapshot.get("User").toString();
                         users.document(guestId).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
