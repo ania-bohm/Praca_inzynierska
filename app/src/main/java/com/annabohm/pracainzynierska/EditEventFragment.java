@@ -9,6 +9,8 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -51,7 +53,7 @@ public class EditEventFragment extends Fragment implements AdapterView.OnItemSel
     NavController navController;
     Bundle bundle;
     Context context;
-    EditText editEventNameEditText, editEventDateStartEditText, editEventTimeStartEditText, editEventDateFinishEditText, editEventTimeFinishEditText, editEventLocationEditText, editEventDescriptionEditText;
+    EditText editEventNameEditText, editEventDateStartEditText, editEventTimeStartEditText, editEventDateFinishEditText, editEventTimeFinishEditText, editEventLocationEditText, editEventDescriptionEditText, editEventBudgetEditText;
     Button editEventReadyButton, editEventCancelButton;
     Spinner editEventImageSpinner;
     SearchView editEventGuestListSearchView;
@@ -134,6 +136,13 @@ public class EditEventFragment extends Fragment implements AdapterView.OnItemSel
                 event.update("eventDescription", editEventDescriptionEditText.getText().toString());
             }
 
+            if(!editEventBudgetEditText.getText().toString().trim().isEmpty()){
+                double eventBudgetDouble = Double.valueOf(editEventBudgetEditText.getText().toString());
+                long eventBudgetLong = (long) (eventBudgetDouble * 100);
+                event.update("eventBudget", eventBudgetLong);
+            }
+
+
             if (chosenImage != 0) {
                 event.update("eventImage", chosenImage);
             }
@@ -184,6 +193,7 @@ public class EditEventFragment extends Fragment implements AdapterView.OnItemSel
                     && editEventTimeFinishEditText.getText().toString().isEmpty()
                     && editEventLocationEditText.getText().toString().isEmpty()
                     && editEventDescriptionEditText.getText().toString().isEmpty()
+                    & editEventBudgetEditText.getText().toString().isEmpty()
                     && chosenImage == 0) {
                 Toast.makeText(context, "You have not changed anything. To escape edit mode, click 'Cancel' button", Toast.LENGTH_SHORT).show();
                 return;
@@ -234,6 +244,27 @@ public class EditEventFragment extends Fragment implements AdapterView.OnItemSel
         editEventTimeFinishEditText = view.findViewById(R.id.editEventTimeFinishEditText);
         editEventLocationEditText = view.findViewById(R.id.editEventLocationEditText);
         editEventDescriptionEditText = view.findViewById(R.id.editEventDescriptionEditText);
+        editEventBudgetEditText = view.findViewById(R.id.editEventBudgetEditText);
+        editEventBudgetEditText.addTextChangedListener(new TextWatcher() {
+            public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+            }
+
+            public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+            }
+
+            public void afterTextChanged(Editable arg0) {
+                String str = editEventBudgetEditText.getText().toString();
+                if (str.isEmpty()) return;
+                String str2 = PerfectDecimal(str, 6, 2);
+
+                if (!str2.equals(str)) {
+                    editEventBudgetEditText.setText(str2);
+                    editEventBudgetEditText.setSelection(str2.length());
+                }
+            }
+        });
+
+
         editEventReadyButton = view.findViewById(R.id.editEventReadyButton);
         editEventCancelButton = view.findViewById(R.id.editEventCancelButton);
         editEventImageSpinner = view.findViewById(R.id.editEventImageSpinner);
@@ -292,6 +323,9 @@ public class EditEventFragment extends Fragment implements AdapterView.OnItemSel
                     editEventTimeFinishEditText.setHint(timeFormatterPrint.format(event.getEventTimeFinish()));
                     editEventLocationEditText.setHint(event.getEventLocation());
                     editEventDescriptionEditText.setHint(event.getEventDescription());
+                    long eventBudgetLong = event.getEventBudget();
+                    double eventBudgetDouble = eventBudgetLong / 100;
+                    editEventBudgetEditText.setHint(String.valueOf(eventBudgetDouble));
                 } else {
                     Toast.makeText(context, "Document does not exist", Toast.LENGTH_SHORT).show();
                 }
@@ -349,6 +383,32 @@ public class EditEventFragment extends Fragment implements AdapterView.OnItemSel
                 }
             }
         });
+    }
+
+    public String PerfectDecimal(String str, int MAX_BEFORE_POINT, int MAX_DECIMAL) {
+        if (str.charAt(0) == '.') str = "0" + str;
+        int max = str.length();
+
+        String rFinal = "";
+        boolean after = false;
+        int i = 0, up = 0, decimal = 0;
+        char t;
+        while (i < max) {
+            t = str.charAt(i);
+            if (t != '.' && after == false) {
+                up++;
+                if (up > MAX_BEFORE_POINT) return rFinal;
+            } else if (t == '.') {
+                after = true;
+            } else {
+                decimal++;
+                if (decimal > MAX_DECIMAL)
+                    return rFinal;
+            }
+            rFinal = rFinal + t;
+            i++;
+        }
+        return rFinal;
     }
 
     public boolean containsUserId(String userId) {

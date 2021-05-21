@@ -69,7 +69,6 @@ public class DisplayEventFragment extends Fragment {
     private View.OnClickListener editEventOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            //Toast.makeText(context, "Bundle: " + bundle.getString("path"), Toast.LENGTH_SHORT).show();
             navController.navigate(R.id.displayEventToEditEvent, bundle);
         }
     };
@@ -136,9 +135,13 @@ public class DisplayEventFragment extends Fragment {
                     final Event event = documentSnapshot.toObject(Event.class);
                     if (event.getEventAuthor().equals(firebaseAuth.getCurrentUser().getUid())) {
                         editEventButton.setVisibility(View.VISIBLE);
+                        toDoListButton.setVisibility(View.VISIBLE);
+                        eventBudgetButton.setVisibility(View.VISIBLE);
                         editEventButton.setOnClickListener(editEventOnClickListener);
                     } else {
                         editEventButton.setVisibility(View.GONE);
+                        toDoListButton.setVisibility(View.GONE);
+                        eventBudgetButton.setVisibility(View.GONE);
                     }
                     final DateFormat dateFormatterPrint = new SimpleDateFormat("dd/MM/yyyy");
                     final DateFormat timeFormatterPrint = new SimpleDateFormat("HH:mm");

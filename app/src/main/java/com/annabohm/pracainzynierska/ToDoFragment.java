@@ -99,6 +99,7 @@ public class ToDoFragment extends Fragment {
         toDoTitleMaterialEditText = view.findViewById(R.id.toDoTitleMaterialEditText);
         toDoDescriptionMaterialEditText = view.findViewById(R.id.toDoDescriptionMaterialEditText);
         toDoFloatingActionButton = view.findViewById(R.id.toDoFloatingActionButton);
+
         toDoFloatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -110,6 +111,7 @@ public class ToDoFragment extends Fragment {
                 }
             }
         });
+
         toDoRecyclerView = view.findViewById(R.id.toDoRecyclerView);
         toDoRecyclerView.setHasFixedSize(true);
         layoutManager = new LinearLayoutManager(context);

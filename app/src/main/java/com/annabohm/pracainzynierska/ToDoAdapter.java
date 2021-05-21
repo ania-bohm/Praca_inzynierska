@@ -80,9 +80,9 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ToDoItemHolder
                     toDoLists.document(eventId).collection("ToDoList").document(toDoList.get(position).getToDoId()).update("toDoChecked", true).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
+                            toDoList.get(position).setToDoChecked(true);
                             holder.toDoItemTitleTextView.setPaintFlags(holder.toDoItemTitleTextView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                             holder.toDoItemDescriptionTextView.setPaintFlags(holder.toDoItemDescriptionTextView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-                            toDoList.get(position).setToDoChecked(true);
                             holder.toDoItemLinearLayout.setBackgroundColor(Color.LTGRAY);
                             notifyDataSetChanged();
                         }

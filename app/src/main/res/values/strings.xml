@@ -36,6 +36,8 @@
     <string name="edit_event_guest_search_list">Dodaj nowych gości</string>
     <string name="event_guest_search">Wyszukaj użytkownika...</string>
     <string name="event_image">Ustaw kolor wydarzenia</string>
+    <string name="set_event_budget">Ustaw budżet wydarzenia</string>
+    <string name="edit_event_budget">Zmień budżet wydarzenia</string>
     <string name="edit_event_image">Zmień kolor wydarzenia</string>
     <string name="event_ready">Gotowe</string>
     <string name="event_cancel">Anuluj</string>
@@ -78,5 +80,10 @@
     <string name="past_events_finish">Koniec</string>
     <string name="to_do_title">Tytuł</string>
     <string name="to_do_description">Opis</string>
+    <string name="event_cost_title">Tytuł</string>
+    <string name="event_cost_value">Koszt</string>
+    <string name="event_budget">Budżet: </string>
+    <string name="event_budget_left">Pozostały budżet: </string>
+    <string name="event_cost_text">Koszt: </string>
 
 </resources>

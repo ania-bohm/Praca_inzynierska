@@ -15,12 +15,13 @@ public class Event {
     private String eventDescription;
     private Integer eventImage;
     private String eventAuthor;
+    private long eventBudget;
 
     public Event() {
 
     }
 
-    public Event(String eventName, Date eventDateStart, Date eventTimeStart, Date eventDateFinish, Date eventTimeFinish, String eventLocation, String eventDescription, Integer eventImage, String eventAuthor) {
+    public Event(String eventName, Date eventDateStart, Date eventTimeStart, Date eventDateFinish, Date eventTimeFinish, String eventLocation, String eventDescription, Integer eventImage, String eventAuthor, long eventBudget) {
         this.eventName = eventName;
         this.eventDateStart = eventDateStart;
         this.eventTimeStart = eventTimeStart;
@@ -30,6 +31,7 @@ public class Event {
         this.eventDescription = eventDescription;
         this.eventImage = eventImage;
         this.eventAuthor = eventAuthor;
+        this.eventBudget = eventBudget;
     }
 
     public String getEventName() {
@@ -102,6 +104,14 @@ public class Event {
 
     public void setEventAuthor(String eventAuthor) {
         this.eventAuthor = eventAuthor;
+    }
+
+    public long getEventBudget() {
+        return eventBudget;
+    }
+
+    public void setEventBudget(long eventBudget) {
+        this.eventBudget = eventBudget;
     }
 
     @NonNull
