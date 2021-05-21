@@ -2,32 +2,38 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".PastEventsFragment"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context=".PastEventsFragment">
 
-    <LinearLayout
+
+    <TextView
+        android:id="@+id/pastEventsTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:fontFamily="@font/montserrat"
+        android:text="@string/past_events"
+        android:textSize="20dp"
+        android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/pastEventsTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
-            android:fontFamily="@font/montserrat"
-            android:text="@string/past_events"
-            android:textSize="20dp"
-            android:textStyle="bold" />
+    <ListView
+        android:id="@+id/pastEventsListListView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp" />
 
-        <ListView
-            android:id="@+id/pastEventsListListView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:nestedScrollingEnabled="true">
+    <TextView
+        android:id="@+id/pastEventsEmptyTextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="170dp"
+        android:layout_marginEnd="10dp"
+        android:fontFamily="@font/montserrat"
+        android:gravity="center_horizontal"
+        android:text="@string/my_no_past_events_list"
+        android:textSize="16dp"
+        android:textStyle="italic" />
 
-        </ListView>
-    </LinearLayout>
 </LinearLayout>

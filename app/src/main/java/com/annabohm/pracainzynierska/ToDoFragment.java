@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -47,7 +48,10 @@ public class ToDoFragment extends Fragment {
     RecyclerView.LayoutManager layoutManager;
     FloatingActionButton toDoFloatingActionButton;
     MaterialEditText toDoTitleMaterialEditText, toDoDescriptionMaterialEditText;
+    TextView displayToDoDoneTextView, displayToDoSlashTextView, displayToDoAllTextView;
     ToDoAdapter toDoAdapter;
+    int taskCounter = 0;
+    int taskDoneCounter = 0;
     boolean isUpdate = false;
     String eventId;
     String toDoItemToUpdateId = "";
@@ -98,6 +102,9 @@ public class ToDoFragment extends Fragment {
 
         toDoTitleMaterialEditText = view.findViewById(R.id.toDoTitleMaterialEditText);
         toDoDescriptionMaterialEditText = view.findViewById(R.id.toDoDescriptionMaterialEditText);
+        displayToDoAllTextView = view.findViewById(R.id.displayToDoAllTextView);
+        displayToDoSlashTextView = view.findViewById(R.id.displayToDoSlashTextView);
+        displayToDoDoneTextView = view.findViewById(R.id.displayToDoDoneTextView);
         toDoFloatingActionButton = view.findViewById(R.id.toDoFloatingActionButton);
 
         toDoFloatingActionButton.setOnClickListener(new View.OnClickListener() {
@@ -197,9 +204,16 @@ public class ToDoFragment extends Fragment {
                 for (DocumentSnapshot documentSnapshot : task.getResult()) {
                     if (documentSnapshot.exists()) {
                         ToDo toDoItem = documentSnapshot.toObject(ToDo.class);
+                        if(toDoItem.isToDoChecked()){
+                            taskDoneCounter++;
+                        }
+                        taskCounter++;
                         toDoList.add(toDoItem);
                     }
                 }
+                displayToDoDoneTextView.setText(String.valueOf(taskDoneCounter));
+                displayToDoSlashTextView.setText("/");
+                displayToDoAllTextView.setText(String.valueOf(taskCounter));
                 toDoAdapter = new ToDoAdapter(fragmentThis, toDoList, eventId);
                 toDoRecyclerView.setAdapter(toDoAdapter);
                 alertDialog.dismiss();

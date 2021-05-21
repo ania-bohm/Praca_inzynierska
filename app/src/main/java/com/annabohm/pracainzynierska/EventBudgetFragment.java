@@ -2,6 +2,7 @@ package com.annabohm.pracainzynierska;
 
 import android.app.AlertDialog;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -138,7 +139,6 @@ public class EventBudgetFragment extends Fragment {
                 double eventCostValueDouble = Double.parseDouble(eventCostValueMaterialEditText.getText().toString());
                 long eventCostValueLong = (long) (eventCostValueDouble * 100);
                 if (!isUpdate) {
-
                     setData(eventCostTitleMaterialEditText.getText().toString().trim(), eventCostValueLong);
                 } else {
                     updateData(eventCostTitleMaterialEditText.getText().toString().trim(), eventCostValueLong);
@@ -275,6 +275,11 @@ public class EventBudgetFragment extends Fragment {
                             }
                         }
                         double paidCostsDouble = paidCostsLong / 100;
+                        if(eventBudgetDouble - paidCostsDouble < 0) {
+                            displayEventBudgetLeftTextView.setTextColor(Color.RED);
+                        } else {
+                            displayEventBudgetLeftTextView.setTextColor(Color.WHITE);
+                        }
                         displayEventBudgetLeftTextView.setText(String.valueOf(eventBudgetDouble - paidCostsDouble));
                         eventCostAdapter = new EventCostAdapter(fragmentThis, eventCostList, eventId);
                         eventCostRecyclerView.setAdapter(eventCostAdapter);

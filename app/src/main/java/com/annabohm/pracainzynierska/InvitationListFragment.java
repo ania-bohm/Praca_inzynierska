@@ -1,20 +1,26 @@
 package com.annabohm.pracainzynierska;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -33,6 +39,7 @@ public class InvitationListFragment extends Fragment {
 
     NavController navController;
     ListView invitationListListView;
+    TextView invitationListNoInvitationsTextView;
     ArrayList<String> invitationEventIdList;
     ArrayList<Event> invitationEventList;
     InvitationListAdapter adapter;
@@ -73,61 +80,53 @@ public class InvitationListFragment extends Fragment {
         navController = Navigation.findNavController(view);
         currentUserId = firebaseAuth.getCurrentUser().getUid();
         invitationListListView = view.findViewById(R.id.invitationListListView);
+        invitationListNoInvitationsTextView = view.findViewById(R.id.invitationListNoInvitationsTextView);
+
+        invitationListNoInvitationsTextView.setVisibility(View.GONE);
+
         invitationEventList = new ArrayList<>();
         invitationEventIdList = new ArrayList<>();
         adapter = new InvitationListAdapter(context, invitationEventList, invitationEventIdList, navController);
         invitationListListView.setAdapter(adapter);
         loadEventsToListView();
-
-//        eventUserSearchListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                User user = foundUsersList.get(position);
-//                String userId = foundUsersIdList.get(position);
-//                if (!containsUserId(userId)) {
-//                    invitedUsersList.add(user);
-//                    invitedUsersIdList.add(userId);
-//                }
-//                invitedUsersAdapter.notifyDataSetChanged();
-//            }
-//        });
     }
 
     public void loadEventsToListView() {
         attendeeEvents.document(currentUserId).collection("Invited").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-
                 if (!queryDocumentSnapshots.getDocuments().isEmpty()) {
                     for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                        attendeeEvents.document(currentUserId).collection("Invited").document(documentSnapshot.getId()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                            @Override
-                            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                String eventId = documentSnapshot.get("Event").toString();
-                                invitationEventIdList.add(eventId);
-                                Log.d(TAG, "----------------------------------" + eventId);
-                                events.document(eventId).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                                    @Override
-                                    public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                        invitationEventList.add(documentSnapshot.toObject(Event.class));
-                                        adapter.notifyDataSetChanged();
-                                    }
-                                }).addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        Log.d(TAG, e.toString());
-                                    }
-                                });
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Log.d(TAG, "----------------------------------");
-                                Log.d(TAG, e.toString());
-                            }
-                        });
+                        if (documentSnapshot.exists()) {
+                            attendeeEvents.document(currentUserId).collection("Invited").document(documentSnapshot.getId()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                @Override
+                                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                    String eventId = documentSnapshot.get("Event").toString();
+                                    invitationEventIdList.add(eventId);
+                                    events.document(eventId).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                        @Override
+                                        public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                            invitationEventList.add(documentSnapshot.toObject(Event.class));
+                                            adapter.notifyDataSetChanged();
+                                        }
+                                    }).addOnFailureListener(new OnFailureListener() {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e) {
+                                            Log.d(TAG, e.toString());
+                                        }
+                                    });
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.d(TAG, e.toString());
+                                }
+                            });
+                        }
                     }
                     adapter.notifyDataSetChanged();
+                } else {
+                    invitationListNoInvitationsTextView.setVisibility(View.VISIBLE);
                 }
             }
         }).addOnFailureListener(new OnFailureListener() {

@@ -3,11 +3,13 @@ package com.annabohm.pracainzynierska;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -70,7 +72,7 @@ public class PastEventsListAdapter extends ArrayAdapter<Event> implements View.O
         TextView pastEventTimeStartTextView = convertView.findViewById(R.id.pastEventTimeStartTextView);
         TextView pastEventDateFinishTextView = convertView.findViewById(R.id.pastEventDateFinishTextView);
         TextView pastEventTimeFinishTextView = convertView.findViewById(R.id.pastEventTimeFinishTextView);
-        Button pastEventDisplayEventButton = convertView.findViewById(R.id.pastEventDisplayEventButton);
+        LinearLayout pastEventLinearLayout = convertView.findViewById(R.id.pastEventLinearLayout);
 
         Date eventDateStart = event.getEventDateStart();
         Date eventTimeStart = event.getEventTimeStart();
@@ -96,7 +98,9 @@ public class PastEventsListAdapter extends ArrayAdapter<Event> implements View.O
         pastEventDateFinishTextView.setText(dateFormatterPrint.format(eventDateFinish));
         pastEventTimeFinishTextView.setText(timeFormatterPrint.format(eventTimeFinish));
 
-        pastEventDisplayEventButton.setOnClickListener(new View.OnClickListener() {
+        pastEventLinearLayout.setLongClickable(true);
+
+        pastEventLinearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String eventId = eventIdList.get(position);
@@ -137,8 +141,13 @@ public class PastEventsListAdapter extends ArrayAdapter<Event> implements View.O
         }
     }
 
+    public void deleteItem(int position) {
+        events.document(eventIdList.get(position)).delete();
+    }
+
     @Override
     public void remove(@Nullable Event object) {
         super.remove(object);
     }
+
 }

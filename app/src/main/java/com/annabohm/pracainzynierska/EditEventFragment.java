@@ -1,5 +1,6 @@
 package com.annabohm.pracainzynierska;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Bundle;
 
@@ -47,6 +48,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import dmax.dialog.SpotsDialog;
+
 import static android.content.ContentValues.TAG;
 
 public class EditEventFragment extends Fragment implements AdapterView.OnItemSelectedListener {
@@ -72,6 +75,7 @@ public class EditEventFragment extends Fragment implements AdapterView.OnItemSel
     CollectionReference attendeeEvents = db.collection("AttendeeEvents");
     UserSearchListAdapter oldGuestListAdapter, newGuestListAdapter, foundUsersAdapter;
     InputMethodManager imm;
+    AlertDialog alertDialog;
 
     private View.OnClickListener editEventReadyOnClickListener = new View.OnClickListener() {
         @Override
@@ -237,6 +241,7 @@ public class EditEventFragment extends Fragment implements AdapterView.OnItemSel
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         navController = Navigation.findNavController(view);
+        alertDialog = new SpotsDialog(context);
         editEventNameEditText = view.findViewById(R.id.editEventNameEditText);
         editEventDateStartEditText = view.findViewById(R.id.editEventDateStartEditText);
         editEventTimeStartEditText = view.findViewById(R.id.editEventTimeStartEditText);
@@ -295,47 +300,8 @@ public class EditEventFragment extends Fragment implements AdapterView.OnItemSel
         event = db.document(path);
         eventId = event.getId();
 
-        event.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                Event event = new Event();
-                if (documentSnapshot.exists()) {
-                    event = documentSnapshot.toObject(Event.class);
-                    DateFormat dateFormatterPrint = new SimpleDateFormat("dd/MM/yyyy");
-                    DateFormat timeFormatterPrint = new SimpleDateFormat("HH:mm");
-
-                    oldGuestListAdapter = new UserSearchListAdapter(context, oldGuestList);
-                    newGuestListAdapter = new UserSearchListAdapter(context, newGuestList);
-
-                    editEventGuestListListView.setAdapter(oldGuestListAdapter);
-                    editEventNewGuestListListView.setAdapter(newGuestListAdapter);
-                    editEventUserSearchListView.setAdapter(foundUsersAdapter);
-
-                    registerForContextMenu(editEventGuestListListView);
-                    registerForContextMenu(editEventNewGuestListListView);
-
-                    populateOldGuestList();
-
-                    editEventNameEditText.setHint(event.getEventName());
-                    editEventDateStartEditText.setHint(dateFormatterPrint.format(event.getEventDateStart()));
-                    editEventTimeStartEditText.setHint(timeFormatterPrint.format(event.getEventTimeStart()));
-                    editEventDateFinishEditText.setHint(dateFormatterPrint.format(event.getEventDateFinish()));
-                    editEventTimeFinishEditText.setHint(timeFormatterPrint.format(event.getEventTimeFinish()));
-                    editEventLocationEditText.setHint(event.getEventLocation());
-                    editEventDescriptionEditText.setHint(event.getEventDescription());
-                    long eventBudgetLong = event.getEventBudget();
-                    double eventBudgetDouble = eventBudgetLong / 100;
-                    editEventBudgetEditText.setHint(String.valueOf(eventBudgetDouble));
-                } else {
-                    Toast.makeText(context, "Document does not exist", Toast.LENGTH_SHORT).show();
-                }
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(context, "Reading data from Firestore failed", Toast.LENGTH_SHORT).show();
-            }
-        });
+        alertDialog.show();
+        loadData();
 
         editEventGuestListListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
@@ -381,6 +347,51 @@ public class EditEventFragment extends Fragment implements AdapterView.OnItemSel
                 } else {
                     Toast.makeText(context, "Taki użytkownik istnieje już na liście gości!", Toast.LENGTH_SHORT).show();
                 }
+            }
+        });
+    }
+
+    public void loadData() {
+        event.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                Event event = new Event();
+                if (documentSnapshot.exists()) {
+                    event = documentSnapshot.toObject(Event.class);
+                    DateFormat dateFormatterPrint = new SimpleDateFormat("dd/MM/yyyy");
+                    DateFormat timeFormatterPrint = new SimpleDateFormat("HH:mm");
+
+                    oldGuestListAdapter = new UserSearchListAdapter(context, oldGuestList);
+                    newGuestListAdapter = new UserSearchListAdapter(context, newGuestList);
+
+                    editEventGuestListListView.setAdapter(oldGuestListAdapter);
+                    editEventNewGuestListListView.setAdapter(newGuestListAdapter);
+                    editEventUserSearchListView.setAdapter(foundUsersAdapter);
+
+                    registerForContextMenu(editEventGuestListListView);
+                    registerForContextMenu(editEventNewGuestListListView);
+
+                    populateOldGuestList();
+
+                    editEventNameEditText.setHint(event.getEventName());
+                    editEventDateStartEditText.setHint(dateFormatterPrint.format(event.getEventDateStart()));
+                    editEventTimeStartEditText.setHint(timeFormatterPrint.format(event.getEventTimeStart()));
+                    editEventDateFinishEditText.setHint(dateFormatterPrint.format(event.getEventDateFinish()));
+                    editEventTimeFinishEditText.setHint(timeFormatterPrint.format(event.getEventTimeFinish()));
+                    editEventLocationEditText.setHint(event.getEventLocation());
+                    editEventDescriptionEditText.setHint(event.getEventDescription());
+                    long eventBudgetLong = event.getEventBudget();
+                    double eventBudgetDouble = eventBudgetLong / 100;
+                    editEventBudgetEditText.setHint(String.valueOf(eventBudgetDouble));
+                    alertDialog.dismiss();
+                } else {
+                    Toast.makeText(context, "Document does not exist", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(context, "Reading data from Firestore failed", Toast.LENGTH_SHORT).show();
             }
         });
     }

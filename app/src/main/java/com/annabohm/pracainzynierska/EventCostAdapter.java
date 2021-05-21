@@ -86,6 +86,11 @@ public class EventCostAdapter extends RecyclerView.Adapter<EventCostAdapter.Even
                             long currentBudgetLeftLong = (long) (currentBudgetLeftDouble * 100);
                             long newPaidCostLong = eventCostList.get(position).getEventCostValue();
                             double newBudgetLeftDouble = (currentBudgetLeftLong - newPaidCostLong) / 100;
+                            if (currentBudgetLeftLong - newPaidCostLong < 0) {
+                                eventBudgetFragment.displayEventBudgetLeftTextView.setTextColor(Color.RED);
+                            } else {
+                                eventBudgetFragment.displayEventBudgetLeftTextView.setTextColor(Color.WHITE);
+                            }
                             eventBudgetFragment.displayEventBudgetLeftTextView.setText(String.valueOf(newBudgetLeftDouble));
                             holder.eventCostItemTitleTextView.setPaintFlags(holder.eventCostItemTitleTextView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                             holder.eventCostItemValueTextView.setPaintFlags(holder.eventCostItemValueTextView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
@@ -108,6 +113,11 @@ public class EventCostAdapter extends RecyclerView.Adapter<EventCostAdapter.Even
                             long currentBudgetLeftLong = (long) (currentBudgetLeftDouble * 100);
                             long newUnPaidCostLong = eventCostList.get(position).getEventCostValue();
                             double newBudgetLeftDouble = (currentBudgetLeftLong + newUnPaidCostLong) / 100;
+                            if (currentBudgetLeftLong + newUnPaidCostLong < 0) {
+                                eventBudgetFragment.displayEventBudgetLeftTextView.setTextColor(Color.RED);
+                            } else {
+                                eventBudgetFragment.displayEventBudgetLeftTextView.setTextColor(Color.WHITE);
+                            }
                             eventBudgetFragment.displayEventBudgetLeftTextView.setText(String.valueOf(newBudgetLeftDouble));
                             holder.eventCostItemLinearLayout.setBackgroundColor(Color.WHITE);
                             holder.eventCostItemTitleTextView.setPaintFlags(holder.eventCostItemTitleTextView.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));

@@ -1,5 +1,6 @@
 package com.annabohm.pracainzynierska;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Bundle;
 
@@ -33,6 +34,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
+import dmax.dialog.SpotsDialog;
+
 import static android.content.ContentValues.TAG;
 
 public class DisplayEventFragment extends Fragment {
@@ -53,6 +56,7 @@ public class DisplayEventFragment extends Fragment {
     CollectionReference eventAttendees = db.collection("EventAttendees");
     FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
     DocumentReference eventReference;
+    AlertDialog alertDialog;
 
     private View.OnClickListener toDoListOnClickListener = new View.OnClickListener() {
         @Override
@@ -113,6 +117,7 @@ public class DisplayEventFragment extends Fragment {
         showEventLocationTextView = view.findViewById(R.id.showEventLocationTextView);
         showEventDescriptionTextView = view.findViewById(R.id.showEventDescriptionTextView);
         displayEventGuestListListView = view.findViewById(R.id.displayEventGuestListListView);
+        alertDialog = new SpotsDialog(context);
 
         bundle = this.getArguments();
         String path = bundle.getString("path");
@@ -127,6 +132,13 @@ public class DisplayEventFragment extends Fragment {
         toDoListButton.setOnClickListener(toDoListOnClickListener);
         eventBudgetButton.setOnClickListener(eventBudgetOnClickListener);
 
+        loadData();
+
+        initialiseGuestList();
+    }
+
+    public void loadData(){
+        alertDialog.show();
         eventReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -157,6 +169,7 @@ public class DisplayEventFragment extends Fragment {
                             showEventTimeFinishTextView.setText(timeFormatterPrint.format(event.getEventTimeFinish()));
                             showEventLocationTextView.setText(event.getEventLocation());
                             showEventDescriptionTextView.setText(event.getEventDescription());
+                            alertDialog.dismiss();
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
@@ -175,7 +188,6 @@ public class DisplayEventFragment extends Fragment {
                 Toast.makeText(context, "Reading data from Firestore failed", Toast.LENGTH_SHORT).show();
             }
         });
-        initialiseGuestList();
     }
 
     public void initialiseGuestList() {

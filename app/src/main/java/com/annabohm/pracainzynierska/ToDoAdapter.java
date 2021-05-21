@@ -81,6 +81,11 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ToDoItemHolder
                         @Override
                         public void onSuccess(Void aVoid) {
                             toDoList.get(position).setToDoChecked(true);
+                            String currentDoneCounterString = toDoFragment.displayToDoDoneTextView.getText().toString();
+                            int currentDoneCounter = Integer.valueOf(currentDoneCounterString);
+                            currentDoneCounter++;
+                            toDoFragment.displayToDoDoneTextView.setText(String.valueOf(currentDoneCounter));
+                            toDoFragment.displayToDoDoneTextView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
                             holder.toDoItemTitleTextView.setPaintFlags(holder.toDoItemTitleTextView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                             holder.toDoItemDescriptionTextView.setPaintFlags(holder.toDoItemDescriptionTextView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                             holder.toDoItemLinearLayout.setBackgroundColor(Color.LTGRAY);
@@ -98,6 +103,11 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ToDoItemHolder
                         @Override
                         public void onSuccess(Void aVoid) {
                             toDoList.get(position).setToDoChecked(false);
+                            String currentDoneCounterString = toDoFragment.displayToDoDoneTextView.getText().toString();
+                            int currentDoneCounter = Integer.valueOf(currentDoneCounterString);
+                            currentDoneCounter--;
+                            toDoFragment.displayToDoDoneTextView.setText(String.valueOf(currentDoneCounter));
+                            toDoFragment.displayToDoDoneTextView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
                             holder.toDoItemLinearLayout.setBackgroundColor(Color.WHITE);
                             holder.toDoItemTitleTextView.setPaintFlags(holder.toDoItemTitleTextView.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
                             holder.toDoItemDescriptionTextView.setPaintFlags(holder.toDoItemDescriptionTextView.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));

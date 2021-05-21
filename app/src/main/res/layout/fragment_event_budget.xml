@@ -38,6 +38,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="2dp"
                     android:text=""
+                    android:textColor="@android:color/white"
                     android:fontFamily="@font/montserrat"/>
 
                 <TextView

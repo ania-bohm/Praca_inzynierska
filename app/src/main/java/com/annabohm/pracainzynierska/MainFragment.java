@@ -2,43 +2,34 @@ package com.annabohm.pracainzynierska;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
-import androidx.core.view.GravityCompat;
-import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.ItemTouchHelper;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
-import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.DateFormat;
@@ -47,24 +38,20 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static android.content.ContentValues.TAG;
-
 
 public class MainFragment extends Fragment {
     NavController navController;
     ImageView addEventButton;
-    //RecyclerView yourEventsRecyclerView;
-    RecyclerView yourCurrentEventsRecyclerView;
-    RecyclerView allEventsRecyclerView;
+    RecyclerView yourCurrentEventsRecyclerView, allEventsRecyclerView;
+    TextView yourEventsEmptyTextView, allEventsEmptyTextView;
     FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     CollectionReference events = db.collection("Events");
     CollectionReference attendeeEvents = db.collection("AttendeeEvents");
     CollectionReference eventAttendees = db.collection("EventAttendees");
     ArrayList<String> attendeesToDeleteIdList = new ArrayList<>();
-    //EventAdapter yourEventsAdapter;
     ConfirmedEventAdapter allEventsAdapter;
     ConfirmedEventAdapter yourCurrentEventsAdapter;
     HashMap<String, Event> confirmedEvents;
@@ -107,51 +94,55 @@ public class MainFragment extends Fragment {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 List<DocumentSnapshot> documentSnapshots = task.getResult().getDocuments();
-                for (DocumentSnapshot documentSnapshot : documentSnapshots) {
-                    if (documentSnapshot.exists()) {
-                        final String eventId = documentSnapshot.get("Event").toString();
-                        events.document(eventId).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                            @Override
-                            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                //
-                                Event eventToCheck = documentSnapshot.toObject(Event.class);
-                                Date dateNow = new Date();
-                                final DateFormat timeFormatterPrint = new SimpleDateFormat("HH:mm");
-                                String newString = timeFormatterPrint.format(eventToCheck.getEventTimeFinish());
-                                String newStringNow = timeFormatterPrint.format(dateNow);
+                if(!documentSnapshots.isEmpty()) {
+                    for (DocumentSnapshot documentSnapshot : documentSnapshots) {
+                        if (documentSnapshot.exists()) {
+                            final String eventId = documentSnapshot.get("Event").toString();
+                            events.document(eventId).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                @Override
+                                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                    //
+                                    Event eventToCheck = documentSnapshot.toObject(Event.class);
+                                    Date dateNow = new Date();
+                                    final DateFormat timeFormatterPrint = new SimpleDateFormat("HH:mm");
+                                    String newString = timeFormatterPrint.format(eventToCheck.getEventTimeFinish());
+                                    String newStringNow = timeFormatterPrint.format(dateNow);
 
-                                int hourNow = Integer.parseInt(newStringNow.substring(0, 2));
-                                int hour = Integer.parseInt(newString.substring(0, 2));
-                                int minuteNow = Integer.parseInt(newStringNow.substring(3, 5));
-                                int minute = Integer.parseInt(newString.substring(3, 5));
+                                    int hourNow = Integer.parseInt(newStringNow.substring(0, 2));
+                                    int hour = Integer.parseInt(newString.substring(0, 2));
+                                    int minuteNow = Integer.parseInt(newStringNow.substring(3, 5));
+                                    int minute = Integer.parseInt(newString.substring(3, 5));
 
-                                if (eventToCheck.getEventDateFinish().after(new Date())) {
-                                    confirmedEvents.put(eventId, documentSnapshot.toObject(Event.class));
-                                    allEventsAdapter.notifyDataSetChanged();
-                                } else if (eventToCheck.getEventDateFinish().equals(new Date())) {
-                                    if (hourNow == 0) {
-                                        if (hour == 0) {
-                                            if (minute > minuteNow) {
-                                                confirmedEvents.put(eventId, documentSnapshot.toObject(Event.class));
-                                                allEventsAdapter.notifyDataSetChanged();
+                                    if (eventToCheck.getEventDateFinish().after(new Date())) {
+                                        confirmedEvents.put(eventId, documentSnapshot.toObject(Event.class));
+                                        allEventsAdapter.notifyDataSetChanged();
+                                    } else if (eventToCheck.getEventDateFinish().equals(new Date())) {
+                                        if (hourNow == 0) {
+                                            if (hour == 0) {
+                                                if (minute > minuteNow) {
+                                                    confirmedEvents.put(eventId, documentSnapshot.toObject(Event.class));
+                                                    allEventsAdapter.notifyDataSetChanged();
+                                                }
                                             }
+                                        } else if (hour == hourNow && minute > minuteNow) {
+                                            confirmedEvents.put(eventId, documentSnapshot.toObject(Event.class));
+                                            allEventsAdapter.notifyDataSetChanged();
+                                        } else if (hour > hourNow) {
+                                            confirmedEvents.put(eventId, documentSnapshot.toObject(Event.class));
+                                            allEventsAdapter.notifyDataSetChanged();
                                         }
-                                    } else if (hour == hourNow && minute > minuteNow) {
-                                        confirmedEvents.put(eventId, documentSnapshot.toObject(Event.class));
-                                        allEventsAdapter.notifyDataSetChanged();
-                                    } else if (hour > hourNow) {
-                                        confirmedEvents.put(eventId, documentSnapshot.toObject(Event.class));
-                                        allEventsAdapter.notifyDataSetChanged();
                                     }
                                 }
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Log.d(TAG, e.toString());
-                            }
-                        });
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.d(TAG, e.toString());
+                                }
+                            });
+                        }
                     }
+                } else {
+                    allEventsEmptyTextView.setVisibility(View.VISIBLE);
                 }
                 allEventsRecyclerView.setAdapter(allEventsAdapter);
                 allEventsAdapter.setOnItemClickListener(new ConfirmedEventAdapter.OnItemClickListener() {
@@ -193,43 +184,47 @@ public class MainFragment extends Fragment {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 List<DocumentSnapshot> documentSnapshots = task.getResult().getDocuments();
-                for (DocumentSnapshot documentSnapshot : documentSnapshots) {
-                    if (documentSnapshot.exists()) {
-                        final String eventId = documentSnapshot.getId();
-                        Event eventToCheck = documentSnapshot.toObject(Event.class);
-                        Date dateNow = new Date();
-                        final DateFormat timeFormatterPrint = new SimpleDateFormat("HH:mm");
-                        String newString = timeFormatterPrint.format(eventToCheck.getEventTimeFinish());
-                        String newStringNow = timeFormatterPrint.format(dateNow);
+                if(!documentSnapshots.isEmpty()) {
+                    for (DocumentSnapshot documentSnapshot : documentSnapshots) {
+                        if (documentSnapshot.exists()) {
+                            final String eventId = documentSnapshot.getId();
+                            Event eventToCheck = documentSnapshot.toObject(Event.class);
+                            Date dateNow = new Date();
+                            final DateFormat timeFormatterPrint = new SimpleDateFormat("HH:mm");
+                            String newString = timeFormatterPrint.format(eventToCheck.getEventTimeFinish());
+                            String newStringNow = timeFormatterPrint.format(dateNow);
 
-                        int hourNow = Integer.parseInt(newStringNow.substring(0, 2));
-                        int hour = Integer.parseInt(newString.substring(0, 2));
-                        int minuteNow = Integer.parseInt(newStringNow.substring(3, 5));
-                        int minute = Integer.parseInt(newString.substring(3, 5));
+                            int hourNow = Integer.parseInt(newStringNow.substring(0, 2));
+                            int hour = Integer.parseInt(newString.substring(0, 2));
+                            int minuteNow = Integer.parseInt(newStringNow.substring(3, 5));
+                            int minute = Integer.parseInt(newString.substring(3, 5));
 
-                        if (eventToCheck.getEventDateFinish().after(new Date())) {
-                            yourCurrentEvents.put(eventId, documentSnapshot.toObject(Event.class));
-                            yourCurrentEventsAdapter.notifyDataSetChanged();
-                        } else if (eventToCheck.getEventDateFinish().equals(new Date())) {
-                            if (hourNow == 0) {
-                                if (hour == 0) {
-                                    if (minute > minuteNow) {
-                                        yourCurrentEvents.put(eventId, documentSnapshot.toObject(Event.class));
-                                        yourCurrentEventsAdapter.notifyDataSetChanged();
+                            if (eventToCheck.getEventDateFinish().after(new Date())) {
+                                yourCurrentEvents.put(eventId, documentSnapshot.toObject(Event.class));
+                                yourCurrentEventsAdapter.notifyDataSetChanged();
+                            } else if (eventToCheck.getEventDateFinish().equals(new Date())) {
+                                if (hourNow == 0) {
+                                    if (hour == 0) {
+                                        if (minute > minuteNow) {
+                                            yourCurrentEvents.put(eventId, documentSnapshot.toObject(Event.class));
+                                            yourCurrentEventsAdapter.notifyDataSetChanged();
+                                        }
                                     }
+                                } else if (hour == hourNow && minute > minuteNow) {
+                                    yourCurrentEvents.put(eventId, documentSnapshot.toObject(Event.class));
+                                    yourCurrentEventsAdapter.notifyDataSetChanged();
+                                } else if (hour > hourNow) {
+                                    yourCurrentEvents.put(eventId, documentSnapshot.toObject(Event.class));
+                                    yourCurrentEventsAdapter.notifyDataSetChanged();
                                 }
-                            } else if (hour == hourNow && minute > minuteNow) {
-                                yourCurrentEvents.put(eventId, documentSnapshot.toObject(Event.class));
-                                yourCurrentEventsAdapter.notifyDataSetChanged();
-                            } else if (hour > hourNow) {
-                                yourCurrentEvents.put(eventId, documentSnapshot.toObject(Event.class));
-                                yourCurrentEventsAdapter.notifyDataSetChanged();
                             }
                         }
                     }
+                } else {
+                    yourEventsEmptyTextView.setVisibility(View.VISIBLE);
                 }
-
                 yourCurrentEventsRecyclerView.setAdapter(yourCurrentEventsAdapter);
+
                 yourCurrentEventsAdapter.setOnItemClickListener(new ConfirmedEventAdapter.OnItemClickListener() {
                     @Override
                     public void onItemClick(int position) {
@@ -293,7 +288,6 @@ public class MainFragment extends Fragment {
     }
 
     public void getAttendeesToDeleteIdList(final String eventToDeleteId) {
-        Toast.makeText(context, "Jestem w getAtToDel", Toast.LENGTH_SHORT).show();
         eventAttendees.document(eventToDeleteId).collection("Invited").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
@@ -379,7 +373,6 @@ public class MainFragment extends Fragment {
     }
 
     public void updateEventAttendees(final String eventToDeleteId) {
-        Toast.makeText(context, "Jestem w upEvAt", Toast.LENGTH_SHORT).show();
         eventAttendees.document(eventToDeleteId).collection("Invited").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
@@ -435,7 +428,6 @@ public class MainFragment extends Fragment {
     }
 
     public void updateAttendeeEvents(final String eventToDeleteId) {
-        Toast.makeText(context, "Jestem w upAtEv", Toast.LENGTH_SHORT).show();
         for (final String userId : attendeesToDeleteIdList) {
             attendeeEvents.document(userId).collection("Invited").whereEqualTo("Event", eventToDeleteId).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                 @Override
@@ -443,7 +435,6 @@ public class MainFragment extends Fragment {
                     if (!queryDocumentSnapshots.isEmpty()) {
                         for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
                             if (documentSnapshot.exists()) {
-                                Toast.makeText(context, "Jestem w upAtEv w Invited onSucc!", Toast.LENGTH_SHORT).show();
                                 attendeeEvents.document(userId).collection("Invited").document(documentSnapshot.getId()).delete();
                             }
                         }
@@ -454,7 +445,6 @@ public class MainFragment extends Fragment {
                                 if (!queryDocumentSnapshots.isEmpty()) {
                                     for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
                                         if (documentSnapshot.exists()) {
-                                            Toast.makeText(context, "Jestem w upAtEv w Confirmed onSucc!", Toast.LENGTH_SHORT).show();
                                             attendeeEvents.document(userId).collection("Confirmed").document(documentSnapshot.getId()).delete();
                                         }
                                     }
@@ -465,7 +455,6 @@ public class MainFragment extends Fragment {
                                             if (!queryDocumentSnapshots.isEmpty()) {
                                                 for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
                                                     if (documentSnapshot.exists()) {
-                                                        Toast.makeText(context, "Jestem w upAtEv w Declined onSucc!", Toast.LENGTH_SHORT).show();
                                                         attendeeEvents.document(userId).collection("Declined").document(documentSnapshot.getId()).delete();
                                                     }
                                                 }
@@ -509,6 +498,12 @@ public class MainFragment extends Fragment {
         yourCurrentEventsAdapter = new ConfirmedEventAdapter(yourCurrentEvents);
         yourCurrentEventsRecyclerView = view.findViewById(R.id.yourCurrentEventsRecyclerView);
         allEventsRecyclerView = view.findViewById(R.id.allEventsRecyclerView);
+        yourEventsEmptyTextView = view.findViewById(R.id.yourEventsEmptyTextView);
+        allEventsEmptyTextView = view.findViewById(R.id.allEventsEmptyTextView);
+
+        yourEventsEmptyTextView.setVisibility(View.GONE);
+        allEventsEmptyTextView.setVisibility(View.GONE);
+
         addEventButton = view.findViewById(R.id.addEventButton);
         addEventButton.setOnClickListener(addEventOnClickListener);
 
@@ -521,16 +516,4 @@ public class MainFragment extends Fragment {
         setUpAllEventsRecyclerView(view);
         setUpYourCurrentEventsRecyclerView(view);
     }
-
-//    @Override
-//    public void onStart() {
-//        super.onStart();
-//        yourEventsAdapter.startListening();
-//    }
-//
-//    @Override
-//    public void onStop() {
-//        super.onStop();
-//        yourEventsAdapter.stopListening();
-//    }
 }
