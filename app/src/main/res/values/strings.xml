@@ -107,8 +107,10 @@
     <string name="navigation_drawer_app_settings">Ustawienia</string>
     <string name="navigation_drawer_logout">Wyloguj się</string>
     <string name="mini_event_dash">-</string>
-    <string name="notifications">Powiadomienia</string>
-    <string name="sound">Dźwięk aplikacji</string>
+    <string name="change_language">Zmień język</string>
+    <string name="change_language_confirm">Zatwierdź</string>
+    <string name="language_polish">Polski</string>
+    <string name="language_english">Angielski</string>
     <string name="edit_event">Edytuj wydarzenie</string>
     <string name="delete_guest">Usuń gościa</string>
     <string name="delete_event">Usuń</string>

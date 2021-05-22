@@ -22,6 +22,7 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, DrawerController {
 
+    static MainActivity mThis = null;
     NavController navController;
     DrawerLayout drawerLayout;
     ActionBarDrawerToggle actionBarDrawerToggle;
@@ -42,6 +43,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mThis = this;
         setContentView(R.layout.activity_main);
         navController = Navigation.findNavController(this, R.id.navHostFragment);
         drawerLayout = findViewById(R.id.drawer_layout);

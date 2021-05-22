@@ -1,14 +1,31 @@
 package com.annabohm.pracainzynierska;
 
+import android.content.Context;
+import android.content.res.Configuration;
+import android.content.res.Resources;
+import android.os.Build;
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.Spinner;
+
+import java.util.ArrayList;
+import java.util.Locale;
 
 public class AppSettingsFragment extends Fragment {
+    Spinner changeLanguageSpinner;
+    Button changeLanguageButton;
+    String[] languageOptions;
+    ArrayAdapter<String> languageOptionsAdapter;
+    Context context;
 
     public AppSettingsFragment() {
     }
@@ -21,6 +38,7 @@ public class AppSettingsFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        context = getContext();
     }
 
     @Override
@@ -33,5 +51,43 @@ public class AppSettingsFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        changeLanguageSpinner = view.findViewById(R.id.changeLanguageSpinner);
+        changeLanguageButton = view.findViewById(R.id.changeLanguageButton);
+
+        languageOptions = new String[]{getString(R.string.language_polish), getString(R.string.language_english)};
+        languageOptionsAdapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_dropdown_item, languageOptions);
+        changeLanguageSpinner.setAdapter(languageOptionsAdapter);
+
+        changeLanguageButton.setOnClickListener(changeLanguageButtonOnClickListener);
+    }
+
+    public View.OnClickListener changeLanguageButtonOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            int position = changeLanguageSpinner.getSelectedItemPosition();
+            switch(position) {
+                case 0:
+                    updateResourcesLegacy(context, "pl");
+                    MainActivity.mThis.recreate();
+                    break;
+                case 1:
+                    updateResourcesLegacy(context, "en");
+                    MainActivity.mThis.recreate();
+                    break;
+            }
+        }
+    };
+
+    @SuppressWarnings("deprecation")
+    private static void updateResourcesLegacy(Context context, String language) {
+        Locale locale = new Locale(language);
+        Locale.setDefault(locale);
+        Resources resources = context.getResources();
+        Configuration configuration = resources.getConfiguration();
+        configuration.locale = locale;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            configuration.setLayoutDirection(locale);
+        }
+        resources.updateConfiguration(configuration, resources.getDisplayMetrics());
     }
 }
