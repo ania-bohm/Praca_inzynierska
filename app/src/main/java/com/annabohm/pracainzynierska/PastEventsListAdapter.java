@@ -3,12 +3,10 @@ package com.annabohm.pracainzynierska;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,27 +19,20 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import static android.content.ContentValues.TAG;
 
 public class PastEventsListAdapter extends ArrayAdapter<Event> implements View.OnClickListener {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
-    FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
     CollectionReference events = db.collection("Events");
-    CollectionReference attendeeEvents = db.collection("AttendeeEvents");
-    CollectionReference eventAttendees = db.collection("EventAttendees");
     NavController navController;
     private ArrayList<Event> eventList;
     private ArrayList<String> eventIdList;
@@ -109,7 +100,6 @@ public class PastEventsListAdapter extends ArrayAdapter<Event> implements View.O
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         if (documentSnapshot.exists()) {
                             String path = documentSnapshot.getReference().getPath();
-                            Toast.makeText(getContext(), "Position clicked: " + position, Toast.LENGTH_SHORT).show();
                             Bundle bundle = new Bundle();
                             bundle.putString("path", path);
                             navController.navigate(R.id.pastEventsToDisplayEvent, bundle);

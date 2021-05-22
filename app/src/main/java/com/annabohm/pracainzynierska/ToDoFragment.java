@@ -63,7 +63,6 @@ public class ToDoFragment extends Fragment {
     Bundle bundle;
 
     public ToDoFragment() {
-        // Required empty public constructor
     }
 
     public static ToDoFragment newInstance(String param1, String param2) {
@@ -85,20 +84,12 @@ public class ToDoFragment extends Fragment {
         if (((MainActivity) getActivity()).getSupportActionBar() != null) {
             ((MainActivity) getActivity()).getSupportActionBar().hide();
         }
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_to_do, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        toDoList = new ArrayList<>();
-        alertDialog = new SpotsDialog(context);
-
-        bundle = this.getArguments();
-        String path = bundle.getString("path");
-        eventReference = db.document(path);
-        eventId = eventReference.getId();
 
         toDoTitleMaterialEditText = view.findViewById(R.id.toDoTitleMaterialEditText);
         toDoDescriptionMaterialEditText = view.findViewById(R.id.toDoDescriptionMaterialEditText);
@@ -106,6 +97,19 @@ public class ToDoFragment extends Fragment {
         displayToDoSlashTextView = view.findViewById(R.id.displayToDoSlashTextView);
         displayToDoDoneTextView = view.findViewById(R.id.displayToDoDoneTextView);
         toDoFloatingActionButton = view.findViewById(R.id.toDoFloatingActionButton);
+        toDoRecyclerView = view.findViewById(R.id.toDoRecyclerView);
+
+        toDoRecyclerView.setHasFixedSize(true);
+        layoutManager = new LinearLayoutManager(context);
+        toDoRecyclerView.setLayoutManager(layoutManager);
+
+        toDoList = new ArrayList<>();
+        alertDialog = new SpotsDialog(context);
+
+        bundle = this.getArguments();
+        String path = bundle.getString("path");
+        eventReference = db.document(path);
+        eventId = eventReference.getId();
 
         toDoFloatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -119,17 +123,12 @@ public class ToDoFragment extends Fragment {
             }
         });
 
-        toDoRecyclerView = view.findViewById(R.id.toDoRecyclerView);
-        toDoRecyclerView.setHasFixedSize(true);
-        layoutManager = new LinearLayoutManager(context);
-        toDoRecyclerView.setLayoutManager(layoutManager);
-
         loadData();
     }
 
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
-        if (item.getTitle().equals("Usuń")) {
+        if (item.getTitle().equals(R.string.to_do_delete)) {
             deleteItem(item.getOrder());
         }
         return super.onContextItemSelected(item);
@@ -204,7 +203,7 @@ public class ToDoFragment extends Fragment {
                 for (DocumentSnapshot documentSnapshot : task.getResult()) {
                     if (documentSnapshot.exists()) {
                         ToDo toDoItem = documentSnapshot.toObject(ToDo.class);
-                        if(toDoItem.isToDoChecked()){
+                        if (toDoItem.isToDoChecked()) {
                             taskDoneCounter++;
                         }
                         taskCounter++;

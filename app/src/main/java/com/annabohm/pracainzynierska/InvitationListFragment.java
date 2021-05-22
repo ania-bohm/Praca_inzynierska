@@ -1,26 +1,19 @@
 package com.annabohm.pracainzynierska;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ListView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-
-import android.util.Log;
-import android.view.ContextMenu;
-import android.view.LayoutInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -31,7 +24,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import static android.content.ContentValues.TAG;
 
@@ -47,12 +39,10 @@ public class InvitationListFragment extends Fragment {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     CollectionReference events = db.collection("Events");
     CollectionReference attendeeEvents = db.collection("AttendeeEvents");
-    CollectionReference eventAttendees = db.collection("EventAttendees");
     Context context;
     String currentUserId;
 
     public InvitationListFragment() {
-        // Required empty public constructor
     }
 
     public static InvitationListFragment newInstance(String param1, String param2) {
@@ -70,7 +60,6 @@ public class InvitationListFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         ((MainActivity) getActivity()).setDrawerLocked();
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_invitation_list, container, false);
     }
 
@@ -86,6 +75,7 @@ public class InvitationListFragment extends Fragment {
 
         invitationEventList = new ArrayList<>();
         invitationEventIdList = new ArrayList<>();
+
         adapter = new InvitationListAdapter(context, invitationEventList, invitationEventIdList, navController);
         invitationListListView.setAdapter(adapter);
         loadEventsToListView();
@@ -132,7 +122,6 @@ public class InvitationListFragment extends Fragment {
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Log.d(TAG, "----------------------------------");
                 Log.d(TAG, e.toString());
             }
         });

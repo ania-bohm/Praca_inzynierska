@@ -1,7 +1,6 @@
 package com.annabohm.pracainzynierska;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -32,7 +31,6 @@ public class UserSearchListAdapter extends ArrayAdapter<User> implements View.On
 
     @Override
     public void onClick(View v) {
-        //adding to guestList or not
     }
 
     @NonNull
@@ -59,6 +57,7 @@ public class UserSearchListAdapter extends ArrayAdapter<User> implements View.On
         } else {
             userListItemUserPhotoImageView.setBackgroundResource(R.drawable.ic_no_photo);
         }
+
         return convertView;
     }
 

@@ -172,9 +172,9 @@ public class EventCostAdapter extends RecyclerView.Adapter<EventCostAdapter.Even
 
         @Override
         public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-            menu.setHeaderTitle("Wybierz akcję");
-            menu.add(0, 0, getAdapterPosition(), "Usuń");
-            menu.add(0, 0, getAdapterPosition(), "Anuluj");
+            menu.setHeaderTitle(R.string.event_cost_select_action);
+            menu.add(0, 0, getAdapterPosition(), R.string.event_cost_delete);
+            menu.add(0, 0, getAdapterPosition(), R.string.event_cost_cancel);
         }
     }
 }

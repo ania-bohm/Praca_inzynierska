@@ -7,7 +7,6 @@ public class EventCost {
     private boolean eventCostPaid;
 
     public EventCost() {
-
     }
 
     public EventCost(String eventCostId, String eventCostTitle, int eventCostValue, boolean eventCostPaid) {

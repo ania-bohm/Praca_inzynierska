@@ -17,7 +17,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -35,23 +34,77 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import static android.content.ContentValues.TAG;
 
 public class EditAccountSettingsFragment extends Fragment {
-    NavController navController;
-    Button confirmEditPersonalDataButton;
-    Button rejectEditPersonalDataButton;
-    FirebaseFirestore firebaseFirestore;
-    FirebaseAuth firebaseAuth;
-    FirebaseUser firebaseUser;
-    AuthCredential authCredential;
-    DocumentReference documentReference;
-    EditText editAccountFirstNameEditText, editAccountLastNameEditText, editAccountEmailEditText, editAccountPhoneNumberEditText;
-    Context context;
-    SharedPreferences sharedPreferences;
     public static final String myPreference = "myPref";
     public static final String Password = "Password";
     public static final String Email = "Email";
+    NavController navController;
+    Button confirmEditPersonalDataButton, rejectEditPersonalDataButton;
+    EditText editAccountFirstNameEditText, editAccountLastNameEditText, editAccountEmailEditText, editAccountPhoneNumberEditText;
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
+    FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+    FirebaseUser firebaseUser;
+    AuthCredential authCredential;
+    DocumentReference documentReference;
+    Context context;
+    SharedPreferences sharedPreferences;
+    private View.OnClickListener confirmEditOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            if (!editAccountFirstNameEditText.getText().toString().trim().isEmpty()) {
+                documentReference.update("userFirstName", editAccountFirstNameEditText.getText().toString());
+            }
+
+            if (!editAccountLastNameEditText.getText().toString().trim().isEmpty()) {
+                documentReference.update("userLastName", editAccountLastNameEditText.getText().toString());
+            }
+
+            if (!editAccountEmailEditText.getText().toString().trim().isEmpty()) {
+                firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+                authCredential = EmailAuthProvider
+                        .getCredential(sharedPreferences.getString(Email, null), sharedPreferences.getString(Password, null));
+                firebaseUser.reauthenticate(authCredential)
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                                user.updateEmail(editAccountEmailEditText.getText().toString().trim())
+                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                if (task.isSuccessful()) {
+                                                    Toast.makeText(context, R.string.change_email_success, Toast.LENGTH_SHORT).show();
+                                                } else {
+                                                    Toast.makeText(context, R.string.change_email_fail, Toast.LENGTH_SHORT).show();
+                                                }
+                                            }
+                                        });
+                            }
+                        });
+                documentReference.update("userEmail", editAccountEmailEditText.getText().toString().trim());
+            }
+
+            if (!editAccountPhoneNumberEditText.getText().toString().trim().isEmpty()) {
+                documentReference.update("userPhoneNumber", editAccountPhoneNumberEditText.getText().toString().trim());
+            }
+
+            if (editAccountFirstNameEditText.getText().toString().trim().isEmpty()
+                    && editAccountLastNameEditText.getText().toString().trim().isEmpty()
+                    && editAccountEmailEditText.getText().toString().isEmpty()
+                    && editAccountPhoneNumberEditText.getText().toString().isEmpty()) {
+                Toast.makeText(context, R.string.change_personal_data_error_empty, Toast.LENGTH_SHORT).show();
+                return;
+            }
+            navController.popBackStack();
+        }
+    };
+    private View.OnClickListener rejectEditOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            navController.popBackStack();
+        }
+    };
 
     public EditAccountSettingsFragment() {
-        // Required empty public constructor
     }
 
     public static EditAccountSettingsFragment newInstance(String param1, String param2) {
@@ -70,7 +123,6 @@ public class EditAccountSettingsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         ((MainActivity) getActivity()).setDrawerLocked();
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_edit_account_settings, container, false);
     }
 
@@ -78,15 +130,15 @@ public class EditAccountSettingsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         navController = Navigation.findNavController(view);
+
         confirmEditPersonalDataButton = view.findViewById(R.id.confirmEditPersonalDataButton);
         rejectEditPersonalDataButton = view.findViewById(R.id.rejectEditPersonalDataButton);
         editAccountFirstNameEditText = view.findViewById(R.id.editAccountFirstNameEditText);
         editAccountLastNameEditText = view.findViewById(R.id.editAccountLastNameEditText);
         editAccountEmailEditText = view.findViewById(R.id.editAccountEmailEditText);
         editAccountPhoneNumberEditText = view.findViewById(R.id.editAccountPhoneNumberEditText);
-        firebaseFirestore = FirebaseFirestore.getInstance();
-        firebaseAuth = FirebaseAuth.getInstance();
-        documentReference = firebaseFirestore.collection("Users").document(firebaseAuth.getCurrentUser().getUid());
+
+        documentReference = db.collection("Users").document(firebaseAuth.getCurrentUser().getUid());
         displayPersonalData();
         confirmEditPersonalDataButton.setOnClickListener(confirmEditOnClickListener);
         rejectEditPersonalDataButton.setOnClickListener(rejectEditOnClickListener);
@@ -113,75 +165,14 @@ public class EditAccountSettingsFragment extends Fragment {
                     editAccountPhoneNumberEditText.setTypeface(Typeface.create(editAccountPhoneNumberEditText.getTypeface(), Typeface.NORMAL), Typeface.NORMAL);
 
                 } else {
-                    Toast.makeText(context, "User does not exist", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, R.string.account_does_not_exist, Toast.LENGTH_SHORT).show();
                 }
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(context, "Reading data from FireStore failed", Toast.LENGTH_SHORT).show();
+                Log.d(TAG, e.toString());
             }
         });
     }
-
-    private View.OnClickListener confirmEditOnClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            if (!editAccountFirstNameEditText.getText().toString().trim().isEmpty()) {
-                documentReference.update("userFirstName", editAccountFirstNameEditText.getText().toString());
-            }
-
-            if (!editAccountLastNameEditText.getText().toString().trim().isEmpty()) {
-                documentReference.update("userLastName", editAccountLastNameEditText.getText().toString());
-            }
-
-            if (!editAccountEmailEditText.getText().toString().trim().isEmpty()) {
-                firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-                // Get auth credentials from the user for re-authentication
-                authCredential = EmailAuthProvider
-                        .getCredential(sharedPreferences.getString(Email, null), sharedPreferences.getString(Password, null)); // Current Login Credentials \\
-                // Prompt the user to re-provide their sign-in credentials
-                firebaseUser.reauthenticate(authCredential)
-                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                Log.d(TAG, "User re-authenticated.");
-                                //----------------Code for Changing Email Address----------\\
-                                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                                user.updateEmail(editAccountEmailEditText.getText().toString().trim())
-                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<Void> task) {
-                                                if (task.isSuccessful()) {
-                                                    Log.d(TAG, "User email address updated.");
-                                                }
-                                            }
-                                        });
-                                //----------------------------------------------------------\\
-                            }
-                        });
-                documentReference.update("userEmail", editAccountEmailEditText.getText().toString().trim());
-            }
-
-            if (!editAccountPhoneNumberEditText.getText().toString().trim().isEmpty()) {
-                documentReference.update("userPhoneNumber", editAccountPhoneNumberEditText.getText().toString().trim());
-            }
-
-            if (editAccountFirstNameEditText.getText().toString().trim().isEmpty()
-                    && editAccountLastNameEditText.getText().toString().trim().isEmpty()
-                    && editAccountEmailEditText.getText().toString().isEmpty()
-                    && editAccountPhoneNumberEditText.getText().toString().isEmpty()) {
-                Toast.makeText(context, "You have not changed anything. To escape edit mode, click 'Cancel' button", Toast.LENGTH_SHORT).show();
-                return;
-            }
-            navController.popBackStack();
-        }
-    };
-
-    private View.OnClickListener rejectEditOnClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            navController.popBackStack();
-        }
-    };
 }

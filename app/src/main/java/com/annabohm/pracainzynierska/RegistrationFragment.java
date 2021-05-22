@@ -62,32 +62,32 @@ public class RegistrationFragment extends Fragment {
             registerLastName = formatString(registerLastName);
 
             if (TextUtils.isEmpty(registerFirstName)) {
-                registerFirstNameEditText.setError("First name is required");
+                registerFirstNameEditText.setError(getString(R.string.first_name_empty));
                 return;
             }
 
             if (TextUtils.isEmpty(registerLastName)) {
-                registerEmailEditText.setError("Last name is required");
+                registerEmailEditText.setError(getString(R.string.last_name_empty));
                 return;
             }
 
             if (TextUtils.isEmpty(registerPhoneNumber)) {
-                registerEmailEditText.setError("Phone number is required");
+                registerEmailEditText.setError(getString(R.string.phone_number_empty));
                 return;
             }
 
             if (TextUtils.isEmpty(registerEmail)) {
-                registerEmailEditText.setError("Email is required");
+                registerEmailEditText.setError(getString(R.string.email1_empty));
                 return;
             }
 
             if (TextUtils.isEmpty(registerPassword)) {
-                registerEmailEditText.setError("Password is required");
+                registerEmailEditText.setError(getString(R.string.password1_empty));
                 return;
             }
 
             if (registerPassword.length() < 6) {
-                registerPasswordEditText.setError("Password must be at least 6 characters long");
+                registerPasswordEditText.setError(getString(R.string.password1_too_short));
                 return;
             }
 
@@ -95,7 +95,15 @@ public class RegistrationFragment extends Fragment {
         }
     };
 
-    public String formatString(String text){
+    public RegistrationFragment() {
+    }
+
+    public static RegistrationFragment newInstance(String param1, String param2) {
+        RegistrationFragment fragment = new RegistrationFragment();
+        return fragment;
+    }
+
+    public String formatString(String text) {
         String[] textArray = text.split(" ");
         String formattedText = "";
         for (int i = 0; i < textArray.length; i++) {
@@ -103,15 +111,6 @@ public class RegistrationFragment extends Fragment {
         }
         formattedText = formattedText.trim();
         return formattedText;
-    }
-
-    public RegistrationFragment() {
-        // Required empty public constructor
-    }
-
-    public static RegistrationFragment newInstance(String param1, String param2) {
-        RegistrationFragment fragment = new RegistrationFragment();
-        return fragment;
     }
 
     @Override
@@ -124,7 +123,6 @@ public class RegistrationFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         ((MainActivity) getActivity()).setDrawerLocked();
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_registration, container, false);
     }
 
@@ -132,6 +130,7 @@ public class RegistrationFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         navController = Navigation.findNavController(view);
+
         createAccountButton = view.findViewById(R.id.createAccountButton);
         backToLoginButton = view.findViewById(R.id.backToLoginButton);
         registerShowPasswordButton = view.findViewById(R.id.registerShowPasswordButton);
@@ -158,7 +157,7 @@ public class RegistrationFragment extends Fragment {
                     registerProgressBar.setVisibility(View.VISIBLE);
                     registerUser(registerEmailEditText, registerPasswordEditText, registerFirstNameEditText, registerLastNameEditText, registerPhoneNumberEditText);
                 } else {
-                    registerEmailEditText.setError("This email is already registered");
+                    registerEmailEditText.setError(getString(R.string.email1_already_exists));
                     return;
                 }
             }
@@ -181,21 +180,19 @@ public class RegistrationFragment extends Fragment {
                     documentReference.set(newUser).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
-                            Log.d(TAG, "onSuccess: user profile is created for: " + userID);
                         }
                     }).addOnFailureListener(new OnFailureListener() {
                         @Override
                         public void onFailure(@NonNull Exception e) {
-                            Log.d(TAG, "onFailure: " + e.toString());
+                            Log.d(TAG, e.toString());
                         }
                     });
-                    Toast.makeText(context, "User created successfully", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, R.string.register_success, Toast.LENGTH_SHORT).show();
                     navController.popBackStack();
                 } else {
-                    Toast.makeText(context, "Error: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
         });
     }
-
 }

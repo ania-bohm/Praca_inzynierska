@@ -3,14 +3,13 @@ package com.annabohm.pracainzynierska;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-
 import android.text.TextUtils;
+import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,8 +17,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-
+import android.widget.Toast;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
@@ -44,6 +44,8 @@ public class ChangePasswordFragment extends Fragment {
     AuthCredential authCredential;
     SharedPreferences sharedPreferences;
     EditText changePasswordOldEditText, changePasswordNewEditText, changePasswordRepeatEditText;
+    boolean hiddenPassword = true;
+    Context context;
 
     private View.OnClickListener confirmChangePasswordOnClickListener = new View.OnClickListener() {
         @Override
@@ -52,87 +54,13 @@ public class ChangePasswordFragment extends Fragment {
             final String newPassword = changePasswordNewEditText.getText().toString();
             String repeatPassword = changePasswordRepeatEditText.getText().toString();
 
-            if (TextUtils.isEmpty(oldPassword)) {
-                changePasswordOldEditText.setError("Password is required");
+            if (!changePasswordCorrect(oldPassword, newPassword, repeatPassword)) {
                 return;
             }
 
-            if (TextUtils.isEmpty(newPassword)) {
-                changePasswordNewEditText.setError("New password is required");
-                return;
-            }
-
-            if (TextUtils.isEmpty(repeatPassword)) {
-                changePasswordNewEditText.setError("Repeating password is required");
-                return;
-            }
-
-            if(!checkOldPasswordCorrectness(oldPassword)) {
-                changePasswordOldEditText.setError("Old password is incorrect");
-                return;
-            }
-
-            if (newPassword.length() < 6) {
-                changePasswordNewEditText.setError("Password must be at least 6 characters long");
-                return;
-            }
-
-            if (repeatPassword.length() < 6) {
-                changePasswordRepeatEditText.setError("Password must be at least 6 characters long");
-                return;
-            }
-
-            if(!checkNewPasswordCorrectness(newPassword, repeatPassword)) {
-                changePasswordRepeatEditText.setError("The passwords do not match");
-                return;
-            }
-
-            // Get auth credentials from the user for re-authentication. The example below shows
-            // email and password credentials but there are multiple possible providers,
-            // such as GoogleAuthProvider or FacebookAuthProvider.
-            authCredential = EmailAuthProvider.getCredential(sharedPreferences.getString(Email, null), sharedPreferences.getString(Password, null));
-            // Prompt the user to re-provide their sign-in credentials
-            firebaseUser.reauthenticate(authCredential)
-                    .addOnCompleteListener(new OnCompleteListener<Void>() {
-                        @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            if (task.isSuccessful()) {
-                                firebaseUser.updatePassword(newPassword).addOnCompleteListener(new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
-                                        if (task.isSuccessful()) {
-                                            SharedPreferences.Editor editor = sharedPreferences.edit();
-                                            editor.putString(Password, newPassword);
-                                            editor.commit();
-                                            Log.d(TAG, "Password updated");
-                                        } else {
-                                            Log.d(TAG, "Error password not updated");
-                                        }
-                                    }
-                                });
-                            } else {
-                                Log.d(TAG, "Error auth failed");
-                            }
-                        }
-                    });
-            navController.popBackStack();
+            changePassword(newPassword);
         }
     };
-
-    private boolean checkOldPasswordCorrectness(String oldPassword) {
-        if(sharedPreferences.getString(Password, null).equals(oldPassword)) {
-            return true;
-        }
-        return false;
-    }
-
-    private boolean checkNewPasswordCorrectness(String newPassword, String repeatPassword) {
-        if(newPassword.equals(repeatPassword)) {
-            return true;
-        }
-        return false;
-    }
-
     private View.OnClickListener rejectChangePasswordOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -142,7 +70,12 @@ public class ChangePasswordFragment extends Fragment {
     private View.OnClickListener changePasswordShowPasswordOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-
+            if (hiddenPassword) {
+                changePasswordOldEditText.setTransformationMethod(null);
+            } else {
+                changePasswordOldEditText.setTransformationMethod(new PasswordTransformationMethod());
+            }
+            hiddenPassword = !hiddenPassword;
         }
     };
 
@@ -155,17 +88,31 @@ public class ChangePasswordFragment extends Fragment {
         return fragment;
     }
 
+    private boolean checkOldPasswordCorrectness(String oldPassword) {
+        if (sharedPreferences.getString(Password, null).equals(oldPassword)) {
+            return true;
+        }
+        return false;
+    }
+
+    private boolean checkNewPasswordCorrectness(String newPassword, String repeatPassword) {
+        if (newPassword.equals(repeatPassword)) {
+            return true;
+        }
+        return false;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         sharedPreferences = this.getActivity().getSharedPreferences(myPreference, Context.MODE_PRIVATE);
+        context = getContext();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         ((MainActivity) getActivity()).setDrawerLocked();
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_change_password, container, false);
     }
 
@@ -185,5 +132,74 @@ public class ChangePasswordFragment extends Fragment {
         confirmChangePasswordButton.setOnClickListener(confirmChangePasswordOnClickListener);
         rejectChangePasswordButton.setOnClickListener(rejectChangePasswordOnClickListener);
         changePasswordShowPasswordButton.setOnClickListener(changePasswordShowPasswordOnClickListener);
+    }
+
+    public boolean changePasswordCorrect(String oldPassword, String newPassword, String repeatPassword) {
+        if (TextUtils.isEmpty(oldPassword)) {
+            changePasswordOldEditText.setError(getString(R.string.change_password_error_empty));
+            return false;
+        }
+
+        if (TextUtils.isEmpty(newPassword)) {
+            changePasswordNewEditText.setError(getString(R.string.change_password_error_new_empty));
+            return false;
+        }
+
+        if (TextUtils.isEmpty(repeatPassword)) {
+            changePasswordNewEditText.setError(getString(R.string.change_password_error_repeat_empty));
+            return false;
+        }
+
+        if (!checkOldPasswordCorrectness(oldPassword)) {
+            changePasswordOldEditText.setError(getString(R.string.change_password_error_old_incorrect));
+            return false;
+        }
+
+        if (newPassword.length() < 6) {
+            changePasswordNewEditText.setError(getString(R.string.change_password_error_too_short));
+            return false;
+        }
+
+        if (repeatPassword.length() < 6) {
+            changePasswordRepeatEditText.setError(getString(R.string.change_password_error_too_short));
+            return false;
+        }
+
+        if (!checkNewPasswordCorrectness(newPassword, repeatPassword)) {
+            changePasswordRepeatEditText.setError(getString(R.string.change_password_error_mismatch));
+            return false;
+        }
+        return true;
+    }
+
+    public void changePassword(final String newPassword) {
+        authCredential = EmailAuthProvider.getCredential(sharedPreferences.getString(Email, null), sharedPreferences.getString(Password, null));
+        firebaseUser.reauthenticate(authCredential)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            firebaseUser.updatePassword(newPassword).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if (task.isSuccessful()) {
+                                        SharedPreferences.Editor editor = sharedPreferences.edit();
+                                        editor.putString(Password, newPassword);
+                                        editor.commit();
+                                        Toast.makeText(context, R.string.change_password_success, Toast.LENGTH_SHORT).show();
+                                        navController.popBackStack();
+                                    } else {
+                                        Toast.makeText(context, R.string.change_password_fail, Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                            });
+                        }
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d(TAG, e.toString());
+            }
+        });
     }
 }

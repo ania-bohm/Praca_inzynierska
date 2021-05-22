@@ -2,16 +2,9 @@ package com.annabohm.pracainzynierska;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.media.Image;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-
 import android.text.TextUtils;
+import android.text.method.PasswordTransformationMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +15,12 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -29,6 +28,9 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class LoginFragment extends Fragment {
 
+    public static final String myPreference = "myPref";
+    public static final String Password = "Password";
+    public static final String Email = "Email";
     NavController navController;
     Button registerButton;
     Button loginButton;
@@ -39,14 +41,23 @@ public class LoginFragment extends Fragment {
     Context context;
     SharedPreferences sharedPreferences;
     InputMethodManager imm;
-    public static final String myPreference = "myPref";
-    public static final String Password = "Password";
-    public static final String Email = "Email";
-
+    boolean hiddenPassword = true;
     private View.OnClickListener registerOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             navController.navigate(R.id.loginToRegister);
+        }
+    };
+
+    private View.OnClickListener loginShowPasswordOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            if (hiddenPassword) {
+                loginPasswordEditText.setTransformationMethod(null);
+            } else {
+                loginPasswordEditText.setTransformationMethod(new PasswordTransformationMethod());
+            }
+            hiddenPassword = !hiddenPassword;
         }
     };
     private View.OnClickListener loginOnClickListener = new View.OnClickListener() {
@@ -57,50 +68,17 @@ public class LoginFragment extends Fragment {
 
             hideKeyboard();
 
-            if (TextUtils.isEmpty(loginEmail)) {
-                loginEmailEditText.setError("Email is required");
-                return;
-            }
-
-            if (TextUtils.isEmpty(loginPassword)) {
-                loginEmailEditText.setError("Password is required");
-                return;
-            }
-
-            if (loginPassword.length() < 6) {
-                loginPasswordEditText.setError("Password must be at least 6 characters long");
+            if(!loginCorrect(loginEmail, loginPassword)){
                 return;
             }
 
             loginProgressBar.setVisibility(View.VISIBLE);
 
-            //authenticate the user
-            firebaseAuth.signInWithEmailAndPassword(loginEmail, loginPassword).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                @Override
-                public void onComplete(@NonNull Task<AuthResult> task) {
-                    if (task.isSuccessful()) {
-                        SharedPreferences.Editor editor = sharedPreferences.edit();
-                        editor.putString(Email, loginEmail);
-                        editor.putString(Password, loginPassword);
-                        editor.commit();
-                        Toast.makeText(context, "Logged in successfully!", Toast.LENGTH_SHORT).show();
-                        loginEmailEditText.setText("");
-                        loginPasswordEditText.setText("");
-                        navController.navigate(R.id.loginToMain);
-                    } else {
-                        Toast.makeText(context, "Error: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                        loginProgressBar.setVisibility(View.INVISIBLE);
-                    }
-                }
-            });
-
-            //checkEmailExistsOrNot(loginEmailEditText, loginPasswordEditText);
-            //navController.navigate(R.id.loginToMain);
+            login(loginEmail, loginPassword);
         }
     };
 
     public LoginFragment() {
-        // Required empty public constructor
     }
 
     public static LoginFragment newInstance(String param1, String param2) {
@@ -120,7 +98,6 @@ public class LoginFragment extends Fragment {
                              Bundle savedInstanceState) {
         ((MainActivity) getActivity()).setDrawerLocked();
         imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_login, container, false);
     }
 
@@ -137,6 +114,7 @@ public class LoginFragment extends Fragment {
         firebaseAuth = FirebaseAuth.getInstance();
 
         registerButton.setOnClickListener(registerOnClickListener);
+        loginShowPasswordButton.setOnClickListener(loginShowPasswordOnClickListener);
         loginButton.setOnClickListener(loginOnClickListener);
     }
 
@@ -144,4 +122,43 @@ public class LoginFragment extends Fragment {
         imm.hideSoftInputFromWindow(loginButton.getWindowToken(), InputMethodManager.RESULT_UNCHANGED_SHOWN);
     }
 
+    public boolean loginCorrect(String loginEmail, String loginPassword) {
+
+        if (TextUtils.isEmpty(loginEmail)) {
+            loginEmailEditText.setError(getString(R.string.login_email_error_empty));
+            return false;
+        }
+
+        if (TextUtils.isEmpty(loginPassword)) {
+            loginEmailEditText.setError(getString(R.string.login_password_error_empty));
+            return false;
+        }
+
+        if (loginPassword.length() < 6) {
+            loginPasswordEditText.setError(getString(R.string.login_password_error_too_short));
+            return false;
+        }
+        return true;
+    }
+
+    public void login(final String loginEmail, final String loginPassword){
+        firebaseAuth.signInWithEmailAndPassword(loginEmail, loginPassword).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString(Email, loginEmail);
+                    editor.putString(Password, loginPassword);
+                    editor.commit();
+                    Toast.makeText(context, R.string.login_success, Toast.LENGTH_SHORT).show();
+                    loginEmailEditText.setText("");
+                    loginPasswordEditText.setText("");
+                    navController.navigate(R.id.loginToMain);
+                } else {
+                    Toast.makeText(context, R.string.login_fail, Toast.LENGTH_SHORT).show();
+                    loginProgressBar.setVisibility(View.INVISIBLE);
+                }
+            }
+        });
+    }
 }

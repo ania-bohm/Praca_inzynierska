@@ -1,7 +1,6 @@
 package com.annabohm.pracainzynierska;
 
 import androidx.annotation.NonNull;
-
 import java.util.Date;
 
 public class Event {

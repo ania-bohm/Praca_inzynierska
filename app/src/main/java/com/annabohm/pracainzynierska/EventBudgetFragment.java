@@ -65,7 +65,6 @@ public class EventBudgetFragment extends Fragment {
     Bundle bundle;
 
     public EventBudgetFragment() {
-        // Required empty public constructor
     }
 
     public static EventBudgetFragment newInstance(String param1, String param2) {
@@ -87,13 +86,23 @@ public class EventBudgetFragment extends Fragment {
         if (((MainActivity) getActivity()).getSupportActionBar() != null) {
             ((MainActivity) getActivity()).getSupportActionBar().hide();
         }
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_event_budget, container, false);
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        displayEventBudgetTextView = view.findViewById(R.id.displayEventBudgetTextView);
+        displayEventBudgetLeftTextView = view.findViewById(R.id.displayEventBudgetLeftTextView);
+        eventCostTitleMaterialEditText = view.findViewById(R.id.eventCostTitleMaterialEditText);
+        eventCostValueMaterialEditText = view.findViewById(R.id.eventCostValueMaterialEditText);
+        eventCostFloatingActionButton = view.findViewById(R.id.eventCostFloatingActionButton);
+        eventCostRecyclerView = view.findViewById(R.id.eventCostRecyclerView);
+
+        eventCostRecyclerView.setHasFixedSize(true);
+        layoutManager = new LinearLayoutManager(context);
+        eventCostRecyclerView.setLayoutManager(layoutManager);
 
         eventCostList = new ArrayList<>();
         alertDialog = new SpotsDialog(context);
@@ -103,11 +112,6 @@ public class EventBudgetFragment extends Fragment {
         eventReference = db.document(path);
         eventId = eventReference.getId();
 
-        displayEventBudgetTextView = view.findViewById(R.id.displayEventBudgetTextView);
-        displayEventBudgetLeftTextView = view.findViewById(R.id.displayEventBudgetLeftTextView);
-        eventCostTitleMaterialEditText = view.findViewById(R.id.eventCostTitleMaterialEditText);
-
-        eventCostValueMaterialEditText = view.findViewById(R.id.eventCostValueMaterialEditText);
         eventCostValueMaterialEditText.addTextChangedListener(new TextWatcher() {
             public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
             }
@@ -127,13 +131,11 @@ public class EventBudgetFragment extends Fragment {
             }
         });
 
-        eventCostFloatingActionButton = view.findViewById(R.id.eventCostFloatingActionButton);
-
         eventCostFloatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (eventCostValueMaterialEditText.getText().toString().trim().isEmpty() || eventCostTitleMaterialEditText.getText().toString().trim().isEmpty()) {
-                    Toast.makeText(context, "Please fill all the fields!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, R.string.event_budget_empty_fields, Toast.LENGTH_SHORT).show();
                     return;
                 }
                 double eventCostValueDouble = Double.parseDouble(eventCostValueMaterialEditText.getText().toString());
@@ -146,11 +148,6 @@ public class EventBudgetFragment extends Fragment {
                 }
             }
         });
-
-        eventCostRecyclerView = view.findViewById(R.id.eventCostRecyclerView);
-        eventCostRecyclerView.setHasFixedSize(true);
-        layoutManager = new LinearLayoutManager(context);
-        eventCostRecyclerView.setLayoutManager(layoutManager);
 
         loadData();
     }
@@ -183,7 +180,7 @@ public class EventBudgetFragment extends Fragment {
 
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
-        if (item.getTitle().equals("Usuń")) {
+        if (item.getItemId() == R.string.event_cost_delete) {
             deleteItem(item.getOrder());
         }
         return super.onContextItemSelected(item);
@@ -275,7 +272,7 @@ public class EventBudgetFragment extends Fragment {
                             }
                         }
                         double paidCostsDouble = paidCostsLong / 100;
-                        if(eventBudgetDouble - paidCostsDouble < 0) {
+                        if (eventBudgetDouble - paidCostsDouble < 0) {
                             displayEventBudgetLeftTextView.setTextColor(Color.RED);
                         } else {
                             displayEventBudgetLeftTextView.setTextColor(Color.WHITE);
@@ -288,7 +285,7 @@ public class EventBudgetFragment extends Fragment {
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-
+                        Log.d(TAG, e.toString());
                     }
                 });
 

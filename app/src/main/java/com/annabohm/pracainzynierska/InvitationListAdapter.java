@@ -37,7 +37,6 @@ public class InvitationListAdapter extends ArrayAdapter<Event> implements View.O
     CollectionReference events = db.collection("Events");
     CollectionReference attendeeEvents = db.collection("AttendeeEvents");
     CollectionReference eventAttendees = db.collection("EventAttendees");
-    ArrayList<String> eventAttendeesList;
     NavController navController;
     private ArrayList<Event> eventList;
     private ArrayList<String> eventIdList;
@@ -92,7 +91,6 @@ public class InvitationListAdapter extends ArrayAdapter<Event> implements View.O
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         if (documentSnapshot.exists()) {
                             String path = documentSnapshot.getReference().getPath();
-                            Toast.makeText(getContext(), "Position clicked: " + position, Toast.LENGTH_SHORT).show();
                             Bundle bundle = new Bundle();
                             bundle.putString("path", path);
                             navController.navigate(R.id.invitationListToDisplayEvent, bundle);
@@ -134,7 +132,6 @@ public class InvitationListAdapter extends ArrayAdapter<Event> implements View.O
                 eventAttendees.document(eventId).collection("Confirmed").add(docDataUserId).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
-//                        Toast.makeText(context, "Invitation confirmed in eventAttendees!", Toast.LENGTH_SHORT).show();
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
@@ -163,7 +160,6 @@ public class InvitationListAdapter extends ArrayAdapter<Event> implements View.O
                 attendeeEvents.document(currentUser).collection("Confirmed").add(docDataEventId).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
-                        Toast.makeText(context, "Invitation confirmed in attendeeEvents!", Toast.LENGTH_SHORT).show();
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
@@ -204,7 +200,6 @@ public class InvitationListAdapter extends ArrayAdapter<Event> implements View.O
                 eventAttendees.document(eventId).collection("Declined").add(docDataUserId).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
-                        Toast.makeText(context, "Invitation declined in eventAttendees!", Toast.LENGTH_SHORT).show();
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
@@ -234,7 +229,6 @@ public class InvitationListAdapter extends ArrayAdapter<Event> implements View.O
                 attendeeEvents.document(currentUser).collection("Declined").add(docDataEventId).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
-                        Toast.makeText(context, "Invitation declined in attendeeEvents!", Toast.LENGTH_SHORT).show();
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override

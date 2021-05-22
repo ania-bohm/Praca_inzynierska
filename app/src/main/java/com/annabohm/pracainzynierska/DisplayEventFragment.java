@@ -3,13 +3,11 @@ package com.annabohm.pracainzynierska;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Bundle;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,7 +16,6 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -29,11 +26,9 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-
 import dmax.dialog.SpotsDialog;
 
 import static android.content.ContentValues.TAG;
@@ -78,7 +73,6 @@ public class DisplayEventFragment extends Fragment {
     };
 
     public DisplayEventFragment() {
-        // Required empty public constructor
     }
 
     public static DisplayEventFragment newInstance(String param1, String param2) {
@@ -96,7 +90,6 @@ public class DisplayEventFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         ((MainActivity) getActivity()).setDrawerLocked();
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_display_event, container, false);
     }
 
@@ -133,7 +126,6 @@ public class DisplayEventFragment extends Fragment {
         eventBudgetButton.setOnClickListener(eventBudgetOnClickListener);
 
         loadData();
-
         initialiseGuestList();
     }
 
@@ -178,14 +170,12 @@ public class DisplayEventFragment extends Fragment {
                         }
                     });
 
-                } else {
-                    Toast.makeText(context, "Document does not exist", Toast.LENGTH_SHORT).show();
                 }
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(context, "Reading data from Firestore failed", Toast.LENGTH_SHORT).show();
+                Log.d(TAG, e.toString());
             }
         });
     }

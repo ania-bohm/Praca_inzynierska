@@ -1,6 +1,5 @@
 package com.annabohm.pracainzynierska;
 
-import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.Log;
@@ -161,9 +160,9 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ToDoItemHolder
 
         @Override
         public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-            menu.setHeaderTitle("Wybierz akcję");
-            menu.add(0, 0, getAdapterPosition(), "Usuń");
-            menu.add(0, 0, getAdapterPosition(), "Anuluj");
+            menu.setHeaderTitle(R.string.to_do_title);
+            menu.add(0, 0, getAdapterPosition(), R.string.to_do_delete);
+            menu.add(0, 0, getAdapterPosition(), R.string.to_do_cancel);
         }
     }
 }

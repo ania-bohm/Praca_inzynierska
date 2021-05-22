@@ -66,7 +66,6 @@ public class MainFragment extends Fragment {
     };
 
     public MainFragment() {
-        // Required empty public constructor
     }
 
     public static MainFragment newInstance(String param1, String param2) {
@@ -83,7 +82,6 @@ public class MainFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         ((MainActivity) getActivity()).setDrawerUnlocked();
         return inflater.inflate(R.layout.fragment_main, container, false);
     }
@@ -94,14 +92,13 @@ public class MainFragment extends Fragment {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 List<DocumentSnapshot> documentSnapshots = task.getResult().getDocuments();
-                if(!documentSnapshots.isEmpty()) {
+                if (!documentSnapshots.isEmpty()) {
                     for (DocumentSnapshot documentSnapshot : documentSnapshots) {
                         if (documentSnapshot.exists()) {
                             final String eventId = documentSnapshot.get("Event").toString();
                             events.document(eventId).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                                 @Override
                                 public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                    //
                                     Event eventToCheck = documentSnapshot.toObject(Event.class);
                                     Date dateNow = new Date();
                                     final DateFormat timeFormatterPrint = new SimpleDateFormat("HH:mm");
@@ -155,7 +152,6 @@ public class MainFragment extends Fragment {
                             public void onSuccess(DocumentSnapshot documentSnapshot) {
                                 if (documentSnapshot.exists()) {
                                     String path = documentSnapshot.getReference().getPath();
-//                                    Toast.makeText(getContext(), "Position clicked: " + position, Toast.LENGTH_SHORT).show();
                                     Bundle bundle = new Bundle();
                                     bundle.putString("path", path);
                                     navController.navigate(R.id.mainToDisplayEvent, bundle);
@@ -184,7 +180,7 @@ public class MainFragment extends Fragment {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 List<DocumentSnapshot> documentSnapshots = task.getResult().getDocuments();
-                if(!documentSnapshots.isEmpty()) {
+                if (!documentSnapshots.isEmpty()) {
                     for (DocumentSnapshot documentSnapshot : documentSnapshots) {
                         if (documentSnapshot.exists()) {
                             final String eventId = documentSnapshot.getId();
@@ -235,7 +231,6 @@ public class MainFragment extends Fragment {
                             public void onSuccess(DocumentSnapshot documentSnapshot) {
                                 if (documentSnapshot.exists()) {
                                     String path = documentSnapshot.getReference().getPath();
-//                                    Toast.makeText(getContext(), "Position clicked: " + position, Toast.LENGTH_SHORT).show();
                                     Bundle bundle = new Bundle();
                                     bundle.putString("path", path);
                                     navController.navigate(R.id.mainToDisplayEvent, bundle);
@@ -259,19 +254,19 @@ public class MainFragment extends Fragment {
                     @Override
                     public void onSwiped(@NonNull final RecyclerView.ViewHolder viewHolder, int direction) {
                         new AlertDialog.Builder(context)
-                                .setTitle("Usunięcie wydarzenia")
-                                .setMessage("Czy na pewno chcesz usunąć wydarzenie?")
-                                .setNegativeButton("Nie", new DialogInterface.OnClickListener() {
+                                .setTitle(R.string.event_delete_title)
+                                .setMessage(R.string.event_delete_message)
+                                .setNegativeButton(R.string.event_delete_no, new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int which) {
                                         yourCurrentEventsAdapter.notifyDataSetChanged();
                                     }
                                 })
-                                .setPositiveButton("Tak", new DialogInterface.OnClickListener() {
+                                .setPositiveButton(R.string.event_delete_yes, new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int which) {
                                         final String eventToDeleteId = yourCurrentEventsAdapter.getEventId(viewHolder.getAdapterPosition());
                                         getAttendeesToDeleteIdList(eventToDeleteId);
                                         yourCurrentEventsAdapter.deleteItem(viewHolder.getAdapterPosition());
-                                        Toast.makeText(context, "Usunięto wydarzenie", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(context, R.string.event_delete_success, Toast.LENGTH_SHORT).show();
                                     }
                                 })
                                 .setIcon(R.drawable.ic_decline)
@@ -475,7 +470,6 @@ public class MainFragment extends Fragment {
                             }
                         });
                     }
-
                 }
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
@@ -491,15 +485,16 @@ public class MainFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         navController = Navigation.findNavController(view);
 
+        yourCurrentEventsRecyclerView = view.findViewById(R.id.yourCurrentEventsRecyclerView);
+        allEventsRecyclerView = view.findViewById(R.id.allEventsRecyclerView);
+        yourEventsEmptyTextView = view.findViewById(R.id.yourEventsEmptyTextView);
+        allEventsEmptyTextView = view.findViewById(R.id.allEventsEmptyTextView);
+
         confirmedEvents = new HashMap<>();
         yourCurrentEvents = new HashMap<>();
 
         allEventsAdapter = new ConfirmedEventAdapter(confirmedEvents);
         yourCurrentEventsAdapter = new ConfirmedEventAdapter(yourCurrentEvents);
-        yourCurrentEventsRecyclerView = view.findViewById(R.id.yourCurrentEventsRecyclerView);
-        allEventsRecyclerView = view.findViewById(R.id.allEventsRecyclerView);
-        yourEventsEmptyTextView = view.findViewById(R.id.yourEventsEmptyTextView);
-        allEventsEmptyTextView = view.findViewById(R.id.allEventsEmptyTextView);
 
         yourEventsEmptyTextView.setVisibility(View.GONE);
         allEventsEmptyTextView.setVisibility(View.GONE);

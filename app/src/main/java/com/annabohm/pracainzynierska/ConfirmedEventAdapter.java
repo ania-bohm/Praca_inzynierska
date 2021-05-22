@@ -1,23 +1,19 @@
 package com.annabohm.pracainzynierska;
 
-import android.graphics.ColorSpace;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
-
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -74,6 +70,7 @@ public class ConfirmedEventAdapter extends RecyclerView.Adapter<ConfirmedEventAd
                 e.printStackTrace();
                 Log.i(TAG, e.toString());
             }
+
             userAuthor = users.document(sortedEventsList.get(position).getEventAuthor());
             final Date finalEventDateStart = eventDateStart;
             final Date finalEventTimeStart = eventTimeStart;
@@ -101,7 +98,6 @@ public class ConfirmedEventAdapter extends RecyclerView.Adapter<ConfirmedEventAd
                     Log.i(TAG, e.toString());
                 }
             });
-
         }
     }
 
@@ -151,6 +147,5 @@ public class ConfirmedEventAdapter extends RecyclerView.Adapter<ConfirmedEventAd
             miniEventTimeStartTextView = view.findViewById(R.id.miniEventTimeStartTextView);
             miniEventAuthorTextView = view.findViewById(R.id.miniEventAuthorTextView);
         }
-
     }
 }

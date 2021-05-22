@@ -3,17 +3,9 @@ package com.annabohm.pracainzynierska;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,6 +16,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -33,13 +31,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
-
-import jp.wasabeef.picasso.transformations.CropCircleTransformation;
-
 import com.squareup.picasso.Picasso;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
+import jp.wasabeef.picasso.transformations.CropCircleTransformation;
 
 import static android.app.Activity.RESULT_OK;
 import static android.content.ContentValues.TAG;
@@ -59,6 +53,7 @@ public class AccountSettingsFragment extends Fragment {
     StorageReference storageReference;
     String photoUri;
     Context context;
+
     private View.OnClickListener editAccountPhotoOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -69,7 +64,6 @@ public class AccountSettingsFragment extends Fragment {
         @Override
         public void onClick(View v) {
             navController.navigate(R.id.accountSettingsToEditAccountSettings);
-            Log.i(TAG, "Jestem w kliknieciu i navcontrollerze");
         }
     };
     private View.OnClickListener accountChangePasswordOnClickListener = new View.OnClickListener() {
@@ -84,7 +78,6 @@ public class AccountSettingsFragment extends Fragment {
             deleteOldPhoto();
             documentReference.update("userPhoto", "");
             reloadFragment();
-//            displayPersonalData();
         }
     };
 
@@ -107,7 +100,6 @@ public class AccountSettingsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         ((MainActivity) getActivity()).setDrawerLocked();
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_account_settings, container, false);
     }
 
@@ -118,7 +110,6 @@ public class AccountSettingsFragment extends Fragment {
         editAccountPhotoImageView = view.findViewById(R.id.editAccountPhotoImageView);
         editPersonalDataImageView = view.findViewById(R.id.editPersonalDataImageView);
         accountPhotoImageView = view.findViewById(R.id.accountPhotoImageView);
-        // on click listener dla zdjęcia? powiększenie po kliknięciu?
         accountChangePasswordButton = view.findViewById(R.id.accountChangePasswordButton);
         accountPhotoDeleteButton = view.findViewById(R.id.accountPhotoDeleteButton);
         accountFirstNameTextView = view.findViewById(R.id.accountFirstNameTextView);
@@ -150,10 +141,10 @@ public class AccountSettingsFragment extends Fragment {
                                 .load(user.getUserPhoto().trim())
                                 .transform(new CropCircleTransformation())
                                 .into(accountPhotoImageView);
-//                        Picasso.get().load(user.getUserPhoto().trim()).resize(400, 400).centerCrop().into(accountPhotoImageView);
                     }
                     String firstName = user.getUserFirstName().substring(0, 1).toUpperCase() + user.getUserFirstName().substring(1).toLowerCase();
                     String lastName = user.getUserLastName().substring(0, 1).toUpperCase() + user.getUserLastName().substring(1).toLowerCase();
+
                     accountFirstNameTextView.setText(firstName);
                     accountLastNameTextView.setText(lastName);
                     accountEmailTextView.setText(user.getUserEmail());
@@ -165,13 +156,13 @@ public class AccountSettingsFragment extends Fragment {
                     accountPhoneNumberTextView.setTypeface(Typeface.create(accountPhoneNumberTextView.getTypeface(), Typeface.NORMAL), Typeface.NORMAL);
 
                 } else {
-                    Toast.makeText(context, "User does not exist", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, R.string.account_does_not_exist, Toast.LENGTH_SHORT).show();
                 }
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(context, "Reading data from FireStore failed", Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, R.string.account_error, Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -180,7 +171,6 @@ public class AccountSettingsFragment extends Fragment {
         Intent intent = new Intent();
         intent.setType("image/*");
         intent.setAction(Intent.ACTION_GET_CONTENT);
-        //intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
         startActivityForResult(intent, 1);
     }
 
@@ -191,7 +181,6 @@ public class AccountSettingsFragment extends Fragment {
                 .attach(this)
                 .commit();
         displayPersonalData();
-        //getActivity().getSupportFragmentManager().beginTransaction().replace(AccountSettingsFragment.this.getId(), new AccountSettingsFragment()).commit();
     }
 
     private String getExtension(Uri uri) {
@@ -213,7 +202,6 @@ public class AccountSettingsFragment extends Fragment {
                         mRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                             @Override
                             public void onSuccess(Uri uri) {
-                                Log.d(TAG, "Download URL = " + uri.toString());
                                 documentReference.update("userPhoto", uri.toString());
                                 deleteOldPhoto();
                                 displayPersonalData();
@@ -223,7 +211,7 @@ public class AccountSettingsFragment extends Fragment {
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(getContext(), "Process failed" + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        Log.d(TAG, e.toString());
                     }
                 });
             }
@@ -238,14 +226,13 @@ public class AccountSettingsFragment extends Fragment {
                 oldPhotoRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-                        Log.d(TAG, "onSuccess: deleted from storage");
                         reloadFragment();
                         displayPersonalData();
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception exception) {
-                        Log.d(TAG, "onFailure: did not delete file from storage");
+                        Log.d(TAG, exception.toString());
                     }
                 });
             }

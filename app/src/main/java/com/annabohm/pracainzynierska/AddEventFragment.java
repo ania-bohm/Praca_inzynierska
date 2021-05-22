@@ -16,7 +16,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.ScrollView;
 import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.Toast;
@@ -67,6 +66,7 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
     ArrayList<User> invitedUsersList, foundUsersList;
     ArrayList<String> invitedUsersIdList, foundUsersIdList;
     UserSearchListAdapter invitedUsersAdapter, foundUsersAdapter;
+    SimpleImageArrayAdapter imageArrayAdapter;
     InputMethodManager imm;
 
     private View.OnClickListener eventReadyOnClickListener = new View.OnClickListener() {
@@ -83,12 +83,12 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
             Integer eventImage = chosenImage;
             String eventAuthor = firebaseAuth.getCurrentUser().getUid();
 
-            if (eventName.trim().isEmpty() || eventBudgetString.trim().isEmpty() || eventDescription.trim().isEmpty() || dateStartValue.trim().isEmpty() || dateFinishValue.trim().isEmpty() || timeStartValue.trim().isEmpty() || timeFinishValue.trim().isEmpty()) {
-                Toast.makeText(context, "Please fill all the fields!", Toast.LENGTH_SHORT).show();
+            if (eventName.trim().isEmpty() || eventBudgetString.trim().isEmpty() || dateStartValue.trim().isEmpty() || dateFinishValue.trim().isEmpty() || timeStartValue.trim().isEmpty() || timeFinishValue.trim().isEmpty() || eventLocation.trim().isEmpty()) {
+                Toast.makeText(context, R.string.event_empty_fields, Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            long eventBudget = convertBudgetStringToLong(eventBudgetString);
+            long eventBudgetLong = convertBudgetStringToLong(eventBudgetString);
             DateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy");
             DateFormat timeFormatter = new SimpleDateFormat("HH:mm");
             Date eventDateStart = null;
@@ -106,12 +106,11 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
                 Log.i(TAG, e.toString());
             }
 
-            final Event event = new Event(eventName, eventDateStart, eventTimeStart, eventDateFinish, eventTimeFinish, eventLocation, eventDescription, eventImage, eventAuthor, eventBudget);
+            final Event event = new Event(eventName, eventDateStart, eventTimeStart, eventDateFinish, eventTimeFinish, eventLocation, eventDescription, eventImage, eventAuthor, eventBudgetLong);
             events.add(event).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                 @Override
                 public void onSuccess(DocumentReference documentReference) {
-                    Toast.makeText(context, "Event saved successfully", Toast.LENGTH_SHORT).show();
-//                    Toast.makeText(context, "Id: " + documentReference.getId(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, R.string.event_add_success, Toast.LENGTH_SHORT).show();
                     String eventId = documentReference.getId();
                     if (!invitedUsersIdList.isEmpty()) {
                         for (int i = 0; i < invitedUsersIdList.size(); i++) {
@@ -121,12 +120,10 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
                             eventAttendees.document(eventId).collection("Invited").add(docDataUserId).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                                 @Override
                                 public void onSuccess(DocumentReference documentReference) {
-//                                    Toast.makeText(context, "EventAttendee added", Toast.LENGTH_SHORT).show();
                                 }
                             }).addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
-//                                    Toast.makeText(context, "EventAttendee adding failed!", Toast.LENGTH_SHORT).show();
                                     Log.d(TAG, e.toString());
                                 }
                             });
@@ -138,12 +135,10 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
                             attendeeEvents.document(invitedUsersIdList.get(i)).collection("Invited").add(docDataEventId).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                                 @Override
                                 public void onSuccess(DocumentReference documentReference) {
-//                                    Toast.makeText(context, "AttendeesEvent added", Toast.LENGTH_SHORT).show();
                                 }
                             }).addOnFailureListener(new OnFailureListener() {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
-//                                    Toast.makeText(context, "AttendeesEvent adding failed!", Toast.LENGTH_SHORT).show();
                                     Log.d(TAG, e.toString());
                                 }
                             });
@@ -153,7 +148,7 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
             }).addOnFailureListener(new OnFailureListener() {
                 @Override
                 public void onFailure(@NonNull Exception e) {
-                    Toast.makeText(context, "Event save failed!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, R.string.event_add_fail, Toast.LENGTH_SHORT).show();
                     Log.d(TAG, e.toString());
                 }
             });
@@ -168,7 +163,6 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
     };
 
     public AddEventFragment() {
-        // Required empty public constructor
     }
 
     public static AddEventFragment newInstance(String param1, String param2) {
@@ -178,19 +172,8 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
 
     private long convertBudgetStringToLong(String eventBudgetString) {
         double eventBudgetDouble = Double.valueOf(eventBudgetString);
-//        String text = Double.toString(Math.abs(eventBudgetDouble));
-//        int integerPlaces = text.indexOf('.');
-//        int decimalPlaces = text.length() - integerPlaces - 1;
-//        if (decimalPlaces > 2) {
-//            for (int i = decimalPlaces; i > 2; i--) {
-//                eventBudgetString = eventBudgetString.substring(0, eventBudgetString.length() - 1);
-//            }
-//        }
-
         eventBudgetDouble *= 100;
-
         long eventBudgetLong = (new Double(eventBudgetDouble)).longValue();
-        Toast.makeText(context, "String obtained: " + eventBudgetString + ", Double: " + eventBudgetDouble + ", converted to Long: " + eventBudgetLong, Toast.LENGTH_SHORT).show();
         return eventBudgetLong;
     }
 
@@ -206,7 +189,6 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
                              Bundle savedInstanceState) {
         ((MainActivity) getActivity()).setDrawerLocked();
         imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_add_event, container, false);
     }
 
@@ -214,10 +196,9 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         navController = Navigation.findNavController(view);
+
         eventReadyButton = view.findViewById(R.id.eventReadyButton);
         eventCancelButton = view.findViewById(R.id.eventCancelButton);
-        eventReadyButton.setOnClickListener(eventReadyOnClickListener);
-        eventCancelButton.setOnClickListener(eventCancelOnClickListener);
         eventNameEditText = view.findViewById(R.id.eventNameEditText);
         eventDateStartEditText = view.findViewById(R.id.eventDateStartEditText);
         eventTimeStartEditText = view.findViewById(R.id.eventTimeStartEditText);
@@ -225,8 +206,33 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
         eventTimeFinishEditText = view.findViewById(R.id.eventTimeFinishEditText);
         eventLocationEditText = view.findViewById(R.id.eventLocationEditText);
         eventDescriptionEditText = view.findViewById(R.id.eventDescriptionEditText);
-
         eventBudgetEditText = view.findViewById(R.id.eventBudgetEditText);
+        eventGuestListSearchView = view.findViewById(R.id.eventGuestListSearchView);
+        eventUserSearchListView = view.findViewById(R.id.eventUserSearchListView);
+        eventImageSpinner = view.findViewById(R.id.eventImageSpinner);
+        eventGuestListListView = view.findViewById(R.id.eventGuestListListView);
+
+        invitedUsersList = new ArrayList<>();
+        foundUsersList = new ArrayList<>();
+        invitedUsersIdList = new ArrayList<>();
+        foundUsersIdList = new ArrayList<>();
+
+        invitedUsersAdapter = new UserSearchListAdapter(context, invitedUsersList);
+        foundUsersAdapter = new UserSearchListAdapter(context, foundUsersList);
+        eventGuestListListView.setAdapter(invitedUsersAdapter);
+        eventUserSearchListView.setAdapter(foundUsersAdapter);
+
+        imageArrayAdapter = new SimpleImageArrayAdapter(context,
+                new Integer[]{R.drawable.rectangular_background_1, R.drawable.rectangular_background, R.drawable.rectangular_background_2, R.drawable.rectangular_background_3});
+        eventImageSpinner.setAdapter(imageArrayAdapter);
+        eventImageSpinner.setOnItemSelectedListener(this);
+
+        registerForContextMenu(eventGuestListListView);
+
+        hideEventUserSearchListView();
+
+        eventReadyButton.setOnClickListener(eventReadyOnClickListener);
+        eventCancelButton.setOnClickListener(eventCancelOnClickListener);
 
         eventBudgetEditText.addTextChangedListener(new TextWatcher() {
             public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
@@ -237,8 +243,10 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
 
             public void afterTextChanged(Editable arg0) {
                 String str = eventBudgetEditText.getText().toString();
-                if (str.isEmpty()) return;
-                String str2 = PerfectDecimal(str, 6, 2);
+                if (str.isEmpty()) {
+                    return;
+                }
+                String str2 = perfectDecimal(str, 6, 2);
 
                 if (!str2.equals(str)) {
                     eventBudgetEditText.setText(str2);
@@ -246,25 +254,6 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
                 }
             }
         });
-
-        eventGuestListSearchView = view.findViewById(R.id.eventGuestListSearchView);
-        eventUserSearchListView = view.findViewById(R.id.eventUserSearchListView);
-        eventImageSpinner = view.findViewById(R.id.eventImageSpinner);
-        eventGuestListListView = view.findViewById(R.id.eventGuestListListView);
-
-        invitedUsersList = new ArrayList<>();
-        foundUsersList = new ArrayList<>();
-
-        invitedUsersIdList = new ArrayList<>();
-        foundUsersIdList = new ArrayList<>();
-
-        hideEventUserSearchListView();
-
-        invitedUsersAdapter = new UserSearchListAdapter(context, invitedUsersList);
-        foundUsersAdapter = new UserSearchListAdapter(context, foundUsersList);
-        eventGuestListListView.setAdapter(invitedUsersAdapter);
-        eventUserSearchListView.setAdapter(foundUsersAdapter);
-        registerForContextMenu(eventGuestListListView);
 
         eventGuestListSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -310,14 +299,9 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
                 return false;
             }
         });
-
-        SimpleImageArrayAdapter adapter = new SimpleImageArrayAdapter(context,
-                new Integer[]{R.drawable.rectangular_background_1, R.drawable.rectangular_background, R.drawable.rectangular_background_2, R.drawable.rectangular_background_3});
-        eventImageSpinner.setAdapter(adapter);
-        eventImageSpinner.setOnItemSelectedListener(this);
     }
 
-    public String PerfectDecimal(String str, int MAX_BEFORE_POINT, int MAX_DECIMAL) {
+    public String perfectDecimal(String str, int MAX_BEFORE_POINT, int MAX_DECIMAL) {
         if (str.charAt(0) == '.') str = "0" + str;
         int max = str.length();
 
@@ -355,13 +339,11 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
         switch (item.getItemId()) {
             case R.id.deleteGuest:
                 invitedUsersAdapter.remove(invitedUsersAdapter.getItem(info.position));
-//                Toast.makeText(context, "Position: " + info.position, Toast.LENGTH_SHORT).show();
                 invitedUsersIdList.remove(info.position);
                 invitedUsersAdapter.notifyDataSetChanged();
                 extendEventGuestListListView();
                 return true;
             case R.id.cancelDeleteGuest:
-                Toast.makeText(context, "Cancelled deleting", Toast.LENGTH_SHORT).show();
                 return true;
             default:
                 return super.onContextItemSelected(item);
@@ -397,13 +379,8 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
     public void setFoundUsersList(ArrayList<User> userList, ArrayList<String> userIdList) {
         foundUsersList.clear();
         foundUsersIdList.clear();
-        for (int i = 0; i < userList.size(); i++) {
-            foundUsersList.add(userList.get(i));
-        }
-
-        for (int i = 0; i < userIdList.size(); i++) {
-            foundUsersIdList.add(userIdList.get(i));
-        }
+        foundUsersList.addAll(userList);
+        foundUsersIdList.addAll(userIdList);
     }
 
     public void loadUsers(final ArrayList<User> userList, ArrayList<String> userIdList) {
@@ -476,9 +453,8 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
             @Override
             public void onSuccess(List<QuerySnapshot> querySnapshots) {
                 for (QuerySnapshot querySnapshot : querySnapshots) {
-                    for (DocumentSnapshot document : (QuerySnapshot) querySnapshot) {
+                    for (DocumentSnapshot document : querySnapshot) {
                         User user = document.toObject(User.class);
-//                        Toast.makeText(context, "User: " + user.toString(), Toast.LENGTH_SHORT).show();
                         userList.add(user);
                         userIdList.add(document.getId());
                     }
@@ -488,7 +464,6 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-                Toast.makeText(context, "User search failed!", Toast.LENGTH_SHORT).show();
                 Log.d(TAG, e.toString());
             }
         });

@@ -1,8 +1,5 @@
 package com.annabohm.pracainzynierska;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class User {
 
     private String userFirstName;
