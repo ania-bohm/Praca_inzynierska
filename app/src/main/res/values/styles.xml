@@ -13,4 +13,11 @@
         <item name="android:windowNoTitle">true</item>
     </style>
 
+    <style name="MyTextViewStyle" parent="android:Widget.TextView">
+        <item name="android:fontFamily">@font/montserrat</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:padding">5dp</item>
+        <item name="android:textColor">@color/colorTextDark</item>
+    </style>
+
 </resources>
