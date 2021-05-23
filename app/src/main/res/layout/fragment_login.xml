@@ -53,8 +53,7 @@
             android:fontFamily="@font/montserrat"
             android:hint="@string/example_email"
             android:inputType="textPersonName|textEmailAddress"
-            android:textColor="@color/colorTextDark"
-            android:textStyle="bold" />
+            android:textColor="@color/colorTextDark" />
 
         <TextView
             android:id="@+id/passwordTextView"
@@ -98,7 +97,6 @@
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_gravity="center_vertical"
-        android:background="@drawable/gray_background"
         android:src="@drawable/ic_baseline_remove_red_eye_24"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

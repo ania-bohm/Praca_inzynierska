@@ -16,7 +16,8 @@
         android:layout_marginTop="10dp"
         android:fontFamily="@font/montserrat"
         android:text="@string/account_settings"
-        android:textSize="18sp"
+        android:textSize="20sp"
+        android:padding="10dp"
         android:textStyle="bold" />
 
     <ImageView
@@ -24,15 +25,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="300dp"
-        android:layout_marginTop="5dp"
         android:background="@drawable/rectangular_background"
         android:src="@drawable/ic_edit" />
 
     <ImageView
         android:id="@+id/accountPhotoImageView"
-        android:layout_width="250dp"
-        android:layout_height="250dp"
-        android:layout_marginStart="80dp"
+        android:layout_width="230dp"
+        android:layout_height="230dp"
+        android:layout_gravity="center_horizontal"
         android:background="@drawable/circular_background"
         android:src="@drawable/ic_account" />
 
@@ -47,6 +47,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
             android:orientation="horizontal">
 
             <TextView

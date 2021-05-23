@@ -1,58 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_width="match_parent"
+    android:layout_height="70dp"
+    android:background="@drawable/custom_button_solid"
+    android:orientation="horizontal"
+    android:padding="10dp">
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
         android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
-        android:orientation="horizontal"
-        android:padding="5dp">
+        android:orientation="vertical">
 
-        <LinearLayout
-            android:layout_width="wrap_content"
+        <TextView
+            android:id="@+id/invitationEventNameTextView"
+            android:layout_width="200dp"
+            android:layout_height="30dp"
+            android:fontFamily="@font/montserrat"
+            android:textColor="@color/colorTextDark"
+            android:textSize="20dp" />
+
+        <TextView
+            android:id="@+id/invitationEventAuthorTextView"
+            android:layout_width="200dp"
             android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/invitationEventNameTextView"
-                android:layout_width="200dp"
-                android:layout_height="30dp"
-                android:fontFamily="@font/montserrat"
-                android:textSize="20dp" />
-
-            <TextView
-                android:id="@+id/invitationEventAuthorTextView"
-                android:layout_width="200dp"
-                android:layout_height="match_parent"
-                android:fontFamily="@font/montserrat"
-                android:textSize="14dp" />
-
-
-        </LinearLayout>
-
-        <Button
-            android:id="@+id/invitationDisplayEventButton"
-            android:layout_width="50dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="35dp"
-            android:background="@drawable/ic_display_event" />
-
-        <Button
-            android:id="@+id/invitationConfirmEventButton"
-            android:layout_width="50dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="3dp"
-            android:background="@drawable/ic_confirm" />
-
-        <Button
-            android:id="@+id/invitationDeclineEventButton"
-            android:layout_width="50dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="3dp"
-            android:background="@drawable/ic_decline" />
+            android:fontFamily="@font/montserrat"
+            android:textColor="@color/colorTextDark"
+            android:textSize="14dp" />
     </LinearLayout>
+
+    <Button
+        android:id="@+id/invitationDisplayEventButton"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="13dp"
+        android:background="@drawable/ic_display_event" />
+
+    <Button
+        android:id="@+id/invitationConfirmEventButton"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="3dp"
+        android:background="@drawable/ic_confirm" />
+
+    <Button
+        android:id="@+id/invitationDeclineEventButton"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="3dp"
+        android:background="@drawable/ic_decline" />
 </LinearLayout>

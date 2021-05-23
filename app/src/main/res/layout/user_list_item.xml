@@ -1,46 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="60dp"
+    android:orientation="horizontal"
+    android:background="@drawable/custom_button_solid"
+    android:padding="5dp">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:orientation="horizontal"
-        android:padding="7dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0">
+    <TextView
+        android:id="@+id/userListItemUserFirstNameTextView"
+        android:layout_width="150dp"
+        android:layout_height="match_parent"
+        android:fontFamily="@font/montserrat"
+        android:gravity="center_vertical"
+        android:text=""
+        android:layout_marginStart="15dp"
+        android:textColor="@color/colorTextDark"
+        android:textSize="18dp" />
 
-        <TextView
-            android:id="@+id/userListItemUserFirstNameTextView"
-            android:layout_width="175dp"
-            android:layout_height="match_parent"
-            android:fontFamily="@font/montserrat"
-            android:gravity="center_vertical"
-            android:text=""
-            android:textSize="18dp" />
+    <TextView
+        android:id="@+id/userListItemUserLastNameTextView"
+        android:layout_width="150dp"
+        android:layout_height="match_parent"
+        android:layout_marginStart="5dp"
+        android:fontFamily="@font/montserrat"
+        android:gravity="center_vertical"
+        android:text=""
+        android:textColor="@color/colorTextDark"
+        android:textSize="18dp" />
 
-        <TextView
-            android:id="@+id/userListItemUserLastNameTextView"
-            android:layout_width="175dp"
-            android:layout_height="match_parent"
-            android:fontFamily="@font/montserrat"
-            android:gravity="center_vertical"
-            android:text=""
-            android:textSize="18dp" />
-
-        <ImageView
-            android:id="@+id/userListItemUserPhotoImageView"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
-            android:gravity="center_vertical"
-            android:layout_marginStart="5dp"
-            android:background="@drawable/ic_no_photo" />
-    </LinearLayout>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <ImageView
+        android:id="@+id/userListItemUserPhotoImageView"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="5dp"
+        android:background="@drawable/ic_no_photo"
+        android:gravity="center_vertical" />
+</LinearLayout>

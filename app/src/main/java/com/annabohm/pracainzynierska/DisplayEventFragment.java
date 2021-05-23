@@ -112,6 +112,10 @@ public class DisplayEventFragment extends Fragment {
         displayEventGuestListListView = view.findViewById(R.id.displayEventGuestListListView);
         alertDialog = new SpotsDialog(context);
 
+        editEventButton.setVisibility(View.GONE);
+        toDoListButton.setVisibility(View.GONE);
+        eventBudgetButton.setVisibility(View.GONE);
+
         bundle = this.getArguments();
         String path = bundle.getString("path");
         eventReference = db.document(path);

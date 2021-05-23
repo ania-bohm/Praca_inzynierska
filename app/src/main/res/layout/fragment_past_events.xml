@@ -2,9 +2,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/main_background"
     android:orientation="vertical"
     tools:context=".PastEventsFragment">
-
 
     <TextView
         android:id="@+id/pastEventsTextView"
@@ -13,27 +13,39 @@
         android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
         android:fontFamily="@font/montserrat"
+        android:padding="10dp"
         android:text="@string/past_events"
+        android:textColor="@color/colorTextDark"
         android:textSize="20dp"
         android:textStyle="bold" />
 
-    <ListView
-        android:id="@+id/pastEventsListListView"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp" />
+        android:layout_height="match_parent"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/bottom_semi_rectangular_background"
+        android:orientation="vertical"
+        android:padding="10dp">
 
-    <TextView
-        android:id="@+id/pastEventsEmptyTextView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="170dp"
-        android:layout_marginEnd="10dp"
-        android:fontFamily="@font/montserrat"
-        android:gravity="center_horizontal"
-        android:text="@string/my_no_past_events_list"
-        android:textSize="16dp"
-        android:textStyle="italic" />
+        <ListView
+            android:id="@+id/pastEventsListListView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:nestedScrollingEnabled="true" />
 
+        <TextView
+            android:id="@+id/pastEventsEmptyTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="170dp"
+            android:layout_marginEnd="10dp"
+            android:fontFamily="@font/montserrat"
+            android:gravity="center_horizontal"
+            android:text="@string/my_no_past_events_list"
+            android:textColor="@color/colorTextDark"
+            android:textSize="16dp"
+            android:textStyle="italic" />
+    </LinearLayout>
 </LinearLayout>
