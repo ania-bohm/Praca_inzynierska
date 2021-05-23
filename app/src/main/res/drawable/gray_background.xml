@@ -17,7 +17,7 @@
                         android:topRightRadius="20dp"
                         ></corners>
                     <solid
-                        android:color="#959A9A"
+                        android:color="#99959A9A"
                         ></solid>
                 </shape>
 

@@ -144,7 +144,6 @@ public class EditEventFragment extends Fragment implements AdapterView.OnItemSel
                 event.update("eventBudget", eventBudgetLong);
             }
 
-
             if (chosenImage != 0) {
                 event.update("eventImage", chosenImage);
             }
@@ -250,17 +249,15 @@ public class EditEventFragment extends Fragment implements AdapterView.OnItemSel
         editEventGuestListListView = view.findViewById(R.id.editEventGuestListListView);
         editEventNewGuestListListView = view.findViewById(R.id.editEventNewGuestListListView);
 
-        imageArrayAdapter = new SimpleImageArrayAdapter(context,
-                new Integer[]{R.drawable.rectangular_background_1, R.drawable.rectangular_background, R.drawable.rectangular_background_2, R.drawable.rectangular_background_3});
-        editEventImageSpinner.setAdapter(imageArrayAdapter);
-        editEventImageSpinner.setOnItemSelectedListener(this);
-
-        foundUsersAdapter = new UserSearchListAdapter(context, foundUsersList);
-
         bundle = this.getArguments();
         String path = bundle.getString("path");
         event = db.document(path);
         eventId = event.getId();
+
+        imageArrayAdapter = new SimpleImageArrayAdapter(context,
+                new Integer[]{R.drawable.rectangular_background_1, R.drawable.rectangular_background, R.drawable.rectangular_background_2, R.drawable.rectangular_background_3});
+        editEventImageSpinner.setAdapter(imageArrayAdapter);
+        editEventImageSpinner.setOnItemSelectedListener(this);
 
         oldGuestList = new ArrayList<>();
         newGuestList = new ArrayList<>();
@@ -268,6 +265,8 @@ public class EditEventFragment extends Fragment implements AdapterView.OnItemSel
         oldGuestIdList = new ArrayList<>();
         newGuestIdList = new ArrayList<>();
         foundUsersIdList = new ArrayList<>();
+
+        foundUsersAdapter = new UserSearchListAdapter(context, foundUsersList);
 
         editEventReadyButton.setOnClickListener(editEventReadyOnClickListener);
         editEventCancelButton.setOnClickListener(editEventCancelOnClickListener);

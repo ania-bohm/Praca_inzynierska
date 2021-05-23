@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Praca inzynierska</string>
     <string name="welcome">Witaj ponownie!</string>
+    <string name="welcome_user">Witaj, </string>
     <string name="registration">Rejestracja</string>
     <string name="create_account">Załóż konto</string>
     <string name="email">Email</string>

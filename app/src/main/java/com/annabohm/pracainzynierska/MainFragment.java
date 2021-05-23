@@ -25,6 +25,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -43,12 +44,13 @@ import static android.content.ContentValues.TAG;
 
 public class MainFragment extends Fragment {
     NavController navController;
-    ImageView addEventButton;
+    FloatingActionButton addEventFloatingActionButton;
     RecyclerView yourCurrentEventsRecyclerView, allEventsRecyclerView;
-    TextView yourEventsEmptyTextView, allEventsEmptyTextView;
+    TextView yourEventsEmptyTextView, allEventsEmptyTextView, welcomeUserFirstNameTextView;
     FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     CollectionReference events = db.collection("Events");
+    CollectionReference users = db.collection("Users");
     CollectionReference attendeeEvents = db.collection("AttendeeEvents");
     CollectionReference eventAttendees = db.collection("EventAttendees");
     ArrayList<String> attendeesToDeleteIdList = new ArrayList<>();
@@ -56,6 +58,7 @@ public class MainFragment extends Fragment {
     ConfirmedEventAdapter yourCurrentEventsAdapter;
     HashMap<String, Event> confirmedEvents;
     HashMap<String, Event> yourCurrentEvents;
+    String currentUserId;
     Context context;
 
     private View.OnClickListener addEventOnClickListener = new View.OnClickListener() {
@@ -175,7 +178,6 @@ public class MainFragment extends Fragment {
     }
 
     private void setUpYourCurrentEventsRecyclerView(final View view) {
-        String currentUserId = firebaseAuth.getCurrentUser().getUid();
         events.orderBy("eventDateStart", Query.Direction.ASCENDING).whereEqualTo("eventAuthor", currentUserId).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -484,11 +486,28 @@ public class MainFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         navController = Navigation.findNavController(view);
+        currentUserId = firebaseAuth.getCurrentUser().getUid();
 
         yourCurrentEventsRecyclerView = view.findViewById(R.id.yourCurrentEventsRecyclerView);
         allEventsRecyclerView = view.findViewById(R.id.allEventsRecyclerView);
         yourEventsEmptyTextView = view.findViewById(R.id.yourEventsEmptyTextView);
         allEventsEmptyTextView = view.findViewById(R.id.allEventsEmptyTextView);
+        welcomeUserFirstNameTextView = view.findViewById(R.id.welcomeUserFirstNameTextView);
+
+        users.document(currentUserId).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                if (documentSnapshot.exists()) {
+                    User currentUser = documentSnapshot.toObject(User.class);
+                    welcomeUserFirstNameTextView.setText(getString(R.string.welcome_user) + " " + currentUser.getUserFirstName() + "!");
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d(TAG, e.toString());
+            }
+        });
 
         confirmedEvents = new HashMap<>();
         yourCurrentEvents = new HashMap<>();
@@ -499,8 +518,8 @@ public class MainFragment extends Fragment {
         yourEventsEmptyTextView.setVisibility(View.GONE);
         allEventsEmptyTextView.setVisibility(View.GONE);
 
-        addEventButton = view.findViewById(R.id.addEventButton);
-        addEventButton.setOnClickListener(addEventOnClickListener);
+        addEventFloatingActionButton = view.findViewById(R.id.addEventFloatingActionButton);
+        addEventFloatingActionButton.setOnClickListener(addEventOnClickListener);
 
         allEventsRecyclerView.setHasFixedSize(false);
         allEventsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));//<----------
