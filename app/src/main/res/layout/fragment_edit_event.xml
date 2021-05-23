@@ -6,10 +6,10 @@
     android:layout_height="match_parent"
     tools:context=".EditEventFragment">
 
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@drawable/main_background"
         android:orientation="vertical">
 
         <TextView
@@ -25,270 +25,279 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:orientation="horizontal">
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/bottom_semi_rectangular_background"
+            android:orientation="vertical"
+            android:padding="10dp">
 
             <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:orientation="vertical">
+                android:orientation="horizontal">
 
-                <TextView
-                    android:id="@+id/editEventNameTextView"
+                <LinearLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:layout_marginTop="6dp"
-                    android:fontFamily="@font/montserrat"
-                    android:text="@string/event_name" />
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/editEventDateStartTextView"
+                    <TextView
+                        android:id="@+id/editEventNameTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:layout_marginTop="6dp"
+                        android:fontFamily="@font/montserrat"
+                        android:text="@string/event_name" />
+
+                    <TextView
+                        android:id="@+id/editEventDateStartTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:fontFamily="@font/montserrat"
+                        android:text="@string/event_date_start" />
+
+                    <TextView
+                        android:id="@+id/editEventTimeStartTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:fontFamily="@font/montserrat"
+                        android:text="@string/event_time_start" />
+
+                    <TextView
+                        android:id="@+id/editEventDateFinishTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:fontFamily="@font/montserrat"
+                        android:text="@string/event_date_finish" />
+
+                    <TextView
+                        android:id="@+id/editEventTimeFinishTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:fontFamily="@font/montserrat"
+                        android:text="@string/event_time_finish" />
+
+                    <TextView
+                        android:id="@+id/editEventLocationTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:fontFamily="@font/montserrat"
+                        android:text="@string/event_location" />
+
+                    <TextView
+                        android:id="@+id/editEventDescriptionTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:fontFamily="@font/montserrat"
+                        android:text="@string/event_description" />
+
+
+                </LinearLayout>
+
+                <LinearLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:fontFamily="@font/montserrat"
-                    android:text="@string/event_date_start" />
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="20dp"
+                    android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/editEventTimeStartTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:fontFamily="@font/montserrat"
-                    android:text="@string/event_time_start" />
-
-                <TextView
-                    android:id="@+id/editEventDateFinishTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:fontFamily="@font/montserrat"
-                    android:text="@string/event_date_finish" />
-
-                <TextView
-                    android:id="@+id/editEventTimeFinishTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:fontFamily="@font/montserrat"
-                    android:text="@string/event_time_finish" />
-
-                <TextView
-                    android:id="@+id/editEventLocationTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:fontFamily="@font/montserrat"
-                    android:text="@string/event_location" />
-
-                <TextView
-                    android:id="@+id/editEventDescriptionTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="40dp"
-                    android:fontFamily="@font/montserrat"
-                    android:text="@string/event_description" />
+                    <EditText
+                        android:id="@+id/editEventNameEditText"
+                        android:layout_width="180dp"
+                        android:layout_height="40dp"
+                        android:ems="10"
+                        android:fontFamily="@font/montserrat"
+                        android:inputType="text"
+                        android:textSize="14dp" />
 
 
+                    <br.com.sapereaude.maskedEditText.MaskedEditText
+                        android:id="@+id/editEventDateStartEditText"
+                        android:layout_width="180dp"
+                        android:layout_height="40dp"
+                        android:ems="10"
+                        android:fontFamily="@font/montserrat"
+                        android:inputType="date"
+                        android:textSize="14dp"
+                        app:mask="##/##/####" />
+
+                    <br.com.sapereaude.maskedEditText.MaskedEditText
+                        android:id="@+id/editEventTimeStartEditText"
+                        android:layout_width="180dp"
+                        android:layout_height="40dp"
+                        android:ems="10"
+                        android:fontFamily="@font/montserrat"
+                        android:inputType="time"
+                        android:textSize="14dp"
+                        app:mask="##:##" />
+
+                    <br.com.sapereaude.maskedEditText.MaskedEditText
+                        android:id="@+id/editEventDateFinishEditText"
+                        android:layout_width="180dp"
+                        android:layout_height="40dp"
+                        android:ems="10"
+                        android:fontFamily="@font/montserrat"
+                        android:inputType="date"
+                        android:textSize="14dp"
+                        app:mask="##/##/####" />
+
+                    <br.com.sapereaude.maskedEditText.MaskedEditText
+                        android:id="@+id/editEventTimeFinishEditText"
+                        android:layout_width="180dp"
+                        android:layout_height="40dp"
+                        android:ems="10"
+                        android:fontFamily="@font/montserrat"
+                        android:inputType="time"
+                        android:textSize="14dp"
+                        app:mask="##:##" />
+
+                    <EditText
+                        android:id="@+id/editEventLocationEditText"
+                        android:layout_width="180dp"
+                        android:layout_height="40dp"
+                        android:ems="10"
+                        android:fontFamily="@font/montserrat"
+                        android:inputType="text"
+                        android:textSize="14dp" />
+
+                    <EditText
+                        android:id="@+id/editEventDescriptionEditText"
+                        android:layout_width="180dp"
+                        android:layout_height="wrap_content"
+                        android:ems="10"
+                        android:fontFamily="@font/montserrat"
+                        android:inputType="textMultiLine"
+                        android:textSize="14dp" />
+
+                </LinearLayout>
             </LinearLayout>
+
+            <TextView
+                android:id="@+id/editEventBudgetTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/montserrat"
+                android:text="@string/edit_event_budget"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/editEventBudgetEditText"
+                android:layout_width="180dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:fontFamily="@font/montserrat"
+                android:inputType="numberDecimal"
+                android:textSize="14dp" />
+
+            <TextView
+                android:id="@+id/editEventImageTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/montserrat"
+                android:text="@string/edit_event_image"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <Spinner
+                android:id="@+id/editEventImageSpinner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp" />
+
+            <TextView
+                android:id="@+id/editEventNewGuestSearchListTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="28dp"
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/montserrat"
+                android:text="@string/edit_event_guest_search_list"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <SearchView
+                android:id="@+id/editEventGuestListSearchView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:focusable="true"
+                android:iconifiedByDefault="false"
+                android:queryHint="@string/event_guest_search" />
+
+            <ListView
+                android:id="@+id/editEventUserSearchListView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:nestedScrollingEnabled="true" />
+
+            <TextView
+                android:id="@+id/editEventNewGuestListTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="28dp"
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/montserrat"
+                android:text="@string/event_new_guest_list"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <ListView
+                android:id="@+id/editEventNewGuestListListView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:nestedScrollingEnabled="true" />
+
+            <TextView
+                android:id="@+id/editEventGuestListTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="28dp"
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/montserrat"
+                android:text="@string/edit_event_guest_list"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <ListView
+                android:id="@+id/editEventGuestListListView"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:nestedScrollingEnabled="true" />
 
             <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginStart="20dp"
-                android:orientation="vertical">
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="5dp"
+                android:gravity="center"
+                android:orientation="horizontal">
 
-                <EditText
-                    android:id="@+id/editEventNameEditText"
-                    android:layout_width="180dp"
-                    android:layout_height="40dp"
-                    android:ems="10"
-                    android:fontFamily="@font/montserrat"
-                    android:inputType="text"
-                    android:textSize="14dp" />
-
-
-                <br.com.sapereaude.maskedEditText.MaskedEditText
-                    android:id="@+id/editEventDateStartEditText"
-                    android:layout_width="180dp"
-                    android:layout_height="40dp"
-                    android:ems="10"
-                    android:fontFamily="@font/montserrat"
-                    android:inputType="date"
-                    android:textSize="14dp"
-                    app:mask="##/##/####" />
-
-                <br.com.sapereaude.maskedEditText.MaskedEditText
-                    android:id="@+id/editEventTimeStartEditText"
-                    android:layout_width="180dp"
-                    android:layout_height="40dp"
-                    android:ems="10"
-                    android:fontFamily="@font/montserrat"
-                    android:inputType="time"
-                    android:textSize="14dp"
-                    app:mask="##:##" />
-
-                <br.com.sapereaude.maskedEditText.MaskedEditText
-                    android:id="@+id/editEventDateFinishEditText"
-                    android:layout_width="180dp"
-                    android:layout_height="40dp"
-                    android:ems="10"
-                    android:fontFamily="@font/montserrat"
-                    android:inputType="date"
-                    android:textSize="14dp"
-                    app:mask="##/##/####" />
-
-                <br.com.sapereaude.maskedEditText.MaskedEditText
-                    android:id="@+id/editEventTimeFinishEditText"
-                    android:layout_width="180dp"
-                    android:layout_height="40dp"
-                    android:ems="10"
-                    android:fontFamily="@font/montserrat"
-                    android:inputType="time"
-                    android:textSize="14dp"
-                    app:mask="##:##" />
-
-                <EditText
-                    android:id="@+id/editEventLocationEditText"
-                    android:layout_width="180dp"
-                    android:layout_height="40dp"
-                    android:ems="10"
-                    android:fontFamily="@font/montserrat"
-                    android:inputType="text"
-                    android:textSize="14dp" />
-
-                <EditText
-                    android:id="@+id/editEventDescriptionEditText"
-                    android:layout_width="180dp"
+                <Button
+                    android:id="@+id/editEventReadyButton"
+                    android:layout_width="120dp"
                     android:layout_height="wrap_content"
-                    android:ems="10"
+                    android:background="@drawable/custom_button_solid"
                     android:fontFamily="@font/montserrat"
-                    android:inputType="textMultiLine"
-                    android:textSize="14dp" />
+                    android:text="@string/event_ready"
+                    android:textAllCaps="false"
+                    android:textColor="@color/colorTextDark" />
 
+                <View
+                    android:layout_width="6dp"
+                    android:layout_height="match_parent" />
+
+                <Button
+                    android:id="@+id/editEventCancelButton"
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/custom_button_solid"
+                    android:fontFamily="@font/montserrat"
+                    android:text="@string/event_cancel"
+                    android:textAllCaps="false"
+                    android:textColor="@color/colorTextDark" />
             </LinearLayout>
         </LinearLayout>
-
-        <TextView
-            android:id="@+id/editEventBudgetTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
-            android:fontFamily="@font/montserrat"
-            android:text="@string/edit_event_budget"
-            android:textSize="16sp"
-            android:textStyle="bold" />
-
-        <EditText
-            android:id="@+id/editEventBudgetEditText"
-            android:layout_width="180dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
-            android:fontFamily="@font/montserrat"
-            android:inputType="numberDecimal"
-            android:textSize="14dp" />
-
-        <TextView
-            android:id="@+id/editEventImageTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
-            android:fontFamily="@font/montserrat"
-            android:text="@string/edit_event_image"
-            android:textSize="16sp"
-            android:textStyle="bold" />
-
-        <Spinner
-            android:id="@+id/editEventImageSpinner"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp" />
-
-        <TextView
-            android:id="@+id/editEventNewGuestSearchListTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="28dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
-            android:fontFamily="@font/montserrat"
-            android:text="@string/edit_event_guest_search_list"
-            android:textSize="16sp"
-            android:textStyle="bold" />
-
-        <SearchView
-            android:id="@+id/editEventGuestListSearchView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:focusable="true"
-            android:iconifiedByDefault="false"
-            android:queryHint="@string/event_guest_search" />
-
-        <ListView
-            android:id="@+id/editEventUserSearchListView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:nestedScrollingEnabled="true" />
-
-        <TextView
-            android:id="@+id/editEventNewGuestListTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="28dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
-            android:fontFamily="@font/montserrat"
-            android:text="@string/event_new_guest_list"
-            android:textSize="16sp"
-            android:textStyle="bold" />
-
-
-        <ListView
-            android:id="@+id/editEventNewGuestListListView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:nestedScrollingEnabled="true" />
-
-
-        <TextView
-            android:id="@+id/editEventGuestListTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="28dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
-            android:fontFamily="@font/montserrat"
-            android:text="@string/edit_event_guest_list"
-            android:textSize="16sp"
-            android:textStyle="bold" />
-
-        <ListView
-            android:id="@+id/editEventGuestListListView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:nestedScrollingEnabled="true" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="150dp"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/editEventReadyButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="90dp"
-                android:fontFamily="@font/montserrat"
-                android:text="@string/event_ready"
-                android:textAllCaps="false" />
-
-            <Button
-                android:id="@+id/editEventCancelButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/montserrat"
-                android:text="@string/event_cancel"
-                android:textAllCaps="false" />
-        </LinearLayout>
-
-
     </LinearLayout>
-
 </ScrollView>
