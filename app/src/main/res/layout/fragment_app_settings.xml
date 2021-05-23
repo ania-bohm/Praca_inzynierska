@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/main_background"
     android:orientation="vertical"
     tools:context=".AppSettingsFragment">
 
@@ -14,44 +15,54 @@
         android:layout_marginTop="10dp"
         android:fontFamily="@font/montserrat"
         android:text="@string/app_settings"
+        android:textColor="@color/colorTextDark"
         android:textSize="18sp"
         android:textStyle="bold" />
 
     <LinearLayout
-        android:id="@+id/changeLanguageLinearLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="200dp"
-        android:background="#6180E3DF"
-        android:orientation="horizontal">
+        android:layout_height="match_parent"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/bottom_semi_rectangular_background"
+        android:orientation="vertical"
+        android:padding="10dp">
 
-        <TextView
-            android:id="@+id/changeLanguageTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="80dp"
-            android:fontFamily="@font/montserrat"
-            android:gravity="start"
-            android:text="@string/change_language"
-            android:textSize="16sp" />
-
-        <Spinner
-            android:id="@+id/changeLanguageSpinner"
+        <LinearLayout
+            android:id="@+id/changeLanguageLinearLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:layout_weight="1" />
+            android:layout_marginTop="200dp"
+            android:orientation="horizontal">
 
+            <TextView
+                android:id="@+id/changeLanguageTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="70dp"
+                android:fontFamily="@font/montserrat"
+                android:gravity="start"
+                android:text="@string/change_language"
+                android:textColor="@color/colorTextDark"
+                android:textSize="20sp" />
+
+            <Spinner
+                android:id="@+id/changeLanguageSpinner"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="10dp" />
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/changeLanguageButton"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/custom_button_outline"
+            android:fontFamily="@font/montserrat"
+            android:text="@string/change_language_confirm"
+            android:textAllCaps="false"
+            android:textColor="@color/colorTextDark" />
     </LinearLayout>
-
-    <Button
-        android:id="@+id/changeLanguageButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="150dp"
-        android:layout_marginTop="30dp"
-        android:fontFamily="@font/montserrat"
-        android:text="@string/change_language_confirm"
-        android:textAllCaps="false" />
-
 </LinearLayout>

@@ -9,7 +9,7 @@
     <string name="no_account">New to the App?</string>
     <string name="exist_account">Already registered?</string>
     <string name="register">Sign up</string>
-    <string name="example_email">john.smith@gmail.com</string>
+    <string name="example_email">" john.smith@gmail.com"</string>
     <string name="first_name">First Name*</string>
     <string name="first_name_empty">First Name is required</string>
     <string name="last_name">Last Name*</string>
@@ -82,9 +82,9 @@
     <string name="account_does_not_exist">Account does not exist</string>
     <string name="account_error">An error in reading data from the database occured</string>
     <string name="app_settings">App settings</string>
-    <string name="personal_data">Personal data:</string>
-    <string name="edit_personal_data">Edit personal data:</string>
-    <string name="change_password">Change password:</string>
+    <string name="personal_data">Personal data</string>
+    <string name="edit_personal_data">Edit personal data</string>
+    <string name="change_password">Change password</string>
     <string name="change_password_old">Enter your current password:</string>
     <string name="change_password_new">Enter new password:</string>
     <string name="change_password_repeat">Repeat new password:</string>
@@ -145,4 +145,6 @@
     <string name="change_language_confirm">Confirm</string>
     <string name="app_name">Praca inzynierska</string>
     <string name="welcome_user">"Welcome, "</string>
+    <string name="event_data">Event data</string>
+    <string name="modify_event_data">Modify event data</string>
 </resources>

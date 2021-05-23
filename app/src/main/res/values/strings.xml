@@ -10,7 +10,7 @@
     <string name="no_account">Nie masz konta?</string>
     <string name="exist_account">Masz już konto?</string>
     <string name="register">Zarejestruj się</string>
-    <string name="example_email">jan.nowak@gmail.com</string>
+    <string name="example_email">" jan.nowak@gmail.com"</string>
     <string name="first_name">Imię*</string>
     <string name="first_name_empty">Uzupełnij swoje imię</string>
     <string name="last_name">Nazwisko*</string>
@@ -48,6 +48,8 @@
     <string name="countdown">Najbliższe wydarzenie już za:</string>
     <string name="new_event">Nowe wydarzenie</string>
     <string name="event">Wydarzenie</string>
+    <string name="event_data">Dane wydarzenia</string>
+    <string name="modify_event_data">Zmień dane wydarzenia</string>
     <string name="event_name">Nazwa</string>
     <string name="event_author">Autor</string>
     <string name="event_date_start">Data rozpoczęcia</string>
@@ -83,9 +85,9 @@
     <string name="account_does_not_exist">Użytkownik nie istnieje</string>
     <string name="account_error">Wystąpił błąd w odczycie danych z bazy</string>
     <string name="app_settings">Ustawienia ogólne</string>
-    <string name="personal_data">Dane osobowe:</string>
-    <string name="edit_personal_data">Edytuj dane osobowe:</string>
-    <string name="change_password">Zmień hasło:</string>
+    <string name="personal_data">Dane osobowe</string>
+    <string name="edit_personal_data">Edytuj dane osobowe</string>
+    <string name="change_password">Zmień hasło</string>
     <string name="change_password_old">Wpisz dotychczasowe hasło:</string>
     <string name="change_password_new">Wpisz nowe hasło:</string>
     <string name="change_password_repeat">Powtórz nowe hasło:</string>

@@ -1,172 +1,144 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/main_background"
+    android:orientation="vertical"
     tools:context=".AccountSettingsFragment">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    <TextView
+        android:id="@+id/accountSettingsTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:fontFamily="@font/montserrat"
+        android:text="@string/account_settings"
+        android:textSize="18sp"
+        android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/accountSettingsTextView"
-            android:layout_width="wrap_content"
+    <ImageView
+        android:id="@+id/editAccountPhotoImageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="300dp"
+        android:layout_marginTop="5dp"
+        android:background="@drawable/rectangular_background"
+        android:src="@drawable/ic_edit" />
+
+    <ImageView
+        android:id="@+id/accountPhotoImageView"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        android:layout_marginStart="80dp"
+        android:background="@drawable/circular_background"
+        android:src="@drawable/ic_account" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/bottom_semi_rectangular_background"
+        android:orientation="vertical"
+        android:layout_marginTop="15dp"
+        android:padding="10dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/montserrat"
-            android:text="@string/account_settings"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.061"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.039" />
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/personalDataTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="80dp"
+                android:textColor="@color/colorTextDark"
+                android:fontFamily="@font/montserrat"
+                android:text="@string/personal_data"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:id="@+id/editPersonalDataImageView"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:background="@drawable/rectangular_background"
+                android:layout_marginStart="70dp"
+                android:src="@drawable/ic_edit" />
+        </LinearLayout>
 
         <TextView
             android:id="@+id/accountFirstNameTextView"
             android:layout_width="289dp"
             android:layout_height="28dp"
+            android:layout_marginStart="80dp"
+            android:textColor="@color/colorTextDark"
+            android:layout_marginTop="5dp"
             android:fontFamily="@font/montserrat"
             android:text="@string/account_first_name"
             android:textAllCaps="false"
             android:textSize="18sp"
-            android:textStyle="italic"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.491"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.678" />
-
-        <TextView
-            android:id="@+id/accountEmailTextView"
-            android:layout_width="289dp"
-            android:layout_height="28dp"
-            android:fontFamily="@font/montserrat"
-            android:text="@string/account_email"
-            android:textSize="18sp"
-            android:textStyle="italic"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.491"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.758" />
-
-        <TextView
-            android:id="@+id/accountPhoneNumberTextView"
-            android:layout_width="289dp"
-            android:layout_height="28dp"
-            android:fontFamily="@font/montserrat"
-            android:text="@string/account_phone_number"
-            android:textSize="18sp"
-            android:textStyle="italic"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.491"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.798" />
-
-        <TextView
-            android:id="@+id/personalDataTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/montserrat"
-            android:text="@string/personal_data"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.212"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.612" />
-
-        <ImageView
-            android:id="@+id/editPersonalDataImageView"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:background="@drawable/rectangular_background"
-            android:src="@drawable/ic_edit"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.824"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.61" />
+            android:textStyle="italic" />
 
         <TextView
             android:id="@+id/accountLastNameTextView"
             android:layout_width="289dp"
             android:layout_height="28dp"
+            android:layout_marginStart="80dp"
+            android:textColor="@color/colorTextDark"
             android:fontFamily="@font/montserrat"
             android:text="@string/account_last_name"
             android:textSize="18sp"
-            android:textStyle="italic"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.491"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.718" />
+            android:textStyle="italic" />
 
-        <ImageView
-            android:id="@+id/accountPhotoImageView"
-            android:layout_width="250dp"
-            android:layout_height="250dp"
-            android:background="@drawable/circular_background"
-            android:src="@drawable/ic_account"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.496"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.24" />
+        <TextView
+            android:id="@+id/accountEmailTextView"
+            android:layout_width="289dp"
+            android:layout_height="28dp"
+            android:layout_marginStart="80dp"
+            android:textColor="@color/colorTextDark"
+            android:fontFamily="@font/montserrat"
+            android:text="@string/account_email"
+            android:textSize="18sp"
+            android:textStyle="italic" />
 
-        <ImageView
-            android:id="@+id/editAccountPhotoImageView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/rectangular_background"
-            android:src="@drawable/ic_edit"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.833"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.126" />
+        <TextView
+            android:id="@+id/accountPhoneNumberTextView"
+            android:layout_width="289dp"
+            android:layout_height="28dp"
+            android:layout_marginStart="80dp"
+            android:textColor="@color/colorTextDark"
+            android:fontFamily="@font/montserrat"
+            android:text="@string/account_phone_number"
+            android:textSize="18sp"
+            android:textStyle="italic" />
 
         <Button
             android:id="@+id/accountChangePasswordButton"
             android:layout_width="291dp"
             android:layout_height="56dp"
+            android:layout_marginTop="10dp"
+            android:layout_gravity="center_horizontal"
+            android:textColor="@color/colorTextDark"
+            android:background="@drawable/custom_button_outline"
             android:fontFamily="@font/montserrat"
             android:text="@string/account_change_password"
             android:textAllCaps="false"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.895" />
+            android:textStyle="bold" />
 
         <Button
             android:id="@+id/accountPhotoDeleteButton"
             android:layout_width="291dp"
             android:layout_height="56dp"
+            android:layout_marginTop="5dp"
+            android:layout_gravity="center_horizontal"
+            android:textColor="@color/colorTextDark"
+            android:background="@drawable/custom_button_outline"
             android:fontFamily="@font/montserrat"
             android:text="@string/account_photo_delete"
             android:textAllCaps="false"
-            android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.986" />
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-</FrameLayout>
+            android:textStyle="bold" />
+    </LinearLayout>
+</LinearLayout>
