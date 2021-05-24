@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardElevation="10dp">
+    app:cardElevation="6dp">
 
     <LinearLayout
         android:id="@+id/toDoItemLinearLayout"
@@ -12,9 +12,10 @@
         android:orientation="horizontal">
 
         <LinearLayout
-            android:layout_width="370dp"
+            android:layout_width="350dp"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:layout_marginStart="5dp"
             android:padding="10dp">
 
             <TextView
@@ -22,7 +23,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/montserrat"
-                android:textColor="@color/colorPrimaryDark"
+                android:textColor="@color/colorTextDark"
                 android:textSize="20sp" />
 
             <TextView
@@ -30,10 +31,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/montserrat"
-                android:textColor="@color/colorPrimaryDark"
+                android:textColor="@color/colorTextDark"
                 android:textSize="16sp"
                 android:textStyle="italic" />
-
         </LinearLayout>
 
         <CheckBox
@@ -41,9 +41,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
+            android:layout_marginStart="5dp"
             android:scaleX="1.7"
             android:scaleY="1.7" />
 
     </LinearLayout>
-
 </androidx.cardview.widget.CardView>

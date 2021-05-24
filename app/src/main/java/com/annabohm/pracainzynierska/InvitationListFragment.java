@@ -68,6 +68,7 @@ public class InvitationListFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         navController = Navigation.findNavController(view);
         currentUserId = firebaseAuth.getCurrentUser().getUid();
+
         invitationListListView = view.findViewById(R.id.invitationListListView);
         invitationListNoInvitationsTextView = view.findViewById(R.id.invitationListNoInvitationsTextView);
 

@@ -105,7 +105,7 @@
     <string name="navigation_drawer_close">Zamknij szufladę</string>
     <string name="navigation_drawer_home">Strona główna</string>
     <string name="navigation_drawer_my_invitations">Moje zaproszenia</string>
-    <string name="navigation_drawer_past_events">Twoje zakończone wydarzenia</string>
+    <string name="navigation_drawer_past_events">Archiwum wydarzeń</string>
     <string name="navigation_drawer_account_settings">Ustawienia konta</string>
     <string name="navigation_drawer_app_settings">Ustawienia</string>
     <string name="navigation_drawer_logout">Wyloguj się</string>

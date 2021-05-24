@@ -160,7 +160,7 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ToDoItemHolder
 
         @Override
         public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-            menu.setHeaderTitle(R.string.to_do_title);
+            menu.setHeaderTitle(R.string.to_do_select_action);
             menu.add(0, 0, getAdapterPosition(), R.string.to_do_delete);
             menu.add(0, 0, getAdapterPosition(), R.string.to_do_cancel);
         }

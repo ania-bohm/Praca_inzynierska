@@ -83,13 +83,13 @@ public class PastEventsFragment extends Fragment {
         pastEventsListListView = view.findViewById(R.id.pastEventsListListView);
         pastEventsEmptyTextView = view.findViewById(R.id.pastEventsEmptyTextView);
 
+        pastEventsEmptyTextView.setVisibility(View.GONE);
+
         eventList = new ArrayList<>();
         eventIdList = new ArrayList<>();
 
         pastEventsListAdapter = new PastEventsListAdapter(context, eventList, eventIdList, navController);
         pastEventsListListView.setAdapter(pastEventsListAdapter);
-
-        pastEventsEmptyTextView.setVisibility(View.GONE);
 
         registerForContextMenu(pastEventsListListView);
         pastEventsListListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
@@ -143,9 +143,10 @@ public class PastEventsFragment extends Fragment {
                                 pastEventsListAdapter.notifyDataSetChanged();
                             }
                         }
+                        if (eventList.isEmpty() || eventIdList.isEmpty()) {
+                            pastEventsEmptyTextView.setVisibility(View.VISIBLE);
+                        }
                     }
-                } else {
-                    pastEventsEmptyTextView.setVisibility(View.VISIBLE);
                 }
             }
         }).addOnFailureListener(new OnFailureListener() {
