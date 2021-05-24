@@ -89,8 +89,9 @@ public class MainFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_main, container, false);
     }
 
-    private void setUpAllEventsRecyclerView(final View view) {
+    private void setUpAllEventsRecyclerView() {
         String currentUserId = firebaseAuth.getCurrentUser().getUid();
+        confirmedEvents.clear();
         attendeeEvents.document(currentUserId).collection("Confirmed").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -144,7 +145,6 @@ public class MainFragment extends Fragment {
                 } else {
                     allEventsEmptyTextView.setVisibility(View.VISIBLE);
                 }
-                allEventsRecyclerView.setAdapter(allEventsAdapter);
                 allEventsAdapter.setOnItemClickListener(new ConfirmedEventAdapter.OnItemClickListener() {
                     @Override
                     public void onItemClick(final int position) {
@@ -177,7 +177,8 @@ public class MainFragment extends Fragment {
         });
     }
 
-    private void setUpYourCurrentEventsRecyclerView(final View view) {
+    private void setUpYourCurrentEventsRecyclerView() {
+        yourCurrentEvents.clear();
         events.orderBy("eventDateStart", Query.Direction.ASCENDING).whereEqualTo("eventAuthor", currentUserId).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
@@ -221,7 +222,6 @@ public class MainFragment extends Fragment {
                 } else {
                     yourEventsEmptyTextView.setVisibility(View.VISIBLE);
                 }
-                yourCurrentEventsRecyclerView.setAdapter(yourCurrentEventsAdapter);
 
                 yourCurrentEventsAdapter.setOnItemClickListener(new ConfirmedEventAdapter.OnItemClickListener() {
                     @Override
@@ -261,13 +261,16 @@ public class MainFragment extends Fragment {
                                 .setNegativeButton(R.string.event_delete_no, new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int which) {
                                         yourCurrentEventsAdapter.notifyDataSetChanged();
+                                        setUpYourCurrentEventsRecyclerView();
                                     }
                                 })
                                 .setPositiveButton(R.string.event_delete_yes, new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int which) {
                                         final String eventToDeleteId = yourCurrentEventsAdapter.getEventId(viewHolder.getAdapterPosition());
                                         getAttendeesToDeleteIdList(eventToDeleteId);
-                                        yourCurrentEventsAdapter.deleteItem(viewHolder.getAdapterPosition());
+                                        events.document(yourCurrentEventsAdapter.getEventId(viewHolder.getAdapterPosition())).delete();
+                                        yourCurrentEventsAdapter.notifyDataSetChanged();
+                                        setUpYourCurrentEventsRecyclerView();
                                         Toast.makeText(context, R.string.event_delete_success, Toast.LENGTH_SHORT).show();
                                     }
                                 })
@@ -527,7 +530,10 @@ public class MainFragment extends Fragment {
         yourCurrentEventsRecyclerView.setHasFixedSize(false);
         yourCurrentEventsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));//<----------
 
-        setUpAllEventsRecyclerView(view);
-        setUpYourCurrentEventsRecyclerView(view);
+        yourCurrentEventsRecyclerView.setAdapter(yourCurrentEventsAdapter);
+        allEventsRecyclerView.setAdapter(allEventsAdapter);
+
+        setUpAllEventsRecyclerView();
+        setUpYourCurrentEventsRecyclerView();
     }
 }

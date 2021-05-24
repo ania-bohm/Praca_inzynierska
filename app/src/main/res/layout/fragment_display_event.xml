@@ -27,15 +27,19 @@
                 android:layout_marginTop="10dp"
                 android:fontFamily="@font/montserrat"
                 android:text="@string/event"
-                android:textColor="@color/colorTextDark"
-                android:textSize="20sp"
-                android:textStyle="bold" />
+                android:shadowColor="@color/colorTextDarkSeeThrough"
+                android:shadowDx="1"
+                android:shadowDy="4"
+                android:shadowRadius="0.6"
+                android:textColor="@color/colorAccent"
+                android:textSize="24sp"
+                android:textStyle="bold"/>
 
             <ImageView
                 android:id="@+id/toDoListButton"
                 android:layout_width="40sp"
                 android:layout_height="40sp"
-                android:layout_marginStart="140dp"
+                android:layout_marginStart="120dp"
                 android:layout_marginTop="5dp"
                 android:src="@drawable/ic_to_do_list" />
 

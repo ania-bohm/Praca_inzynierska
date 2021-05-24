@@ -127,6 +127,7 @@ public class ConfirmedEventAdapter extends RecyclerView.Adapter<ConfirmedEventAd
 
     public void deleteItem(int position) {
         events.document(getEventId(position)).delete();
+        notifyDataSetChanged();
     }
 
     public interface OnItemClickListener {

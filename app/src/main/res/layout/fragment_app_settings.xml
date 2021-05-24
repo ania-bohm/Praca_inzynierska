@@ -16,8 +16,12 @@
         android:layout_marginTop="10dp"
         android:fontFamily="@font/montserrat"
         android:text="@string/app_settings"
-        android:textColor="@color/colorTextDark"
-        android:textSize="20sp"
+        android:shadowColor="@color/colorTextDarkSeeThrough"
+        android:shadowDx="1"
+        android:shadowDy="4"
+        android:shadowRadius="0.6"
+        android:textColor="@color/colorAccent"
+        android:textSize="24sp"
         android:textStyle="bold" />
 
     <LinearLayout

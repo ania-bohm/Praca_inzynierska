@@ -21,9 +21,13 @@
             android:fontFamily="@font/montserrat"
             android:padding="10dp"
             android:text="@string/new_event"
-            android:textColor="@color/colorTextDark"
-            android:textSize="20sp"
-            android:textStyle="bold" />
+            android:shadowColor="@color/colorTextDarkSeeThrough"
+            android:shadowDx="1"
+            android:shadowDy="4"
+            android:shadowRadius="0.6"
+            android:textColor="@color/colorAccent"
+            android:textSize="24sp"
+            android:textStyle="bold"/>
 
         <LinearLayout
             android:layout_width="match_parent"

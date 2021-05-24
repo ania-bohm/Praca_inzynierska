@@ -15,9 +15,14 @@
         android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
         android:fontFamily="@font/montserrat"
-        android:text="@string/account_settings"
-        android:textSize="20sp"
         android:padding="10dp"
+        android:shadowColor="@color/colorTextDarkSeeThrough"
+        android:shadowDx="1"
+        android:shadowDy="4"
+        android:shadowRadius="0.6"
+        android:text="@string/account_settings"
+        android:textColor="@color/colorAccent"
+        android:textSize="26sp"
         android:textStyle="bold" />
 
     <ImageView
@@ -38,9 +43,9 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="15dp"
         android:background="@drawable/bottom_semi_rectangular_background"
         android:orientation="vertical"
-        android:layout_marginTop="15dp"
         android:padding="10dp">
 
         <LinearLayout
@@ -53,11 +58,11 @@
                 android:id="@+id/personalDataTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="80dp"
-                android:textColor="@color/colorTextDark"
                 android:layout_gravity="center_vertical"
+                android:layout_marginStart="80dp"
                 android:fontFamily="@font/montserrat"
                 android:text="@string/personal_data"
+                android:textColor="@color/colorTextDark"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
@@ -74,11 +79,11 @@
             android:layout_width="289dp"
             android:layout_height="28dp"
             android:layout_marginStart="80dp"
-            android:textColor="@color/colorTextDark"
             android:layout_marginTop="5dp"
             android:fontFamily="@font/montserrat"
             android:text="@string/account_first_name"
             android:textAllCaps="false"
+            android:textColor="@color/colorTextDark"
             android:textSize="18sp"
             android:textStyle="italic" />
 
@@ -87,9 +92,9 @@
             android:layout_width="289dp"
             android:layout_height="28dp"
             android:layout_marginStart="80dp"
-            android:textColor="@color/colorTextDark"
             android:fontFamily="@font/montserrat"
             android:text="@string/account_last_name"
+            android:textColor="@color/colorTextDark"
             android:textSize="18sp"
             android:textStyle="italic" />
 
@@ -98,9 +103,9 @@
             android:layout_width="289dp"
             android:layout_height="28dp"
             android:layout_marginStart="80dp"
-            android:textColor="@color/colorTextDark"
             android:fontFamily="@font/montserrat"
             android:text="@string/account_email"
+            android:textColor="@color/colorTextDark"
             android:textSize="18sp"
             android:textStyle="italic" />
 
@@ -109,9 +114,9 @@
             android:layout_width="289dp"
             android:layout_height="28dp"
             android:layout_marginStart="80dp"
-            android:textColor="@color/colorTextDark"
             android:fontFamily="@font/montserrat"
             android:text="@string/account_phone_number"
+            android:textColor="@color/colorTextDark"
             android:textSize="18sp"
             android:textStyle="italic" />
 
@@ -119,26 +124,26 @@
             android:id="@+id/accountChangePasswordButton"
             android:layout_width="291dp"
             android:layout_height="56dp"
-            android:layout_marginTop="10dp"
             android:layout_gravity="center_horizontal"
-            android:textColor="@color/colorTextDark"
+            android:layout_marginTop="10dp"
             android:background="@drawable/custom_button_outline"
             android:fontFamily="@font/montserrat"
             android:text="@string/account_change_password"
             android:textAllCaps="false"
+            android:textColor="@color/colorTextDark"
             android:textStyle="bold" />
 
         <Button
             android:id="@+id/accountPhotoDeleteButton"
             android:layout_width="291dp"
             android:layout_height="56dp"
-            android:layout_marginTop="5dp"
             android:layout_gravity="center_horizontal"
-            android:textColor="@color/colorTextDark"
+            android:layout_marginTop="5dp"
             android:background="@drawable/custom_button_outline"
             android:fontFamily="@font/montserrat"
             android:text="@string/account_photo_delete"
             android:textAllCaps="false"
+            android:textColor="@color/colorTextDark"
             android:textStyle="bold" />
     </LinearLayout>
 </LinearLayout>
