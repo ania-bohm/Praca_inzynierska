@@ -65,6 +65,10 @@
                 android:layout_height="match_parent"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="5dp"
+                android:fadingEdge="vertical"
+                android:fadingEdgeLength="20dp"
+                android:fillViewport="false"
+                android:requiresFadingEdge="horizontal"
                 android:scrollbars="horizontal" />
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
@@ -116,6 +120,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="5dp"
+                android:fadingEdge="vertical"
+                android:fadingEdgeLength="20dp"
+                android:fillViewport="false"
+                android:requiresFadingEdge="horizontal"
                 android:scrollbars="horizontal" />
 
         </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -134,6 +135,7 @@ public class ConfirmedEventAdapter extends RecyclerView.Adapter<ConfirmedEventAd
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         LinearLayout miniEventLinearLayout;
+        CardView miniEventCardView;
         TextView miniEventNameTextView;
         TextView miniEventDateStartTextView;
         TextView miniEventTimeStartTextView;
@@ -141,6 +143,7 @@ public class ConfirmedEventAdapter extends RecyclerView.Adapter<ConfirmedEventAd
 
         public ViewHolder(View view) {
             super(view);
+            miniEventCardView = view.findViewById(R.id.miniEventCardView);
             miniEventLinearLayout = view.findViewById(R.id.miniEventLinearLayout);
             miniEventNameTextView = view.findViewById(R.id.miniEventNameTextView);
             miniEventDateStartTextView = view.findViewById(R.id.miniEventDateStartTextView);

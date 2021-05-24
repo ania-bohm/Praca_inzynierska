@@ -180,7 +180,7 @@ public class EventBudgetFragment extends Fragment {
 
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.string.event_cost_delete) {
+        if (item.getTitle().equals(getString(R.string.event_cost_delete))) {
             deleteItem(item.getOrder());
         }
         return super.onContextItemSelected(item);

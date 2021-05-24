@@ -107,8 +107,6 @@
     <string name="navigation_drawer_app_settings">App settings</string>
     <string name="navigation_drawer_logout">Log out</string>
     <string name="mini_event_dash">-</string>
-    <string name="notifications">Notifications</string>
-    <string name="sound">App sound</string>
     <string name="edit_event">Edit event</string>
     <string name="delete_guest">Delete guest</string>
     <string name="delete_event">Delete</string>
@@ -143,7 +141,7 @@
     <string name="language_polish">Polish</string>
     <string name="language_english">English</string>
     <string name="change_language_confirm">Confirm</string>
-    <string name="app_name">Praca inżynierska</string>
+    <string name="app_name">Praca inzynierska</string>
     <string name="welcome_user">"Welcome, "</string>
     <string name="event_data">Event data</string>
     <string name="modify_event_data">Modify event data</string>

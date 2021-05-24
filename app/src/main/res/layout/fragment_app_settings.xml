@@ -31,7 +31,7 @@
         <LinearLayout
             android:id="@+id/changeLanguageLinearLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="40dp"
             android:layout_marginTop="200dp"
             android:orientation="horizontal">
 
@@ -42,6 +42,7 @@
                 android:layout_marginStart="70dp"
                 android:fontFamily="@font/montserrat"
                 android:gravity="start"
+                android:layout_gravity="center_vertical"
                 android:text="@string/change_language"
                 android:textColor="@color/colorTextDark"
                 android:textSize="20sp" />
@@ -50,6 +51,7 @@
                 android:id="@+id/changeLanguageSpinner"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_gravity="center_vertical"
                 android:layout_marginStart="10dp" />
 
         </LinearLayout>

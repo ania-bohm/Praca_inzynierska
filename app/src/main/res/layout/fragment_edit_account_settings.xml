@@ -16,7 +16,7 @@
         android:shadowDx="1"
         android:shadowDy="4"
         android:shadowRadius="0.6"
-        android:textColor="@color/colorPrimaryLight"
+        android:textColor="@color/colorAccent"
         android:textSize="24sp"
         android:textStyle="bold"
         android:text="@string/edit_personal_data"

@@ -12,12 +12,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/montserrat"
-        android:text="@string/welcome"
         android:shadowColor="@color/colorTextDarkSeeThrough"
         android:shadowDx="1"
         android:shadowDy="4"
         android:shadowRadius="0.6"
-        android:textColor="@color/colorPrimaryLight"
+        android:text="@string/welcome"
+        android:textColor="@color/colorAccent"
         android:textSize="30sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -58,7 +58,8 @@
             android:fontFamily="@font/montserrat"
             android:hint="@string/example_email"
             android:inputType="textPersonName|textEmailAddress"
-            android:textColor="@color/colorTextDark" />
+            android:textColor="@color/colorTextDark"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/passwordTextView"
@@ -78,7 +79,8 @@
             android:ems="10"
             android:fontFamily="@font/montserrat"
             android:inputType="textPassword"
-            android:textColor="@color/colorTextDark" />
+            android:textColor="@color/colorTextDark"
+            android:textStyle="bold" />
 
         <Button
             android:id="@+id/loginButton"

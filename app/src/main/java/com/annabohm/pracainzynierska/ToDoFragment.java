@@ -16,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -114,6 +115,10 @@ public class ToDoFragment extends Fragment {
         toDoFloatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (toDoTitleMaterialEditText.getText().toString().trim().isEmpty() || toDoDescriptionMaterialEditText.getText().toString().trim().isEmpty()) {
+                    Toast.makeText(context, R.string.event_budget_empty_fields, Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 if (!isUpdate) {
                     setData(toDoTitleMaterialEditText.getText().toString().trim(), toDoDescriptionMaterialEditText.getText().toString().trim());
                 } else {
@@ -128,7 +133,7 @@ public class ToDoFragment extends Fragment {
 
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
-        if (item.getTitle().equals(R.string.to_do_delete)) {
+        if (item.getTitle().equals(getString(R.string.to_do_delete))) {
             deleteItem(item.getOrder());
         }
         return super.onContextItemSelected(item);
@@ -213,6 +218,8 @@ public class ToDoFragment extends Fragment {
                 displayToDoDoneTextView.setText(String.valueOf(taskDoneCounter));
                 displayToDoSlashTextView.setText("/");
                 displayToDoAllTextView.setText(String.valueOf(taskCounter));
+                taskDoneCounter = 0;
+                taskCounter = 0;
                 toDoAdapter = new ToDoAdapter(fragmentThis, toDoList, eventId);
                 toDoRecyclerView.setAdapter(toDoAdapter);
                 alertDialog.dismiss();

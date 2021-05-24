@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#FFA3A5</color>
-    <color name="colorPrimaryLight">#FDD1D2</color>
-    <color name="colorPrimaryFaded">#E6FFA3A5</color>
+    <color name="colorPrimaryLight">#FFDADA</color>
+    <color name="colorPrimaryFaded">#FFDFE5</color>
     <color name="colorPrimaryDark">#FFBF81</color>
     <color name="colorPrimaryDarkLighter">#F3E8CD</color>
     <color name="colorPrimaryDarkFaded">#E6FFBF81</color>
-<!--    <color name="colorAccent">#74F1E2</color>-->
-    <color name="colorAccent">#FFDC5E</color>
+    <color name="colorAccent">#FFD363</color>-->
+<!--    <color name="colorAccent">#FFDC5E</color>-->
     <color name="colorAccentFaded">#E6FFDC5E</color>
     <color name="colorSecondary">#E877FB</color>
     <color name="colorSecondarySemiTransparent">#D0FF9ED3</color>
