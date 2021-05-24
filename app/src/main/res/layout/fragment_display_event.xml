@@ -16,8 +16,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:padding="10dp">
 
             <TextView
                 android:id="@+id/eventNameTextView"
@@ -37,7 +37,6 @@
                 android:layout_height="40sp"
                 android:layout_marginStart="130dp"
                 android:layout_marginTop="5dp"
-                android:background="@drawable/rectangular_background"
                 android:src="@drawable/ic_to_do_list" />
 
             <ImageView
@@ -46,7 +45,6 @@
                 android:layout_height="40sp"
                 android:layout_marginStart="5dp"
                 android:layout_marginTop="5dp"
-                android:background="@drawable/rectangular_background"
                 android:src="@drawable/ic_budget" />
 
             <ImageView
@@ -55,7 +53,6 @@
                 android:layout_height="40sp"
                 android:layout_marginStart="5dp"
                 android:layout_marginTop="5dp"
-                android:background="@drawable/rectangular_background"
                 android:src="@drawable/ic_edit" />
 
         </LinearLayout>
@@ -242,8 +239,8 @@
                 android:id="@+id/displayEventGuestListTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
                 android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
                 android:fontFamily="@font/montserrat"
                 android:text="@string/event_guest_list"
                 android:textColor="@color/colorTextDark"
@@ -255,9 +252,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="260dp"
                 android:layout_marginTop="5dp"
-                android:padding="5dp"
                 android:focusable="false"
-                android:nestedScrollingEnabled="true" />
+                android:nestedScrollingEnabled="true"
+                android:padding="5dp" />
 
         </LinearLayout>
     </LinearLayout>

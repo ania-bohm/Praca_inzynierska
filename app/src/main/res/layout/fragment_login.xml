@@ -13,8 +13,13 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/montserrat"
         android:text="@string/welcome"
-        android:textColor="@color/colorTextDark"
+        android:shadowColor="@color/colorTextDarkSeeThrough"
+        android:shadowDx="1"
+        android:shadowDy="4"
+        android:shadowRadius="0.6"
+        android:textColor="@color/colorPrimaryLight"
         android:textSize="30sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -133,7 +138,7 @@
         app:layout_constraintHorizontal_bias="0.805"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.921" />
+        app:layout_constraintVertical_bias="0.904" />
 
     <TextView
         android:id="@+id/noAccountTextView"
@@ -148,6 +153,6 @@
         app:layout_constraintHorizontal_bias="0.242"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.909" />
+        app:layout_constraintVertical_bias="0.890" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

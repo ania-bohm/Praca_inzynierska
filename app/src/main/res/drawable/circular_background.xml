@@ -11,9 +11,9 @@
                         android:height="50dp"></size>
                     <gradient
                         android:angle="90"
-                        android:startColor="#009688"
-                        android:endColor="#A890FE"
+                        android:startColor="@color/colorPrimary"
                         android:gradientRadius="10dp"
+                        android:endColor="@color/colorPrimaryDark"
                         android:type="linear"
                         ></gradient>
 

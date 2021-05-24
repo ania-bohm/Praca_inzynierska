@@ -143,7 +143,7 @@
     <string name="language_polish">Polish</string>
     <string name="language_english">English</string>
     <string name="change_language_confirm">Confirm</string>
-    <string name="app_name">Praca inzynierska</string>
+    <string name="app_name">Praca inżynierska</string>
     <string name="welcome_user">"Welcome, "</string>
     <string name="event_data">Event data</string>
     <string name="modify_event_data">Modify event data</string>
