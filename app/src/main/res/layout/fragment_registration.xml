@@ -12,11 +12,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:fontFamily="@font/montserrat"
-        android:text="@string/registration"
         android:shadowColor="@color/colorTextDarkSeeThrough"
         android:shadowDx="1"
         android:shadowDy="4"
         android:shadowRadius="0.6"
+        android:text="@string/registration"
         android:textColor="@color/colorAccent"
         android:textSize="30sp"
         android:textStyle="bold"
@@ -27,16 +27,19 @@
         app:layout_constraintVertical_bias="0.154" />
 
     <LinearLayout
+        android:id="@+id/linearLayout4"
         android:layout_width="wrap_content"
-        android:layout_height="355dp"
+        android:layout_height="380dp"
         android:background="@drawable/login_background"
         android:elevation="10dp"
         android:orientation="vertical"
-        android:padding="20dp"
+        android:padding="30dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.492"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.555">
 
         <EditText
             android:id="@+id/registerFirstNameEditText"
@@ -46,7 +49,7 @@
             android:fontFamily="@font/montserrat"
             android:hint="@string/first_name"
             android:inputType="textPersonName"
-            android:textColor="@color/colorTextDark"/>
+            android:textColor="@color/colorTextDark" />
 
         <EditText
             android:id="@+id/registerLastNameEditText"
@@ -56,7 +59,7 @@
             android:fontFamily="@font/montserrat"
             android:hint="@string/last_name"
             android:inputType="textPersonName"
-            android:textColor="@color/colorTextDark"/>
+            android:textColor="@color/colorTextDark" />
 
         <EditText
             android:id="@+id/registerEmailEditText"
@@ -66,7 +69,7 @@
             android:fontFamily="@font/montserrat"
             android:hint="@string/email1"
             android:inputType="textEmailAddress"
-            android:textColor="@color/colorTextDark"/>
+            android:textColor="@color/colorTextDark" />
 
         <EditText
             android:id="@+id/registerPhoneNumberEditText"
@@ -76,37 +79,27 @@
             android:fontFamily="@font/montserrat"
             android:hint="@string/phone_number"
             android:inputType="phone"
-            android:textColor="@color/colorTextDark"/>
+            android:textColor="@color/colorTextDark" />
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <EditText
-            android:id="@+id/registerPasswordEditText"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:ems="10"
-            android:fontFamily="@font/montserrat"
-            android:hint="@string/password1"
-            android:inputType="textPassword"
-            android:textColor="@color/colorTextDark"/>
+            android:orientation="horizontal">
 
+            <EditText
+                android:id="@+id/registerPasswordEditText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:fontFamily="@font/montserrat"
+                android:hint="@string/password1"
+                android:inputType="textPassword"
+                android:textColor="@color/colorTextDark" />
 
-        <ImageView
-            android:id="@+id/registerShowPasswordButton"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_marginStart="5dp"
-            android:background="@drawable/gray_background"
-            android:src="@drawable/ic_baseline_remove_red_eye_24"
-            android:layout_gravity="center_vertical"/>
-    </LinearLayout>
+        </LinearLayout>
 
         <Button
             android:id="@+id/createAccountButton"
-            android:padding="2dp"
             android:layout_width="160dp"
             android:layout_height="40dp"
             android:layout_gravity="center_horizontal"
@@ -114,12 +107,25 @@
             android:background="@drawable/custom_button_outline"
             android:elevation="5dp"
             android:fontFamily="@font/montserrat"
+            android:padding="2dp"
             android:text="@string/register"
             android:textAllCaps="false"
             android:textColor="@color/colorTextDark"
-            android:textSize="20sp"/>
-
+            android:textSize="20sp" />
     </LinearLayout>
+
+    <ImageView
+        android:id="@+id/registerShowPasswordButton"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_gravity="center_vertical"
+        android:src="@drawable/ic_baseline_remove_red_eye_24"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.815"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.615" />
 
     <ProgressBar
         android:id="@+id/registerProgressBar"
@@ -140,8 +146,8 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/montserrat"
         android:text="@string/exist_account"
-        android:textSize="18sp"
         android:textColor="@color/colorTextDark"
+        android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.242"
@@ -164,7 +170,7 @@
         app:layout_constraintHorizontal_bias="0.805"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.921"  />
+        app:layout_constraintVertical_bias="0.921" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
