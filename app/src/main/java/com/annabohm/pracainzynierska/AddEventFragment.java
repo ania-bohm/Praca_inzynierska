@@ -223,7 +223,7 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
         eventUserSearchListView.setAdapter(foundUsersAdapter);
 
         imageArrayAdapter = new SimpleImageArrayAdapter(context,
-                new Integer[]{R.drawable.rectangular_background_1, R.drawable.rectangular_background, R.drawable.rectangular_background_2, R.drawable.rectangular_background_3});
+                new Integer[]{R.drawable.rectangular_background_1, R.drawable.rectangular_background,  R.drawable.rectangular_background_3});
         eventImageSpinner.setAdapter(imageArrayAdapter);
         eventImageSpinner.setOnItemSelectedListener(this);
 

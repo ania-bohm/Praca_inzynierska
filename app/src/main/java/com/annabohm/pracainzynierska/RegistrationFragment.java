@@ -58,9 +58,6 @@ public class RegistrationFragment extends Fragment {
             registerEmail = registerEmailEditText.getText().toString().trim();
             registerPassword = registerPasswordEditText.getText().toString();
 
-            registerFirstName = formatString(registerFirstName);
-            registerLastName = formatString(registerLastName);
-
             if (TextUtils.isEmpty(registerFirstName)) {
                 registerFirstNameEditText.setError(getString(R.string.first_name_empty));
                 return;
@@ -70,6 +67,9 @@ public class RegistrationFragment extends Fragment {
                 registerEmailEditText.setError(getString(R.string.last_name_empty));
                 return;
             }
+
+            registerFirstName = formatString(registerFirstName);
+            registerLastName = formatString(registerLastName);
 
             if (TextUtils.isEmpty(registerPhoneNumber)) {
                 registerEmailEditText.setError(getString(R.string.phone_number_empty));

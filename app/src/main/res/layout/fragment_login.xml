@@ -105,6 +105,7 @@
         android:layout_height="30dp"
         android:layout_gravity="center_vertical"
         android:src="@drawable/ic_baseline_remove_red_eye_24"
+        android:elevation="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.820"

@@ -40,6 +40,8 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
+import dmax.dialog.SpotsDialog;
+
 import static android.content.ContentValues.TAG;
 
 public class MainFragment extends Fragment {
@@ -60,6 +62,7 @@ public class MainFragment extends Fragment {
     HashMap<String, Event> yourCurrentEvents;
     String currentUserId;
     Context context;
+    SpotsDialog alertDialog;
 
     private View.OnClickListener addEventOnClickListener = new View.OnClickListener() {
         @Override
@@ -222,7 +225,7 @@ public class MainFragment extends Fragment {
                 } else {
                     yourEventsEmptyTextView.setVisibility(View.VISIBLE);
                 }
-
+                alertDialog.dismiss();
                 yourCurrentEventsAdapter.setOnItemClickListener(new ConfirmedEventAdapter.OnItemClickListener() {
                     @Override
                     public void onItemClick(int position) {
@@ -533,6 +536,8 @@ public class MainFragment extends Fragment {
         yourCurrentEventsRecyclerView.setAdapter(yourCurrentEventsAdapter);
         allEventsRecyclerView.setAdapter(allEventsAdapter);
 
+        alertDialog = new SpotsDialog(context);
+        alertDialog.show();
         setUpAllEventsRecyclerView();
         setUpYourCurrentEventsRecyclerView();
     }

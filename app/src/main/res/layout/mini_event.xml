@@ -27,7 +27,7 @@
             android:layout_marginTop="15dp"
             android:fontFamily="@font/montserrat"
             android:textAlignment="center"
-            android:textSize="20dp"
+            android:textSize="19dp"
             android:textStyle="bold" />
 
         <TextView

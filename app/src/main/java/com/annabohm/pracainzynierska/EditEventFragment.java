@@ -255,7 +255,7 @@ public class EditEventFragment extends Fragment implements AdapterView.OnItemSel
         eventId = event.getId();
 
         imageArrayAdapter = new SimpleImageArrayAdapter(context,
-                new Integer[]{R.drawable.rectangular_background_1, R.drawable.rectangular_background, R.drawable.rectangular_background_2, R.drawable.rectangular_background_3});
+                new Integer[]{R.drawable.rectangular_background_1, R.drawable.rectangular_background, R.drawable.rectangular_background_3});
         editEventImageSpinner.setAdapter(imageArrayAdapter);
         editEventImageSpinner.setOnItemSelectedListener(this);
 

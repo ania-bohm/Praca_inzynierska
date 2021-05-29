@@ -153,6 +153,8 @@ public class LoginFragment extends Fragment {
                     Toast.makeText(context, R.string.login_success, Toast.LENGTH_SHORT).show();
                     loginEmailEditText.setText("");
                     loginPasswordEditText.setText("");
+                    loginEmailEditText.setHint("");
+                    loginPasswordEditText.setHint("");
                     navController.navigate(R.id.loginToMain);
                 } else {
                     Toast.makeText(context, R.string.login_fail, Toast.LENGTH_SHORT).show();

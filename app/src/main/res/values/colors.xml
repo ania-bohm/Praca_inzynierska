@@ -7,7 +7,7 @@
     <color name="colorPrimaryDarkLighter">#F3E8CD</color>
     <color name="colorPrimaryDarkFaded">#E6FFBF81</color>
     <color name="colorAccent">#FFD363</color>-->
-<!--    <color name="colorAccent">#FFDC5E</color>-->
+    <!--    <color name="colorAccent">#FFDC5E</color>-->
     <color name="colorAccentFaded">#E6FFDC5E</color>
     <color name="colorSecondary">#E877FB</color>
     <color name="colorSecondarySemiTransparent">#D0FF9ED3</color>
@@ -22,4 +22,5 @@
     <color name="colorWhite40Transparent">#66FFFFFF</color>
     <color name="colorWhiteSemiTransparent">#99FFFFFF</color>
     <color name="colorPrimarySemiTransparent">#BCEAABAC</color>
+    <color name="colorBackgroundPink">#fea1ab</color>
 </resources>
