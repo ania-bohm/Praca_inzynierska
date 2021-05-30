@@ -1,5 +1,6 @@
 package com.annabohm.pracainzynierska;
 
+import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
@@ -33,6 +34,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Picasso;
 
+import dmax.dialog.SpotsDialog;
 import jp.wasabeef.picasso.transformations.CropCircleTransformation;
 
 import static android.app.Activity.RESULT_OK;
@@ -53,6 +55,7 @@ public class AccountSettingsFragment extends Fragment {
     StorageReference storageReference;
     String photoUri;
     Context context;
+    AlertDialog alertDialog;
 
     private View.OnClickListener editAccountPhotoOnClickListener = new View.OnClickListener() {
         @Override
@@ -107,6 +110,7 @@ public class AccountSettingsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         navController = Navigation.findNavController(view);
+        alertDialog = new SpotsDialog(context);
         editAccountPhotoImageView = view.findViewById(R.id.editAccountPhotoImageView);
         editPersonalDataImageView = view.findViewById(R.id.editPersonalDataImageView);
         accountPhotoImageView = view.findViewById(R.id.accountPhotoImageView);
@@ -124,7 +128,7 @@ public class AccountSettingsFragment extends Fragment {
         editPersonalDataImageView.setOnClickListener(editPersonalDataOnClickListener);
         accountChangePasswordButton.setOnClickListener(accountChangePasswordOnClickListener);
         accountPhotoDeleteButton.setOnClickListener(accountPhotoDeleteOnClickListener);
-
+        alertDialog.show();
         displayPersonalData();
     }
 
@@ -158,6 +162,7 @@ public class AccountSettingsFragment extends Fragment {
                 } else {
                     Toast.makeText(context, R.string.account_does_not_exist, Toast.LENGTH_SHORT).show();
                 }
+                alertDialog.dismiss();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override

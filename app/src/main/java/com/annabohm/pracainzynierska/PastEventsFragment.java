@@ -35,6 +35,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
+import dmax.dialog.SpotsDialog;
+
 import static android.content.ContentValues.TAG;
 
 public class PastEventsFragment extends Fragment {
@@ -186,7 +188,7 @@ public class PastEventsFragment extends Fragment {
                                 Toast.makeText(context, R.string.event_delete_success, Toast.LENGTH_SHORT).show();
                             }
                         })
-                        .setIcon(R.drawable.ic_decline)
+                        .setIcon(R.drawable.ic_delete)
                         .show();
                 return true;
             case R.id.cancelDeleteEvent:

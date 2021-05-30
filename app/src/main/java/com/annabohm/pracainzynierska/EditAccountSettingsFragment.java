@@ -1,5 +1,6 @@
 package com.annabohm.pracainzynierska;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
@@ -31,6 +32,8 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import dmax.dialog.SpotsDialog;
+
 import static android.content.ContentValues.TAG;
 
 public class EditAccountSettingsFragment extends Fragment {
@@ -47,6 +50,8 @@ public class EditAccountSettingsFragment extends Fragment {
     DocumentReference documentReference;
     Context context;
     SharedPreferences sharedPreferences;
+    AlertDialog alertDialog;
+
     private View.OnClickListener confirmEditOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -130,7 +135,7 @@ public class EditAccountSettingsFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         navController = Navigation.findNavController(view);
-
+        alertDialog = new SpotsDialog(context);
         confirmEditPersonalDataButton = view.findViewById(R.id.confirmEditPersonalDataButton);
         rejectEditPersonalDataButton = view.findViewById(R.id.rejectEditPersonalDataButton);
         editAccountFirstNameEditText = view.findViewById(R.id.editAccountFirstNameEditText);
@@ -138,6 +143,7 @@ public class EditAccountSettingsFragment extends Fragment {
         editAccountEmailEditText = view.findViewById(R.id.editAccountEmailEditText);
         editAccountPhoneNumberEditText = view.findViewById(R.id.editAccountPhoneNumberEditText);
 
+        alertDialog.show();
         documentReference = db.collection("Users").document(firebaseAuth.getCurrentUser().getUid());
         displayPersonalData();
         confirmEditPersonalDataButton.setOnClickListener(confirmEditOnClickListener);
@@ -167,6 +173,7 @@ public class EditAccountSettingsFragment extends Fragment {
                 } else {
                     Toast.makeText(context, R.string.account_does_not_exist, Toast.LENGTH_SHORT).show();
                 }
+                alertDialog.dismiss();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override

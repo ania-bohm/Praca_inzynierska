@@ -277,7 +277,7 @@ public class MainFragment extends Fragment {
                                         Toast.makeText(context, R.string.event_delete_success, Toast.LENGTH_SHORT).show();
                                     }
                                 })
-                                .setIcon(R.drawable.ic_decline)
+                                .setIcon(R.drawable.ic_delete)
                                 .show();
                     }
                 }).attachToRecyclerView(yourCurrentEventsRecyclerView);

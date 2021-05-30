@@ -1,5 +1,6 @@
 package com.annabohm.pracainzynierska;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
@@ -25,6 +26,8 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 
+import dmax.dialog.SpotsDialog;
+
 import static android.content.ContentValues.TAG;
 
 public class InvitationListFragment extends Fragment {
@@ -41,6 +44,7 @@ public class InvitationListFragment extends Fragment {
     CollectionReference attendeeEvents = db.collection("AttendeeEvents");
     Context context;
     String currentUserId;
+    AlertDialog alertDialog;
 
     public InvitationListFragment() {
     }
@@ -67,6 +71,7 @@ public class InvitationListFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         navController = Navigation.findNavController(view);
+        alertDialog = new SpotsDialog(context);
         currentUserId = firebaseAuth.getCurrentUser().getUid();
 
         invitationListListView = view.findViewById(R.id.invitationListListView);
@@ -79,6 +84,7 @@ public class InvitationListFragment extends Fragment {
 
         adapter = new InvitationListAdapter(context, invitationEventList, invitationEventIdList, navController);
         invitationListListView.setAdapter(adapter);
+        alertDialog.show();
         loadEventsToListView();
     }
 
@@ -119,6 +125,7 @@ public class InvitationListFragment extends Fragment {
                 } else {
                     invitationListNoInvitationsTextView.setVisibility(View.VISIBLE);
                 }
+                alertDialog.dismiss();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override

@@ -1,5 +1,6 @@
 package com.annabohm.pracainzynierska;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -20,12 +21,15 @@ import android.widget.Spinner;
 import java.util.ArrayList;
 import java.util.Locale;
 
+import dmax.dialog.SpotsDialog;
+
 public class AppSettingsFragment extends Fragment {
     Spinner changeLanguageSpinner;
     Button changeLanguageButton;
     String[] languageOptions;
     ArrayAdapter<String> languageOptionsAdapter;
     Context context;
+    AlertDialog alertDialog;
 
     public AppSettingsFragment() {
     }
@@ -51,13 +55,14 @@ public class AppSettingsFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        alertDialog = new SpotsDialog(context);
         changeLanguageSpinner = view.findViewById(R.id.changeLanguageSpinner);
         changeLanguageButton = view.findViewById(R.id.changeLanguageButton);
-
+        alertDialog.show();
         languageOptions = new String[]{getString(R.string.language_polish), getString(R.string.language_english)};
         languageOptionsAdapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_dropdown_item, languageOptions);
         changeLanguageSpinner.setAdapter(languageOptionsAdapter);
-
+        alertDialog.dismiss();
         changeLanguageButton.setOnClickListener(changeLanguageButtonOnClickListener);
     }
 
