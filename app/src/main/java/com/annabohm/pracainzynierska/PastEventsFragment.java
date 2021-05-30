@@ -114,6 +114,7 @@ public class PastEventsFragment extends Fragment {
                         Event pastEvent = documentSnapshot.toObject(Event.class);
                         Date dateNow = new Date();
                         final DateFormat timeFormatterPrint = new SimpleDateFormat("HH:mm");
+                        final DateFormat dateFormatterPrint = new SimpleDateFormat("dd/MM/yyyy");
                         String newString = timeFormatterPrint.format(pastEvent.getEventTimeFinish());
                         String newStringNow = timeFormatterPrint.format(dateNow);
 
@@ -121,12 +122,14 @@ public class PastEventsFragment extends Fragment {
                         int hour = Integer.parseInt(newString.substring(0, 2));
                         int minuteNow = Integer.parseInt(newStringNow.substring(3, 5));
                         int minute = Integer.parseInt(newString.substring(3, 5));
+                        String dateNowString = dateFormatterPrint.format(dateNow);
+                        String dateString = dateFormatterPrint.format(pastEvent.getEventDateFinish());
 
                         if (pastEvent.getEventDateFinish().before(new Date())) {
                             eventList.add(pastEvent);
                             eventIdList.add(documentSnapshot.getId());
                             pastEventsListAdapter.notifyDataSetChanged();
-                        } else if (pastEvent.getEventDateFinish().equals(new Date())) {
+                        } else if (dateString.equals(dateNowString)) {
                             if (hourNow == 0) {
                                 if (hour == 0) {
                                     if (minute < minuteNow) {
@@ -186,6 +189,9 @@ public class PastEventsFragment extends Fragment {
                                 eventList.remove(info.position);
                                 pastEventsListAdapter.notifyDataSetChanged();
                                 Toast.makeText(context, R.string.event_delete_success, Toast.LENGTH_SHORT).show();
+                                if (eventIdList.isEmpty()) {
+                                    pastEventsEmptyTextView.setVisibility(View.VISIBLE);
+                                }
                             }
                         })
                         .setIcon(R.drawable.ic_delete)

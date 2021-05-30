@@ -109,6 +109,7 @@ public class MainFragment extends Fragment {
                                     Event eventToCheck = documentSnapshot.toObject(Event.class);
                                     Date dateNow = new Date();
                                     final DateFormat timeFormatterPrint = new SimpleDateFormat("HH:mm");
+                                    final DateFormat dateFormatterPrint = new SimpleDateFormat("dd/MM/yyyy");
                                     String newString = timeFormatterPrint.format(eventToCheck.getEventTimeFinish());
                                     String newStringNow = timeFormatterPrint.format(dateNow);
 
@@ -116,11 +117,13 @@ public class MainFragment extends Fragment {
                                     int hour = Integer.parseInt(newString.substring(0, 2));
                                     int minuteNow = Integer.parseInt(newStringNow.substring(3, 5));
                                     int minute = Integer.parseInt(newString.substring(3, 5));
+                                    String dateNowString = dateFormatterPrint.format(dateNow);
+                                    String dateString = dateFormatterPrint.format(eventToCheck.getEventDateFinish());
 
                                     if (eventToCheck.getEventDateFinish().after(new Date())) {
                                         confirmedEvents.put(eventId, documentSnapshot.toObject(Event.class));
                                         allEventsAdapter.notifyDataSetChanged();
-                                    } else if (eventToCheck.getEventDateFinish().equals(new Date())) {
+                                    } else if (dateString.equals(dateNowString)) {
                                         if (hourNow == 0) {
                                             if (hour == 0) {
                                                 if (minute > minuteNow) {
@@ -146,6 +149,9 @@ public class MainFragment extends Fragment {
                         }
                     }
                 } else {
+                    allEventsEmptyTextView.setVisibility(View.VISIBLE);
+                }
+                if (confirmedEvents.isEmpty()) {
                     allEventsEmptyTextView.setVisibility(View.VISIBLE);
                 }
                 allEventsAdapter.setOnItemClickListener(new ConfirmedEventAdapter.OnItemClickListener() {
@@ -193,6 +199,7 @@ public class MainFragment extends Fragment {
                             Event eventToCheck = documentSnapshot.toObject(Event.class);
                             Date dateNow = new Date();
                             final DateFormat timeFormatterPrint = new SimpleDateFormat("HH:mm");
+                            final DateFormat dateFormatterPrint = new SimpleDateFormat("dd/MM/yyyy");
                             String newString = timeFormatterPrint.format(eventToCheck.getEventTimeFinish());
                             String newStringNow = timeFormatterPrint.format(dateNow);
 
@@ -200,11 +207,13 @@ public class MainFragment extends Fragment {
                             int hour = Integer.parseInt(newString.substring(0, 2));
                             int minuteNow = Integer.parseInt(newStringNow.substring(3, 5));
                             int minute = Integer.parseInt(newString.substring(3, 5));
+                            String dateNowString = dateFormatterPrint.format(dateNow);
+                            String dateString = dateFormatterPrint.format(eventToCheck.getEventDateFinish());
 
                             if (eventToCheck.getEventDateFinish().after(new Date())) {
                                 yourCurrentEvents.put(eventId, documentSnapshot.toObject(Event.class));
                                 yourCurrentEventsAdapter.notifyDataSetChanged();
-                            } else if (eventToCheck.getEventDateFinish().equals(new Date())) {
+                            } else if (dateString.equals(dateNowString)) {
                                 if (hourNow == 0) {
                                     if (hour == 0) {
                                         if (minute > minuteNow) {
@@ -223,6 +232,9 @@ public class MainFragment extends Fragment {
                         }
                     }
                 } else {
+                    yourEventsEmptyTextView.setVisibility(View.VISIBLE);
+                }
+                if (yourCurrentEvents.isEmpty()) {
                     yourEventsEmptyTextView.setVisibility(View.VISIBLE);
                 }
                 alertDialog.dismiss();

@@ -24,7 +24,10 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 import dmax.dialog.SpotsDialog;
 
@@ -98,20 +101,55 @@ public class InvitationListFragment extends Fragment {
                             attendeeEvents.document(currentUserId).collection("Invited").document(documentSnapshot.getId()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                                 @Override
                                 public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                    String eventId = documentSnapshot.get("Event").toString();
-                                    invitationEventIdList.add(eventId);
-                                    events.document(eventId).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-                                        @Override
-                                        public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                            invitationEventList.add(documentSnapshot.toObject(Event.class));
-                                            adapter.notifyDataSetChanged();
-                                        }
-                                    }).addOnFailureListener(new OnFailureListener() {
-                                        @Override
-                                        public void onFailure(@NonNull Exception e) {
-                                            Log.d(TAG, e.toString());
-                                        }
-                                    });
+                                    if (documentSnapshot.exists()) {
+                                        final String eventId = documentSnapshot.get("Event").toString();
+                                        invitationEventIdList.add(eventId);
+                                        events.document(eventId).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                                            @Override
+                                            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                                                if (documentSnapshot.exists()) {
+                                                    Event eventToCheck = documentSnapshot.toObject(Event.class);
+                                                    Date dateNow = new Date();
+                                                    final DateFormat timeFormatterPrint = new SimpleDateFormat("HH:mm");
+                                                    final DateFormat dateFormatterPrint = new SimpleDateFormat("dd/MM/yyyy");
+                                                    String newString = timeFormatterPrint.format(eventToCheck.getEventTimeFinish());
+                                                    String newStringNow = timeFormatterPrint.format(dateNow);
+
+                                                    int hourNow = Integer.parseInt(newStringNow.substring(0, 2));
+                                                    int hour = Integer.parseInt(newString.substring(0, 2));
+                                                    int minuteNow = Integer.parseInt(newStringNow.substring(3, 5));
+                                                    int minute = Integer.parseInt(newString.substring(3, 5));
+                                                    String dateNowString = dateFormatterPrint.format(dateNow);
+                                                    String dateString = dateFormatterPrint.format(eventToCheck.getEventDateFinish());
+
+                                                    if (eventToCheck.getEventDateFinish().after(new Date())) {
+                                                        invitationEventList.add(documentSnapshot.toObject(Event.class));
+                                                        adapter.notifyDataSetChanged();
+                                                    } else if (dateString.equals(dateNowString)) {
+                                                        if (hourNow == 0) {
+                                                            if (hour == 0) {
+                                                                if (minute > minuteNow) {
+                                                                    invitationEventList.add(documentSnapshot.toObject(Event.class));
+                                                                    adapter.notifyDataSetChanged();
+                                                                }
+                                                            }
+                                                        } else if (hour == hourNow && minute > minuteNow) {
+                                                            invitationEventList.add(documentSnapshot.toObject(Event.class));
+                                                            adapter.notifyDataSetChanged();
+                                                        } else if (hour > hourNow) {
+                                                            invitationEventList.add(documentSnapshot.toObject(Event.class));
+                                                            adapter.notifyDataSetChanged();
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }).addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Log.d(TAG, e.toString());
+                                            }
+                                        });
+                                    }
                                 }
                             }).addOnFailureListener(new OnFailureListener() {
                                 @Override
@@ -123,6 +161,9 @@ public class InvitationListFragment extends Fragment {
                     }
                     adapter.notifyDataSetChanged();
                 } else {
+                    invitationListNoInvitationsTextView.setVisibility(View.VISIBLE);
+                }
+                if(invitationEventList.isEmpty()){
                     invitationListNoInvitationsTextView.setVisibility(View.VISIBLE);
                 }
                 alertDialog.dismiss();

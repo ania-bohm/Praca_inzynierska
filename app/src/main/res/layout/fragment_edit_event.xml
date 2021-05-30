@@ -126,7 +126,7 @@
                         android:ems="10"
                         android:fontFamily="@font/montserrat"
                         android:inputType="text"
-                        android:maxLength="15"
+                        android:maxLength="25"
                         android:textSize="14dp" />
 
                     <br.com.sapereaude.maskedEditText.MaskedEditText
