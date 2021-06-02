@@ -104,6 +104,9 @@
         <action
             android:id="@+id/displayEventToEventBudget"
             app:destination="@id/eventBudgetFragment" />
+        <action
+            android:id="@+id/displayEventToCommonExpense"
+            app:destination="@id/commonExpenseFragment" />
     </fragment>
     <fragment
         android:id="@+id/editEventFragment"
@@ -129,4 +132,17 @@
         android:name="com.annabohm.pracainzynierska.EventBudgetFragment"
         android:label="fragment_event_budget"
         tools:layout="@layout/fragment_event_budget" />
+    <fragment
+        android:id="@+id/commonExpenseFragment"
+        android:name="com.annabohm.pracainzynierska.CommonExpenseFragment"
+        android:label="fragment_common_expense"
+        tools:layout="@layout/fragment_common_expense" >
+        <action
+            android:id="@+id/commonExpenseToSettleExpense"
+            app:destination="@id/settleExpenseFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/settleExpenseFragment"
+        android:name="com.annabohm.pracainzynierska.SettleExpenseFragment"
+        android:label="SettleExpenseFragment" />
 </navigation>

@@ -2,7 +2,6 @@ package com.annabohm.pracainzynierska;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -17,6 +16,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -25,6 +26,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -44,24 +46,27 @@ import dmax.dialog.SpotsDialog;
 import static android.content.ContentValues.TAG;
 
 public class CommonExpenseFragment extends Fragment {
+    NavController navController;
     CommonExpenseFragment fragmentThis;
     ArrayList<CommonExpense> commonExpenseList;
     RecyclerView.LayoutManager layoutManager;
     CommonExpenseAdapter commonExpenseAdapter;
     TextView displayCommonExpenseSumTextView, displayCommonExpenseToSettleTextView;
     MaterialEditText commonExpenseTitleMaterialEditText, commonExpenseValueMaterialEditText;
-    FloatingActionButton commonExpenseFloatingActionButton;
+    FloatingActionButton commonExpenseFloatingActionButton, commonExpenseSumUpFloatingActionButton;
     RecyclerView commonExpenseRecyclerView;
-    boolean isUpdate = false;
-    String eventId;
-    String commonExpenseItemToUpdateId = "";
     AlertDialog alertDialog;
+    FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     CollectionReference commonExpenseLists = db.collection("CommonExpenseLists");
     CollectionReference events = db.collection("Events");
     DocumentReference eventReference;
     Context context;
     Bundle bundle;
+    boolean isUpdate = false;
+    String eventId;
+    String commonExpenseItemToUpdateId = "";
+    String currentUserId = firebaseAuth.getCurrentUser().getUid();
 
     public CommonExpenseFragment() {
     }
@@ -91,12 +96,13 @@ public class CommonExpenseFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
+        navController = Navigation.findNavController(view);
         displayCommonExpenseSumTextView = view.findViewById(R.id.displayCommonExpenseSumTextView);
         displayCommonExpenseToSettleTextView = view.findViewById(R.id.displayCommonExpenseToSettleTextView);
         commonExpenseTitleMaterialEditText = view.findViewById(R.id.commonExpenseTitleMaterialEditText);
         commonExpenseValueMaterialEditText = view.findViewById(R.id.commonExpenseValueMaterialEditText);
         commonExpenseFloatingActionButton = view.findViewById(R.id.commonExpenseFloatingActionButton);
+        commonExpenseSumUpFloatingActionButton = view.findViewById(R.id.commonExpenseSumUpFloatingActionButton);
         commonExpenseRecyclerView = view.findViewById(R.id.commonExpenseRecyclerView);
 
         commonExpenseRecyclerView.setHasFixedSize(true);
@@ -130,6 +136,8 @@ public class CommonExpenseFragment extends Fragment {
             }
         });
 
+        loadData();
+
         commonExpenseFloatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -148,7 +156,12 @@ public class CommonExpenseFragment extends Fragment {
             }
         });
 
-        loadData();
+        commonExpenseSumUpFloatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                navController.navigate(R.id.commonExpenseToSettleExpense, bundle);
+            }
+        });
     }
 
     public String PerfectDecimal(String str, int MAX_BEFORE_POINT, int MAX_DECIMAL) {
@@ -229,6 +242,7 @@ public class CommonExpenseFragment extends Fragment {
         commonExpenseObject.put("commonExpenseId", id);
         commonExpenseObject.put("commonExpenseTitle", title);
         commonExpenseObject.put("commonExpenseValue", value);
+        commonExpenseObject.put("commonExpensePayingUserId", currentUserId);
         commonExpenseObject.put("commonExpenseToSettle", false);
         commonExpenseLists.document(eventId).collection("CommonExpenseList").document(id).set(commonExpenseObject).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
@@ -269,7 +283,7 @@ public class CommonExpenseFragment extends Fragment {
                 double commonExpenseToSettleDouble = commonExpenseToSettleLong / 100;
                 displayCommonExpenseSumTextView.setText(String.valueOf(commonExpenseSumDouble));
                 displayCommonExpenseToSettleTextView.setText(String.valueOf(commonExpenseToSettleDouble));
-                commonExpenseAdapter = new CommonExpenseAdapter(fragmentThis, commonExpenseList, eventId);
+                commonExpenseAdapter = new CommonExpenseAdapter(fragmentThis, commonExpenseList, eventId, currentUserId);
                 commonExpenseRecyclerView.setAdapter(commonExpenseAdapter);
                 alertDialog.dismiss();
             }

@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
@@ -28,14 +29,18 @@ public class CommonExpenseAdapter extends RecyclerView.Adapter<CommonExpenseAdap
 
     CommonExpenseFragment commonExpenseFragment;
     ArrayList<CommonExpense> commonExpenseList;
-    String eventId;
+    String eventId, currentUserId;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     CollectionReference commonExpenseLists = db.collection("CommonExpenseLists");
+    CollectionReference users = db.collection("Users");
+    CollectionReference events = db.collection("Events");
+    String eventAuthorId;
 
-    public CommonExpenseAdapter(CommonExpenseFragment commonExpenseFragment, ArrayList<CommonExpense> commonExpenseList, String eventId) {
+    public CommonExpenseAdapter(CommonExpenseFragment commonExpenseFragment, ArrayList<CommonExpense> commonExpenseList, String eventId, String currentUserId) {
         this.commonExpenseFragment = commonExpenseFragment;
         this.commonExpenseList = commonExpenseList;
         this.eventId = eventId;
+        this.currentUserId = currentUserId;
     }
 
     @NonNull
@@ -48,6 +53,19 @@ public class CommonExpenseAdapter extends RecyclerView.Adapter<CommonExpenseAdap
 
     @Override
     public void onBindViewHolder(@NonNull final CommonExpenseItemHolder holder, final int position) {
+        users.document(commonExpenseList.get(position).getCommonExpensePayingUserId()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                User user = documentSnapshot.toObject(User.class);
+                String displayName = user.getUserFirstName() + " " + user.getUserLastName();
+                holder.commonExpenseItemPayingUserDisplayTextView.setText(displayName);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d(TAG, e.toString());
+            }
+        });
         holder.commonExpenseItemTitleTextView.setText(commonExpenseList.get(position).getCommonExpenseTitle());
         long commonExpenseValueLong = commonExpenseList.get(position).getCommonExpenseValue();
         double commonExpenseValueDouble = commonExpenseValueLong / 100;
@@ -67,13 +85,32 @@ public class CommonExpenseAdapter extends RecyclerView.Adapter<CommonExpenseAdap
         holder.setItemClickListener(new ItemClickListener() {
             @Override
             public void onClick(View view, int position, boolean isLongClick) {
-                commonExpenseFragment.eventCostTitleMaterialEditText.setText(commonExpenseList.get(position).getEventCostTitle());
-                commonExpenseFragment.eventCostValueMaterialEditText.setText(commonExpenseList.get(position).getEventCostValue());
-                commonExpenseFragment.isUpdate = true;
-                commonExpenseFragment.eventCostItemToUpdateId = commonExpenseList.get(position).getEventCostId();
+                if (currentUserId.equals(commonExpenseList.get(position).getCommonExpensePayingUserId())) {
+                    commonExpenseFragment.commonExpenseTitleMaterialEditText.setText(commonExpenseList.get(position).getCommonExpenseTitle());
+                    commonExpenseFragment.commonExpenseValueMaterialEditText.setText(String.valueOf((double) (commonExpenseList.get(position).getCommonExpenseValue() / 100)));
+                    commonExpenseFragment.isUpdate = true;
+                    commonExpenseFragment.commonExpenseItemToUpdateId = commonExpenseList.get(position).getCommonExpenseId();
+                }
             }
         });
-
+        if (!currentUserId.equals(commonExpenseList.get(position).getCommonExpensePayingUserId())) {
+            holder.commonExpenseItemToSettleCheckBox.setEnabled(false);
+        }
+        events.document(eventId).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                Event event = documentSnapshot.toObject(Event.class);
+                eventAuthorId = event.getEventAuthor();
+                if(currentUserId.equals(eventAuthorId)){
+                    holder.commonExpenseItemToSettleCheckBox.setEnabled(true);
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d(TAG, e.toString());
+            }
+        });
         holder.commonExpenseItemToSettleCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -82,16 +119,12 @@ public class CommonExpenseAdapter extends RecyclerView.Adapter<CommonExpenseAdap
                         @Override
                         public void onSuccess(Void aVoid) {
                             commonExpenseList.get(position).setCommonExpenseToSettle(true);
-                            double currentBudgetLeftDouble = Double.valueOf(commonExpenseFragment.displa.getText().toString());
-                            long currentBudgetLeftLong = (long) (currentBudgetLeftDouble * 100);
-                            long newPaidCostLong = commonExpenseList.get(position).getEventCostValue();
-                            double newBudgetLeftDouble = (currentBudgetLeftLong - newPaidCostLong) / 100;
-                            if (currentBudgetLeftLong - newPaidCostLong < 0) {
-                                commonExpenseFragment.displayEventBudgetLeftTextView.setTextColor(Color.RED);
-                            } else {
-                                commonExpenseFragment.displayEventBudgetLeftTextView.setTextColor(Color.WHITE);
-                            }
-                            commonExpenseFragment.displayEventBudgetLeftTextView.setText(String.valueOf(newBudgetLeftDouble));
+                            double currentCommonExpenseToSettleDouble = Double.valueOf(commonExpenseFragment.displayCommonExpenseToSettleTextView.getText().toString());
+                            long currentCommonExpenseToSettleLong = (long) (currentCommonExpenseToSettleDouble * 100);
+                            long newCommonExpenseToSettleLong = commonExpenseList.get(position).getCommonExpenseValue();
+                            double newBudgetLeftDouble = (currentCommonExpenseToSettleLong + newCommonExpenseToSettleLong) / 100;
+
+                            commonExpenseFragment.displayCommonExpenseToSettleTextView.setText(String.valueOf(newBudgetLeftDouble));
                             holder.commonExpenseItemTitleTextView.setPaintFlags(holder.commonExpenseItemTitleTextView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                             holder.commonExpenseItemValueTextView.setPaintFlags(holder.commonExpenseItemValueTextView.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
                             holder.commonExpenseItemLinearLayout.setBackgroundColor(Color.LTGRAY);
@@ -105,23 +138,19 @@ public class CommonExpenseAdapter extends RecyclerView.Adapter<CommonExpenseAdap
                     });
 
                 } else {
-                    commonExpenseLists.document(eventId).collection("EventCostList").document(commonExpenseList.get(position).getEventCostId()).update("eventCostPaid", false).addOnSuccessListener(new OnSuccessListener<Void>() {
+                    commonExpenseLists.document(eventId).collection("CommonExpenseList").document(commonExpenseList.get(position).getCommonExpenseId()).update("commonExpenseToSettle", false).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
-                            commonExpenseList.get(position).setEventCostPaid(false);
-                            double currentBudgetLeftDouble = Double.valueOf(eventBudgetFragment.displayEventBudgetLeftTextView.getText().toString());
-                            long currentBudgetLeftLong = (long) (currentBudgetLeftDouble * 100);
-                            long newUnPaidCostLong = commonExpenseList.get(position).getEventCostValue();
-                            double newBudgetLeftDouble = (currentBudgetLeftLong + newUnPaidCostLong) / 100;
-                            if (currentBudgetLeftLong + newUnPaidCostLong < 0) {
-                                eventBudgetFragment.displayEventBudgetLeftTextView.setTextColor(Color.RED);
-                            } else {
-                                eventBudgetFragment.displayEventBudgetLeftTextView.setTextColor(Color.WHITE);
-                            }
-                            eventBudgetFragment.displayEventBudgetLeftTextView.setText(String.valueOf(newBudgetLeftDouble));
-                            holder.eventCostItemLinearLayout.setBackgroundColor(Color.WHITE);
-                            holder.eventCostItemTitleTextView.setPaintFlags(holder.eventCostItemTitleTextView.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
-                            holder.eventCostItemValueTextView.setPaintFlags(holder.eventCostItemValueTextView.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
+                            commonExpenseList.get(position).setCommonExpenseToSettle(false);
+                            double currentCommonExpenseToSettleDouble = Double.valueOf(commonExpenseFragment.displayCommonExpenseToSettleTextView.getText().toString());
+                            long currentCommonExpenseToSettleLong = (long) (currentCommonExpenseToSettleDouble * 100);
+                            long newCommonExpenseToSettleLong = commonExpenseList.get(position).getCommonExpenseValue();
+                            double newBudgetLeftDouble = (currentCommonExpenseToSettleLong - newCommonExpenseToSettleLong) / 100;
+
+                            commonExpenseFragment.displayCommonExpenseToSettleTextView.setText(String.valueOf(newBudgetLeftDouble));
+                            holder.commonExpenseItemLinearLayout.setBackgroundColor(Color.WHITE);
+                            holder.commonExpenseItemTitleTextView.setPaintFlags(holder.commonExpenseItemTitleTextView.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
+                            holder.commonExpenseItemValueTextView.setPaintFlags(holder.commonExpenseItemValueTextView.getPaintFlags() & (~Paint.STRIKE_THRU_TEXT_FLAG));
                             notifyDataSetChanged();
                         }
                     }).addOnFailureListener(new OnFailureListener() {

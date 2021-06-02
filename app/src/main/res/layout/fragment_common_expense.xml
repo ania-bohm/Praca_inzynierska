@@ -21,7 +21,6 @@
             android:orientation="vertical"
             android:padding="16dp">
 
-
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -38,7 +37,7 @@
                     android:id="@+id/displayCommonExpenseSumTextView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="2dp"
+                    android:layout_marginStart="3dp"
                     android:fontFamily="@font/montserrat"
                     android:text=""
                     android:textColor="@android:color/white" />
@@ -55,9 +54,10 @@
                     android:id="@+id/displayCommonExpenseToSettleTextView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="2dp"
+                    android:layout_marginStart="3dp"
                     android:fontFamily="@font/montserrat"
-                    android:text="" />
+                    android:text=""
+                    android:textColor="@android:color/white" />
 
             </LinearLayout>
 
@@ -94,12 +94,25 @@
         android:id="@+id/commonExpenseFloatingActionButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginRight="10dp"
+        android:layout_marginEnd="10dp"
         android:src="@drawable/ic_add"
         app:elevation="6dp"
         app:fabSize="normal"
         app:layout_anchor="@id/commonExpenseAppBarLayout"
         app:layout_anchorGravity="bottom|right"
+        app:pressedTranslationZ="12dp" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/commonExpenseSumUpFloatingActionButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="10dp"
+        android:layout_marginTop="10dp"
+        android:src="@drawable/ic_settle"
+        app:elevation="5dp"
+        app:fabSize="mini"
+        app:layout_anchor="@id/commonExpenseAppBarLayout"
+        app:layout_anchorGravity="top|right"
         app:pressedTranslationZ="12dp" />
 
     <androidx.recyclerview.widget.RecyclerView
