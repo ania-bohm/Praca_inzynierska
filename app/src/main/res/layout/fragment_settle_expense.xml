@@ -39,17 +39,39 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/invitationListHeaderTextView">
 
-        <ListView
-            android:id="@+id/settleExpenseListView"
-            android:layout_width="match_parent"
+        <TextView
+            android:id="@+id/settleExpensePerPersonTextView"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:nestedScrollingEnabled="true" />
+            android:layout_marginStart="10dp"
+            android:fontFamily="@font/montserrat"
+            android:text="@string/settle_expense_per_person"
+            android:textColor="@color/colorTextDark"
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
         <ListView
             android:id="@+id/settleExpensePerPersonListView"
             android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:layout_marginTop="10dp"
+            android:nestedScrollingEnabled="true" />
+
+        <TextView
+            android:id="@+id/settleExpenseTextView"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:fontFamily="@font/montserrat"
+            android:text="@string/settle_expense_details"
+            android:textColor="@color/colorTextDark"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <ListView
+            android:id="@+id/settleExpenseListView"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
             android:layout_marginTop="10dp"
             android:nestedScrollingEnabled="true" />
 

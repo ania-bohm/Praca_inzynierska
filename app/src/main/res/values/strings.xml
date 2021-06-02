@@ -152,5 +152,8 @@
     <string name="common_expense_user_paying">Płacący: </string>
     <string name="to_do_creator">"Twórca: "</string>
     <string name="settle_expense">"Rozliczenia"</string>
+    <string name="settle_expense_item_paid">"wydana suma: "</string>
+    <string name="settle_expense_details">"Detale rozliczenia"</string>
+    <string name="settle_expense_per_person">"Do rozliczenia na osobę"</string>
 
 </resources>

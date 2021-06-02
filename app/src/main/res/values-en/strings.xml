@@ -153,4 +153,7 @@
     <string name="to_do_error">Only event author or to do creator can deletethe to do from the list</string>
     <string name="settle_expense">Settle expenses</string>
     <string name="no_settle_expense_list">You haven\'t got any expenses to settle yet</string>
+    <string name="settle_expense_item_paid">"paid value: "</string>
+    <string name="settle_expense_per_person">Expense to settle per person</string>
+    <string name="settle_expense_details">Settlement details</string>
 </resources>

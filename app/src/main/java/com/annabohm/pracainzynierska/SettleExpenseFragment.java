@@ -3,11 +3,13 @@ package com.annabohm.pracainzynierska;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -24,9 +26,13 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 
 import dmax.dialog.SpotsDialog;
+
+import static android.content.ContentValues.TAG;
 
 public class SettleExpenseFragment extends Fragment {
     NavController navController;
@@ -35,14 +41,18 @@ public class SettleExpenseFragment extends Fragment {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     CollectionReference commonExpenseLists = db.collection("CommonExpenseLists");
     CollectionReference events = db.collection("Events");
+    CollectionReference users = db.collection("Users");
     DocumentReference eventReference;
     Context context;
     Bundle bundle;
     String eventId;
     String currentUserId = firebaseAuth.getCurrentUser().getUid();
     ListView settleExpenseListView, settleExpensePerPersonListView;
-    TextView settleExpenseEmptyTextView;
+    TextView settleExpenseEmptyTextView, settleExpensePerPersonTextView, settleExpenseTextView;
     HashMap<String, Double> expensePerPersonHashMap;
+    ArrayList<String> userNameList;
+    ArrayList<Double> expenseList;
+    SettleExpenseAdapter settleExpenseAdapter;
 
     public SettleExpenseFragment() {
     }
@@ -76,6 +86,12 @@ public class SettleExpenseFragment extends Fragment {
         settleExpenseListView = view.findViewById(R.id.settleExpenseListView);
         settleExpensePerPersonListView = view.findViewById(R.id.settleExpensePerPersonListView);
         settleExpenseEmptyTextView = view.findViewById(R.id.settleExpenseEmptyTextView);
+        settleExpensePerPersonTextView = view.findViewById(R.id.settleExpensePerPersonTextView);
+        settleExpenseTextView = view.findViewById(R.id.settleExpenseTextView);
+
+        settleExpenseEmptyTextView.setVisibility(View.GONE);
+        settleExpensePerPersonTextView.setVisibility(View.GONE);
+        settleExpenseTextView.setVisibility(View.GONE);
 
         alertDialog = new SpotsDialog(context);
 
@@ -85,6 +101,12 @@ public class SettleExpenseFragment extends Fragment {
         eventId = eventReference.getId();
 
         expensePerPersonHashMap = new HashMap<>();
+        userNameList = new ArrayList<>();
+        expenseList = new ArrayList<>();
+
+        settleExpenseAdapter = new SettleExpenseAdapter(context, expenseList, userNameList);
+        settleExpensePerPersonListView.setAdapter(settleExpenseAdapter);
+        alertDialog.show();
         calculateSettleExpensePerPersonId();
     }
 
@@ -109,17 +131,59 @@ public class SettleExpenseFragment extends Fragment {
                         }
                     }
                 }
+                Toast.makeText(context, "hashmapsize: " + expensePerPersonHashMap.size(), Toast.LENGTH_SHORT).show();
+                if (expensePerPersonHashMap.isEmpty()) {
+                    settleExpenseEmptyTextView.setVisibility(View.VISIBLE);
+                } else {
+                    settleExpensePerPersonTextView.setVisibility(View.VISIBLE);
+                    if (expensePerPersonHashMap.size() > 1) {
+                        settleExpenseTextView.setVisibility(View.VISIBLE);
+                    }
+                }
+                convertPersonIdToDisplayName();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
-
+                Log.d(TAG, e.toString());
             }
         });
     }
 
-    public HashMap<String, Double> convertPersonIdToDisplayName() {
-        return null;
+    public void convertPersonIdToDisplayName() {
+        final ArrayList<String> idList = new ArrayList<String>(expensePerPersonHashMap.keySet());
+        final String[] idToDisplayNameList = new String[idList.size()];
+
+        users.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                if (!queryDocumentSnapshots.isEmpty()) {
+                    for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                        if (idList.contains(documentSnapshot.getId())) {
+                            int index = idList.indexOf(documentSnapshot.getId());
+                            User user = documentSnapshot.toObject(User.class);
+                            idToDisplayNameList[index] = user.getUserFirstName() + " " + user.getUserLastName();
+                        }
+                    }
+                }
+                for (int i = 0; i < idToDisplayNameList.length; i++) {
+                    if (idToDisplayNameList[i] != null) {
+                        expensePerPersonHashMap.put(idToDisplayNameList[i], expensePerPersonHashMap.remove(idList.get(i)));
+                    }
+                }
+                expenseList = new ArrayList<>(expensePerPersonHashMap.values());
+                userNameList = new ArrayList<>(expensePerPersonHashMap.keySet());
+                settleExpenseAdapter.setExpenseList(expenseList);
+                settleExpenseAdapter.setUserNameList(userNameList);
+                settleExpenseAdapter.notifyDataSetChanged();
+                alertDialog.dismiss();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d(TAG, e.toString());
+            }
+        });
     }
 
 }
