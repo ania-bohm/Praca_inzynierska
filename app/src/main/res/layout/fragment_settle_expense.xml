@@ -5,15 +5,67 @@
     android:layout_width="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="match_parent"
-    tools:context=".SettleExpenseFragment">
+    tools:context=".SettleExpenseFragment"
+    android:background="@drawable/main_background">
 
     <TextView
-        android:layout_width="wrap_content"
+        android:id="@+id/invitationListHeaderTextView"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Hello world"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:fontFamily="@font/montserrat"
+        android:padding="10dp"
+        android:shadowColor="@color/colorTextDarkSeeThrough"
+        android:shadowDx="1"
+        android:shadowDy="4"
+        android:shadowRadius="0.6"
+        android:text="@string/settle_expense"
+        android:textColor="@color/colorAccent"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:layout_width="413dp"
+        android:layout_height="610dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/bottom_semi_rectangular_background"
+        android:orientation="vertical"
+        android:padding="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/invitationListHeaderTextView">
+
+        <ListView
+            android:id="@+id/settleExpenseListView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:nestedScrollingEnabled="true" />
+
+        <ListView
+            android:id="@+id/settleExpensePerPersonListView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:nestedScrollingEnabled="true" />
+
+        <TextView
+            android:id="@+id/settleExpenseEmptyTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="170dp"
+            android:layout_marginEnd="10dp"
+            android:fontFamily="@font/montserrat"
+            android:gravity="center_horizontal"
+            android:text="@string/no_settle_expense_list"
+            android:textColor="@color/colorTextDark"
+            android:textSize="16dp"
+            android:textStyle="italic" />
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

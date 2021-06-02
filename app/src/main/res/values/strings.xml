@@ -122,6 +122,7 @@
     <string name="cancel_delete_guest">Anuluj</string>
     <string name="my_invitations_list">Moje zaproszenia</string>
     <string name="my_no_invitations_list">Nie masz w tym momencie żadnych zaproszeń</string>
+    <string name="no_settle_expense_list">Nie masz w tym momencie żadnych wydatków do rozliczenia</string>
     <string name="my_no_past_events_list">Nie masz w tym momencie żadnych zakończonych wydarzeń</string>
     <string name="past_events">Moje zakończone wydarzenia</string>
     <string name="past_events_start">Początek</string>
@@ -136,6 +137,8 @@
     <string name="event_cost_text">Koszt: </string>
     <string name="common_expense_sum">Wydano: </string>
     <string name="common_expense_to_settle">Do rozliczenia: </string>
+    <string name="common_expense_error">Tylko autor wydarzenia lub płacący może usunąć wydatek z listy</string>
+    <string name="to_do_error">Tylko autor wydarzenia lub twórca może usunąć zadanie z listy</string>
     <string name="signout_title">Wylogowywanie</string>
     <string name="signout_message">Czy chcesz się wylogować?</string>
     <string name="signout_yes">Tak</string>
@@ -147,5 +150,7 @@
     <string name="event_delete_no">Nie</string>
     <string name="event_delete_success">Usunięto wydarzenie pomyślnie</string>
     <string name="common_expense_user_paying">Płacący: </string>
+    <string name="to_do_creator">"Twórca: "</string>
+    <string name="settle_expense">"Rozliczenia"</string>
 
 </resources>

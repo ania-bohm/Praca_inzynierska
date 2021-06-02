@@ -1,17 +1,18 @@
 package com.annabohm.pracainzynierska;
 
 public class CommonExpense {
-    private String CommonExpenseId;
+    private String commonExpenseId;
     private String commonExpenseTitle;
     private String commonExpensePayingUserId;
-    private  int commonExpenseValue;
+    private int commonExpenseValue;
     private boolean commonExpenseToSettle;
 
     public CommonExpense(){
 
     }
 
-    public CommonExpense(String CommonExpenseId, String commonExpenseTitle, String commonExpensePayingUserId, int commonExpenseValue, boolean commonExpenseToSettle) {
+    public CommonExpense(String commonExpenseId, String commonExpenseTitle, String commonExpensePayingUserId, int commonExpenseValue, boolean commonExpenseToSettle) {
+        this.commonExpenseId = commonExpenseId;
         this.commonExpenseTitle = commonExpenseTitle;
         this.commonExpensePayingUserId = commonExpensePayingUserId;
         this.commonExpenseValue = commonExpenseValue;
@@ -19,11 +20,11 @@ public class CommonExpense {
     }
 
     public String getCommonExpenseId() {
-        return CommonExpenseId;
+        return commonExpenseId;
     }
 
     public void setCommonExpenseId(String commonExpenseId) {
-        CommonExpenseId = commonExpenseId;
+        this.commonExpenseId = commonExpenseId;
     }
 
     public String getCommonExpenseTitle() {

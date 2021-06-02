@@ -18,6 +18,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
@@ -27,15 +28,18 @@ import static android.content.ContentValues.TAG;
 public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ToDoItemHolder> {
 
     ArrayList<ToDo> toDoList;
-    String eventId;
+    String eventId, currentUserId, eventAuthorId;
     ToDoFragment toDoFragment;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     CollectionReference toDoLists = db.collection("ToDoLists");
+    CollectionReference events = db.collection("Events");
+    CollectionReference users = db.collection("Users");
 
-    public ToDoAdapter(ToDoFragment toDoFragment, ArrayList<ToDo> toDoList, String eventId) {
+    public ToDoAdapter(ToDoFragment toDoFragment, ArrayList<ToDo> toDoList, String eventId, String currentUserId) {
         this.toDoFragment = toDoFragment;
         this.toDoList = toDoList;
         this.eventId = eventId;
+        this.currentUserId = currentUserId;
     }
 
     @NonNull
@@ -50,6 +54,20 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ToDoItemHolder
     public void onBindViewHolder(@NonNull final ToDoItemHolder holder, final int position) {
         holder.toDoItemTitleTextView.setText(toDoList.get(position).getToDoTitle());
         holder.toDoItemDescriptionTextView.setText(toDoList.get(position).getToDoDescription());
+        users.document(toDoList.get(position).getToDoCreatorId()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                User user = documentSnapshot.toObject(User.class);
+                String displayName = user.getUserFirstName() + " " + user.getUserLastName();
+                holder.displayToDoItemCreatorIdTextView.setText(displayName);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d(TAG, e.toString());
+            }
+        });
+
         holder.toDoItemCheckedCheckBox.setChecked(toDoList.get(position).isToDoChecked());
 
         if (toDoList.get(position).isToDoChecked()) {
@@ -65,12 +83,34 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ToDoItemHolder
         holder.setItemClickListener(new ItemClickListener() {
             @Override
             public void onClick(View view, int position, boolean isLongClick) {
-                toDoFragment.toDoTitleMaterialEditText.setText(toDoList.get(position).getToDoTitle());
-                toDoFragment.toDoDescriptionMaterialEditText.setText(toDoList.get(position).getToDoDescription());
-                toDoFragment.isUpdate = true;
-                toDoFragment.toDoItemToUpdateId = toDoList.get(position).getToDoId();
+                if (currentUserId.equals(toDoList.get(position).getToDoCreatorId())) {
+                    toDoFragment.toDoTitleMaterialEditText.setText(toDoList.get(position).getToDoTitle());
+                    toDoFragment.toDoDescriptionMaterialEditText.setText(toDoList.get(position).getToDoDescription());
+                    toDoFragment.isUpdate = true;
+                    toDoFragment.toDoItemToUpdateId = toDoList.get(position).getToDoId();
+                }
             }
         });
+        if (!currentUserId.equals(toDoList.get(position).getToDoCreatorId())) {
+            holder.toDoItemCheckedCheckBox.setEnabled(false);
+            events.document(eventId).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+                @Override
+                public void onSuccess(DocumentSnapshot documentSnapshot) {
+                    if (documentSnapshot.exists()) {
+                        Event event = documentSnapshot.toObject(Event.class);
+                        eventAuthorId = event.getEventAuthor();
+                        if(currentUserId.equals(eventAuthorId)){
+                            holder.toDoItemCheckedCheckBox.setEnabled(true);
+                        }
+                    }
+                }
+            }).addOnFailureListener(new OnFailureListener() {
+                @Override
+                public void onFailure(@NonNull Exception e) {
+                    Log.d(TAG, e.toString());
+                }
+            });
+        }
 
         holder.toDoItemCheckedCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -135,7 +175,7 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ToDoItemHolder
     public static class ToDoItemHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnCreateContextMenuListener {
 
         ToDoAdapter.ItemClickListener itemClickListener;
-        TextView toDoItemTitleTextView, toDoItemDescriptionTextView;
+        TextView toDoItemTitleTextView, toDoItemDescriptionTextView, displayToDoItemCreatorIdTextView;
         CheckBox toDoItemCheckedCheckBox;
         LinearLayout toDoItemLinearLayout;
 
@@ -145,6 +185,7 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ToDoItemHolder
             itemView.setOnCreateContextMenuListener(this);
             toDoItemTitleTextView = itemView.findViewById(R.id.toDoItemTitleTextView);
             toDoItemDescriptionTextView = itemView.findViewById(R.id.toDoItemDescriptionTextView);
+            displayToDoItemCreatorIdTextView = itemView.findViewById(R.id.displayToDoItemCreatorIdTextView);
             toDoItemCheckedCheckBox = itemView.findViewById(R.id.toDoItemCheckedCheckBox);
             toDoItemLinearLayout = itemView.findViewById(R.id.toDoItemLinearLayout);
         }

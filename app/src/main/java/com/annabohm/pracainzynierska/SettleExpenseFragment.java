@@ -3,47 +3,30 @@ package com.annabohm.pracainzynierska;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.rengwuxian.materialedittext.MaterialEditText;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
 
 import dmax.dialog.SpotsDialog;
-
-import static android.content.ContentValues.TAG;
 
 public class SettleExpenseFragment extends Fragment {
     NavController navController;
@@ -55,9 +38,11 @@ public class SettleExpenseFragment extends Fragment {
     DocumentReference eventReference;
     Context context;
     Bundle bundle;
-    boolean isUpdate = false;
     String eventId;
     String currentUserId = firebaseAuth.getCurrentUser().getUid();
+    ListView settleExpenseListView, settleExpensePerPersonListView;
+    TextView settleExpenseEmptyTextView;
+    HashMap<String, Double> expensePerPersonHashMap;
 
     public SettleExpenseFragment() {
     }
@@ -88,11 +73,53 @@ public class SettleExpenseFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         navController = Navigation.findNavController(view);
 
+        settleExpenseListView = view.findViewById(R.id.settleExpenseListView);
+        settleExpensePerPersonListView = view.findViewById(R.id.settleExpensePerPersonListView);
+        settleExpenseEmptyTextView = view.findViewById(R.id.settleExpenseEmptyTextView);
+
         alertDialog = new SpotsDialog(context);
 
         bundle = this.getArguments();
         String path = bundle.getString("path");
         eventReference = db.document(path);
         eventId = eventReference.getId();
+
+        expensePerPersonHashMap = new HashMap<>();
+        calculateSettleExpensePerPersonId();
     }
+
+    public void calculateSettleExpensePerPersonId() {
+        commonExpenseLists.document(eventId).collection("CommonExpenseList").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                if (!queryDocumentSnapshots.isEmpty()) {
+                    for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                        if (documentSnapshot.exists()) {
+                            CommonExpense currentCommonExpense = documentSnapshot.toObject(CommonExpense.class);
+                            if (currentCommonExpense.isCommonExpenseToSettle()) {
+                                long commonExpenseValueLong = currentCommonExpense.getCommonExpenseValue();
+                                double commonExpenseValueDouble = commonExpenseValueLong / 100;
+                                String payingUserId = currentCommonExpense.getCommonExpensePayingUserId();
+                                if (expensePerPersonHashMap.containsKey(payingUserId)) {
+                                    expensePerPersonHashMap.put(payingUserId, expensePerPersonHashMap.get(payingUserId) + commonExpenseValueDouble);
+                                } else {
+                                    expensePerPersonHashMap.put(payingUserId, commonExpenseValueDouble);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+            }
+        });
+    }
+
+    public HashMap<String, Double> convertPersonIdToDisplayName() {
+        return null;
+    }
+
 }

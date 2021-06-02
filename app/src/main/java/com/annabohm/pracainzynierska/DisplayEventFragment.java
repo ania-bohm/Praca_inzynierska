@@ -126,8 +126,6 @@ public class DisplayEventFragment extends Fragment {
         alertDialog = new SpotsDialog(context);
 
         editEventButton.setVisibility(View.GONE);
-        toDoListButton.setVisibility(View.GONE);
-        eventBudgetButton.setVisibility(View.GONE);
 
         bundle = this.getArguments();
         String path = bundle.getString("path");
@@ -156,13 +154,9 @@ public class DisplayEventFragment extends Fragment {
                     final Event event = documentSnapshot.toObject(Event.class);
                     if (event.getEventAuthor().equals(firebaseAuth.getCurrentUser().getUid())) {
                         editEventButton.setVisibility(View.VISIBLE);
-                        toDoListButton.setVisibility(View.VISIBLE);
-                        eventBudgetButton.setVisibility(View.VISIBLE);
                         editEventButton.setOnClickListener(editEventOnClickListener);
                     } else {
                         editEventButton.setVisibility(View.GONE);
-                        toDoListButton.setVisibility(View.GONE);
-                        eventBudgetButton.setVisibility(View.GONE);
                     }
                     commonExpenseButton.setOnClickListener(commonExpenseOnClickListener);
                     final DateFormat dateFormatterPrint = new SimpleDateFormat("dd/MM/yyyy");

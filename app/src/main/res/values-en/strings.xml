@@ -148,4 +148,9 @@
     <string name="common_expense_user_paying">Paying:</string>
     <string name="common_expense_sum">"Spent: "</string>
     <string name="common_expense_to_settle">"To settle: "</string>
+    <string name="to_do_creator">"Creator: "</string>
+    <string name="common_expense_error">Only event author or paying user can delete the expense from the list</string>
+    <string name="to_do_error">Only event author or to do creator can deletethe to do from the list</string>
+    <string name="settle_expense">Settle expenses</string>
+    <string name="no_settle_expense_list">You haven\'t got any expenses to settle yet</string>
 </resources>

@@ -64,9 +64,9 @@ public class CommonExpenseFragment extends Fragment {
     Context context;
     Bundle bundle;
     boolean isUpdate = false;
-    String eventId;
+    String eventId, eventAuthor;
     String commonExpenseItemToUpdateId = "";
-    String currentUserId = firebaseAuth.getCurrentUser().getUid();
+    String currentUserId;
 
     public CommonExpenseFragment() {
     }
@@ -96,6 +96,8 @@ public class CommonExpenseFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        currentUserId = firebaseAuth.getCurrentUser().getUid();
+
         navController = Navigation.findNavController(view);
         displayCommonExpenseSumTextView = view.findViewById(R.id.displayCommonExpenseSumTextView);
         displayCommonExpenseToSettleTextView = view.findViewById(R.id.displayCommonExpenseToSettleTextView);
@@ -105,17 +107,29 @@ public class CommonExpenseFragment extends Fragment {
         commonExpenseSumUpFloatingActionButton = view.findViewById(R.id.commonExpenseSumUpFloatingActionButton);
         commonExpenseRecyclerView = view.findViewById(R.id.commonExpenseRecyclerView);
 
-        commonExpenseRecyclerView.setHasFixedSize(true);
-        layoutManager = new LinearLayoutManager(context);
-        commonExpenseRecyclerView.setLayoutManager(layoutManager);
-
-        commonExpenseList = new ArrayList<>();
-        alertDialog = new SpotsDialog(context);
-
         bundle = this.getArguments();
         String path = bundle.getString("path");
         eventReference = db.document(path);
         eventId = eventReference.getId();
+        eventReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                eventAuthor = documentSnapshot.toObject(Event.class).getEventAuthor();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d(TAG, e.toString());
+            }
+        });
+        commonExpenseList = new ArrayList<>();
+        alertDialog = new SpotsDialog(context);
+
+        commonExpenseRecyclerView.setHasFixedSize(true);
+        layoutManager = new LinearLayoutManager(context);
+        commonExpenseRecyclerView.setLayoutManager(layoutManager);
+        commonExpenseAdapter = new CommonExpenseAdapter(fragmentThis, commonExpenseList, eventId, currentUserId);
+        commonExpenseRecyclerView.setAdapter(commonExpenseAdapter);
 
         commonExpenseValueMaterialEditText.addTextChangedListener(new TextWatcher() {
             public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
@@ -153,6 +167,8 @@ public class CommonExpenseFragment extends Fragment {
                     updateData(commonExpenseTitleMaterialEditText.getText().toString().trim(), commonExpenseValueLong);
                     isUpdate = !isUpdate;
                 }
+                commonExpenseTitleMaterialEditText.setText("");
+                commonExpenseValueMaterialEditText.setText("");
             }
         });
 
@@ -193,7 +209,11 @@ public class CommonExpenseFragment extends Fragment {
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
         if (item.getTitle().equals(getString(R.string.event_cost_delete))) {
-            deleteItem(item.getOrder());
+            if (currentUserId.equals(eventAuthor) || currentUserId.equals(commonExpenseList.get(item.getOrder()).getCommonExpensePayingUserId())) {
+                deleteItem(item.getOrder());
+            } else {
+                Toast.makeText(context, R.string.common_expense_error, Toast.LENGTH_SHORT).show();
+            }
         }
         return super.onContextItemSelected(item);
     }
@@ -241,8 +261,8 @@ public class CommonExpenseFragment extends Fragment {
         String id = UUID.randomUUID().toString();
         commonExpenseObject.put("commonExpenseId", id);
         commonExpenseObject.put("commonExpenseTitle", title);
-        commonExpenseObject.put("commonExpenseValue", value);
         commonExpenseObject.put("commonExpensePayingUserId", currentUserId);
+        commonExpenseObject.put("commonExpenseValue", value);
         commonExpenseObject.put("commonExpenseToSettle", false);
         commonExpenseLists.document(eventId).collection("CommonExpenseList").document(id).set(commonExpenseObject).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
@@ -283,8 +303,7 @@ public class CommonExpenseFragment extends Fragment {
                 double commonExpenseToSettleDouble = commonExpenseToSettleLong / 100;
                 displayCommonExpenseSumTextView.setText(String.valueOf(commonExpenseSumDouble));
                 displayCommonExpenseToSettleTextView.setText(String.valueOf(commonExpenseToSettleDouble));
-                commonExpenseAdapter = new CommonExpenseAdapter(fragmentThis, commonExpenseList, eventId, currentUserId);
-                commonExpenseRecyclerView.setAdapter(commonExpenseAdapter);
+                commonExpenseAdapter.notifyDataSetChanged();
                 alertDialog.dismiss();
             }
         }).addOnFailureListener(new OnFailureListener() {

@@ -23,6 +23,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -54,9 +55,10 @@ public class ToDoFragment extends Fragment {
     int taskCounter = 0;
     int taskDoneCounter = 0;
     boolean isUpdate = false;
-    String eventId;
+    String eventId, currentUserId, eventAuthor;
     String toDoItemToUpdateId = "";
     AlertDialog alertDialog;
+    FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     CollectionReference toDoLists = db.collection("ToDoLists");
     DocumentReference eventReference;
@@ -91,6 +93,7 @@ public class ToDoFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        currentUserId = firebaseAuth.getCurrentUser().getUid();
 
         toDoTitleMaterialEditText = view.findViewById(R.id.toDoTitleMaterialEditText);
         toDoDescriptionMaterialEditText = view.findViewById(R.id.toDoDescriptionMaterialEditText);
@@ -112,6 +115,20 @@ public class ToDoFragment extends Fragment {
         eventReference = db.document(path);
         eventId = eventReference.getId();
 
+        eventReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                eventAuthor = documentSnapshot.toObject(Event.class).getEventAuthor();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d(TAG, e.toString());
+            }
+        });
+
+        loadData();
+
         toDoFloatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -125,16 +142,21 @@ public class ToDoFragment extends Fragment {
                     updateData(toDoTitleMaterialEditText.getText().toString().trim(), toDoDescriptionMaterialEditText.getText().toString().trim());
                     isUpdate = !isUpdate;
                 }
+                toDoTitleMaterialEditText.setText("");
+                toDoDescriptionMaterialEditText.setText("");
             }
         });
-
-        loadData();
     }
 
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
         if (item.getTitle().equals(getString(R.string.to_do_delete))) {
-            deleteItem(item.getOrder());
+            if (currentUserId.equals(eventAuthor) || currentUserId.equals(toDoList.get(item.getOrder()).getToDoCreatorId())) {
+                deleteItem(item.getOrder());
+            }
+            else {
+                Toast.makeText(context, R.string.to_do_error, Toast.LENGTH_SHORT).show();
+            }
         }
         return super.onContextItemSelected(item);
     }
@@ -183,6 +205,7 @@ public class ToDoFragment extends Fragment {
         toDoObject.put("toDoId", id);
         toDoObject.put("toDoTitle", title);
         toDoObject.put("toDoDescription", description);
+        toDoObject.put("toDoCreatorId", currentUserId);
         toDoObject.put("toDoChecked", false);
         toDoLists.document(eventId).collection("ToDoList").document(id).set(toDoObject).addOnSuccessListener(new OnSuccessListener<Void>() {
             @Override
@@ -220,7 +243,7 @@ public class ToDoFragment extends Fragment {
                 displayToDoAllTextView.setText(String.valueOf(taskCounter));
                 taskDoneCounter = 0;
                 taskCounter = 0;
-                toDoAdapter = new ToDoAdapter(fragmentThis, toDoList, eventId);
+                toDoAdapter = new ToDoAdapter(fragmentThis, toDoList, eventId, currentUserId);
                 toDoRecyclerView.setAdapter(toDoAdapter);
                 alertDialog.dismiss();
             }

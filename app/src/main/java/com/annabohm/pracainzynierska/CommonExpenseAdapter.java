@@ -99,10 +99,12 @@ public class CommonExpenseAdapter extends RecyclerView.Adapter<CommonExpenseAdap
         events.document(eventId).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
-                Event event = documentSnapshot.toObject(Event.class);
-                eventAuthorId = event.getEventAuthor();
-                if(currentUserId.equals(eventAuthorId)){
-                    holder.commonExpenseItemToSettleCheckBox.setEnabled(true);
+                if (documentSnapshot.exists()) {
+                    Event event = documentSnapshot.toObject(Event.class);
+                    eventAuthorId = event.getEventAuthor();
+                    if (currentUserId.equals(eventAuthorId)) {
+                        holder.commonExpenseItemToSettleCheckBox.setEnabled(true);
+                    }
                 }
             }
         }).addOnFailureListener(new OnFailureListener() {
