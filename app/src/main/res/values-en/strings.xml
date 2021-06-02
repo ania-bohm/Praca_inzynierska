@@ -124,9 +124,9 @@
     <string name="to_do_done">Completed tasks:</string>
     <string name="event_cost_title">Title</string>
     <string name="event_cost_value">Cost</string>
-    <string name="event_budget">Budget:</string>
-    <string name="event_budget_left">Budget left:</string>
-    <string name="event_cost_text">Cost:</string>
+    <string name="event_budget">"Budget: "</string>
+    <string name="event_budget_left">"Budget left: "</string>
+    <string name="event_cost_text">"Cost: "</string>
     <string name="signout_title">Log out</string>
     <string name="signout_message">Do you want to log out?</string>
     <string name="signout_yes">Yes</string>
@@ -145,4 +145,7 @@
     <string name="welcome_user">"Welcome, "</string>
     <string name="event_data">Event data</string>
     <string name="modify_event_data">Modify event data</string>
+    <string name="common_expense_user_paying">Paying:</string>
+    <string name="common_expense_sum">"Spent: "</string>
+    <string name="common_expense_to_settle">"To settle: "</string>
 </resources>

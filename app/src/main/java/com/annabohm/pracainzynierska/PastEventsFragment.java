@@ -148,10 +148,11 @@ public class PastEventsFragment extends Fragment {
                                 pastEventsListAdapter.notifyDataSetChanged();
                             }
                         }
-                        if (eventList.isEmpty() || eventIdList.isEmpty()) {
-                            pastEventsEmptyTextView.setVisibility(View.VISIBLE);
-                        }
+
                     }
+                }
+                if (eventList.isEmpty() || eventIdList.isEmpty()) {
+                    pastEventsEmptyTextView.setVisibility(View.VISIBLE);
                 }
             }
         }).addOnFailureListener(new OnFailureListener() {

@@ -134,6 +134,8 @@
     <string name="event_budget">Budżet: </string>
     <string name="event_budget_left">Pozostały budżet: </string>
     <string name="event_cost_text">Koszt: </string>
+    <string name="common_expense_sum">Wydano: </string>
+    <string name="common_expense_to_settle">Do rozliczenia: </string>
     <string name="signout_title">Wylogowywanie</string>
     <string name="signout_message">Czy chcesz się wylogować?</string>
     <string name="signout_yes">Tak</string>
@@ -144,5 +146,6 @@
     <string name="event_delete_yes">Tak</string>
     <string name="event_delete_no">Nie</string>
     <string name="event_delete_success">Usunięto wydarzenie pomyślnie</string>
+    <string name="common_expense_user_paying">Płacący: </string>
 
 </resources>

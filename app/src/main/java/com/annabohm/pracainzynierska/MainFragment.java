@@ -148,12 +148,14 @@ public class MainFragment extends Fragment {
                             });
                         }
                     }
+//                    if (confirmedEvents.isEmpty()) {
+//                        Toast.makeText(context, "Jestem w confirmedevents empty!", Toast.LENGTH_SHORT).show();
+//                        allEventsEmptyTextView.setVisibility(View.VISIBLE);
+//                    }
                 } else {
                     allEventsEmptyTextView.setVisibility(View.VISIBLE);
                 }
-                if (confirmedEvents.isEmpty()) {
-                    allEventsEmptyTextView.setVisibility(View.VISIBLE);
-                }
+
                 allEventsAdapter.setOnItemClickListener(new ConfirmedEventAdapter.OnItemClickListener() {
                     @Override
                     public void onItemClick(final int position) {

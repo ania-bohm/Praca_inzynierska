@@ -163,7 +163,7 @@ public class InvitationListFragment extends Fragment {
                 } else {
                     invitationListNoInvitationsTextView.setVisibility(View.VISIBLE);
                 }
-                if(invitationEventList.isEmpty()){
+                if (invitationEventList.isEmpty()) {
                     invitationListNoInvitationsTextView.setVisibility(View.VISIBLE);
                 }
                 alertDialog.dismiss();
