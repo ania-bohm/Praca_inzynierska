@@ -61,10 +61,10 @@
     <string name="event_budget_empty_fields">Fill in all fields!</string>
     <string name="event_cost_delete">Delete</string>
     <string name="event_cost_cancel">Cancel</string>
-    <string name="event_cost_select_action">Choose action</string>
+    <string name="event_cost_select_action">Select action</string>
     <string name="to_do_delete">Delete</string>
     <string name="to_do_cancel">Cancel</string>
-    <string name="to_do_select_action">Choose action</string>
+    <string name="to_do_select_action">Select action</string>
     <string name="event_add_success">The event has been created successfully</string>
     <string name="event_add_fail">The event hasn\'t been created</string>
     <string name="edit_event_guest_list">Edit guest list</string>
@@ -162,4 +162,11 @@
     <string name="scoreboard_header">Scoreboard</string>
     <string name="chat_no_messages_list">You haven\'t got any messages yet</string>
     <string name="no_score_list">You haven\'t got any scores yet</string>
+    <string name="score_delete">Delete</string>
+    <string name="score_cancel">Cancel</string>
+    <string name="score_select_action">Select action</string>
+    <string name="scoreboard_guest_name">Player\'s first name and last name</string>
+    <string name="scoreboard_value">Number of games won</string>
+    <string name="to_do_header">To do list</string>
+    <string name="common_expense_header">Common expenses</string>
 </resources>

@@ -67,7 +67,10 @@
     <string name="event_cost_select_action">Wybierz akcję</string>
     <string name="to_do_delete">Usuń</string>
     <string name="to_do_cancel">Anuluj</string>
+    <string name="score_delete">Usuń</string>
+    <string name="score_cancel">Anuluj</string>
     <string name="to_do_select_action">Wybierz akcję</string>
+    <string name="score_select_action">Wybierz akcję</string>
     <string name="event_add_success">Wydarzenie zostało utworzone</string>
     <string name="event_add_fail">Wydarzenie nie zostało utworzone</string>
     <string name="edit_event_guest_list">Edytuj dotychczasową listę gości</string>
@@ -161,5 +164,8 @@
     <string name="settle_expense_receives">otrzymuje:</string>
     <string name="chat_header">Chat wydarzenia</string>
     <string name="scoreboard_header">Tablica wyników</string>
-
+    <string name="to_do_header">Lista zadań</string>
+    <string name="common_expense_header">Wspólne wydatki</string>
+    <string name="scoreboard_guest_name">Imię i nazwisko gracza</string>
+    <string name="scoreboard_value">Liczba wygranych gier</string>
 </resources>
