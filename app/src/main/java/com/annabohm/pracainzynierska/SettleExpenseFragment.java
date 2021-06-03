@@ -27,7 +27,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 
 import dmax.dialog.SpotsDialog;
@@ -46,13 +45,10 @@ public class SettleExpenseFragment extends Fragment {
     Context context;
     Bundle bundle;
     String eventId;
-    String currentUserId = firebaseAuth.getCurrentUser().getUid();
     ListView settleExpenseListView, settleExpensePerPersonListView;
     TextView settleExpenseEmptyTextView, settleExpensePerPersonTextView, settleExpenseTextView;
     HashMap<String, Double> expensePerPersonHashMap;
-    ArrayList<String> userNameList;
-    ArrayList<Double> expenseList;
-    SettleExpenseAdapter settleExpenseAdapter;
+    SettleExpensePerPersonAdapter settleExpensePerPersonAdapter;
 
     public SettleExpenseFragment() {
     }
@@ -101,11 +97,9 @@ public class SettleExpenseFragment extends Fragment {
         eventId = eventReference.getId();
 
         expensePerPersonHashMap = new HashMap<>();
-        userNameList = new ArrayList<>();
-        expenseList = new ArrayList<>();
 
-        settleExpenseAdapter = new SettleExpenseAdapter(context, expenseList, userNameList);
-        settleExpensePerPersonListView.setAdapter(settleExpenseAdapter);
+        settleExpensePerPersonAdapter = new SettleExpensePerPersonAdapter(context, expensePerPersonHashMap);
+        settleExpensePerPersonListView.setAdapter(settleExpensePerPersonAdapter);
         alertDialog.show();
         calculateSettleExpensePerPersonId();
     }
@@ -131,7 +125,6 @@ public class SettleExpenseFragment extends Fragment {
                         }
                     }
                 }
-                Toast.makeText(context, "hashmapsize: " + expensePerPersonHashMap.size(), Toast.LENGTH_SHORT).show();
                 if (expensePerPersonHashMap.isEmpty()) {
                     settleExpenseEmptyTextView.setVisibility(View.VISIBLE);
                 } else {
@@ -171,11 +164,8 @@ public class SettleExpenseFragment extends Fragment {
                         expensePerPersonHashMap.put(idToDisplayNameList[i], expensePerPersonHashMap.remove(idList.get(i)));
                     }
                 }
-                expenseList = new ArrayList<>(expensePerPersonHashMap.values());
-                userNameList = new ArrayList<>(expensePerPersonHashMap.keySet());
-                settleExpenseAdapter.setExpenseList(expenseList);
-                settleExpenseAdapter.setUserNameList(userNameList);
-                settleExpenseAdapter.notifyDataSetChanged();
+                settleExpensePerPersonAdapter.setExpensePerPersonHashMap(expensePerPersonHashMap);
+                settleExpensePerPersonAdapter.notifyDataSetChanged();
                 alertDialog.dismiss();
             }
         }).addOnFailureListener(new OnFailureListener() {

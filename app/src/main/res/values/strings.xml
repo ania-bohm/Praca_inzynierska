@@ -154,6 +154,6 @@
     <string name="settle_expense">"Rozliczenia"</string>
     <string name="settle_expense_item_paid">"wydana suma: "</string>
     <string name="settle_expense_details">"Detale rozliczenia"</string>
-    <string name="settle_expense_per_person">"Do rozliczenia na osobę"</string>
+    <string name="settle_expense_per_person">"Wydane pieniądze do rozliczenia"</string>
 
 </resources>
