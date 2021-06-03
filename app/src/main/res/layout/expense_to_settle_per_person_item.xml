@@ -6,7 +6,7 @@
     android:padding="10dp">
 
     <TextView
-        android:id="@+id/expenseToSettleItemNameTextView"
+        android:id="@+id/expenseToSettlePerPersonItemNameTextView"
         android:layout_width="180dp"
         android:layout_height="match_parent"
         android:fontFamily="@font/montserrat"
@@ -16,18 +16,18 @@
         android:textSize="18sp" />
 
     <TextView
-        android:id="@+id/expenseToSettleItemGiveOrReceiveTextView"
-        android:layout_width="120dp"
+        android:id="@+id/expenseToSettlePerPersonItemPaidTextView"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_marginStart="5dp"
         android:fontFamily="@font/montserrat"
         android:gravity="center_vertical"
-        android:text=""
+        android:text="@string/settle_expense_item_paid"
         android:textColor="@color/colorTextDark"
         android:textSize="16sp" />
 
     <TextView
-        android:id="@+id/expenseToSettleItemValueTextView"
+        android:id="@+id/expenseToSettlePerPersonItemValueTextView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginStart="5dp"

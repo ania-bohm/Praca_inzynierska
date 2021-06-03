@@ -4,27 +4,21 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class SettleExpensePerPersonAdapter extends BaseAdapter {
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     ArrayList list;
-    private ArrayList<Double> expenseList;
-    private ArrayList<String> userNameList;
     private Context context;
     private HashMap<String, Double> expensePerPersonHashMap;
 
@@ -51,7 +45,7 @@ public class SettleExpensePerPersonAdapter extends BaseAdapter {
     }
 
     public void setExpensePerPersonHashMap(HashMap<String, Double> newExpensePerPersonHashMap){
-        this.expensePerPersonHashMap = expensePerPersonHashMap;
+        this.expensePerPersonHashMap = newExpensePerPersonHashMap;
         list = new ArrayList();
         list.addAll(expensePerPersonHashMap.entrySet());
     }
@@ -60,15 +54,15 @@ public class SettleExpensePerPersonAdapter extends BaseAdapter {
     @Override
     public View getView(final int position, @Nullable View convertView, @NonNull ViewGroup parent) {
         if (convertView == null) {
-            convertView = LayoutInflater.from(context).inflate(R.layout.expense_to_settle_item, parent, false);
+            convertView = LayoutInflater.from(context).inflate(R.layout.expense_to_settle_per_person_item, parent, false);
         }
 
-        TextView expenseToSettleItemNameTextView = convertView.findViewById(R.id.expenseToSettleItemNameTextView);
-        TextView expenseToSettleItemValueTextView = convertView.findViewById(R.id.expenseToSettleItemValueTextView);
+        TextView expenseToSettlePerPersonItemNameTextView = convertView.findViewById(R.id.expenseToSettlePerPersonItemNameTextView);
+        TextView expenseToSettleItemValueTextView = convertView.findViewById(R.id.expenseToSettlePerPersonItemValueTextView);
 
         Map.Entry<String, Double> item = getItem(position);
 
-        expenseToSettleItemNameTextView.setText(item.getKey());
+        expenseToSettlePerPersonItemNameTextView.setText(item.getKey());
         expenseToSettleItemValueTextView.setText(String.valueOf(item.getValue()));
         return convertView;
     }

@@ -156,4 +156,6 @@
     <string name="settle_expense_item_paid">"paid value: "</string>
     <string name="settle_expense_per_person">Expense to settle per person</string>
     <string name="settle_expense_details">Settlement details</string>
+    <string name="settle_expense_gives">gives back:</string>
+    <string name="settle_expense_receives">receives:</string>
 </resources>

@@ -26,8 +26,11 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 import dmax.dialog.SpotsDialog;
 
@@ -41,14 +44,18 @@ public class SettleExpenseFragment extends Fragment {
     CollectionReference commonExpenseLists = db.collection("CommonExpenseLists");
     CollectionReference events = db.collection("Events");
     CollectionReference users = db.collection("Users");
+    CollectionReference eventAttendees = db.collection("EventAttendees");
     DocumentReference eventReference;
     Context context;
     Bundle bundle;
-    String eventId;
+    String eventId, eventAuthor;
     ListView settleExpenseListView, settleExpensePerPersonListView;
     TextView settleExpenseEmptyTextView, settleExpensePerPersonTextView, settleExpenseTextView;
     HashMap<String, Double> expensePerPersonHashMap;
+    HashMap<String, Double> expenseToSettleHashMap;
     SettleExpensePerPersonAdapter settleExpensePerPersonAdapter;
+    SettleExpenseAdapter settleExpenseAdapter;
+    double totalAmountToSettle = 0;
 
     public SettleExpenseFragment() {
     }
@@ -97,11 +104,56 @@ public class SettleExpenseFragment extends Fragment {
         eventId = eventReference.getId();
 
         expensePerPersonHashMap = new HashMap<>();
+        expenseToSettleHashMap = new HashMap<>();
 
         settleExpensePerPersonAdapter = new SettleExpensePerPersonAdapter(context, expensePerPersonHashMap);
         settleExpensePerPersonListView.setAdapter(settleExpensePerPersonAdapter);
+
+        settleExpenseAdapter = new SettleExpenseAdapter(context, expenseToSettleHashMap);
+        settleExpenseListView.setAdapter(settleExpenseAdapter);
+
         alertDialog.show();
-        calculateSettleExpensePerPersonId();
+        loadData();
+    }
+
+    public void loadData() {
+        eventReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                if (documentSnapshot.exists()) {
+                    eventAuthor = documentSnapshot.toObject(Event.class).getEventAuthor();
+                }
+                populateHashMapWithGuestId();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d(TAG, e.toString());
+            }
+        });
+    }
+
+    public void populateHashMapWithGuestId() {
+        eventAttendees.document(eventId).collection("Confirmed").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                if (!queryDocumentSnapshots.isEmpty()) {
+                    for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                        if (documentSnapshot.exists()) {
+                            String guestId = documentSnapshot.get("User").toString();
+                            expensePerPersonHashMap.put(guestId, (double) 0);
+                        }
+                    }
+                    expensePerPersonHashMap.put(eventAuthor, (double) 0);
+                    calculateSettleExpensePerPersonId();
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d(TAG, e.toString());
+            }
+        });
     }
 
     public void calculateSettleExpensePerPersonId() {
@@ -115,12 +167,9 @@ public class SettleExpenseFragment extends Fragment {
                             if (currentCommonExpense.isCommonExpenseToSettle()) {
                                 long commonExpenseValueLong = currentCommonExpense.getCommonExpenseValue();
                                 double commonExpenseValueDouble = commonExpenseValueLong / 100;
+                                totalAmountToSettle += commonExpenseValueDouble;
                                 String payingUserId = currentCommonExpense.getCommonExpensePayingUserId();
-                                if (expensePerPersonHashMap.containsKey(payingUserId)) {
-                                    expensePerPersonHashMap.put(payingUserId, expensePerPersonHashMap.get(payingUserId) + commonExpenseValueDouble);
-                                } else {
-                                    expensePerPersonHashMap.put(payingUserId, commonExpenseValueDouble);
-                                }
+                                expensePerPersonHashMap.put(payingUserId, expensePerPersonHashMap.get(payingUserId) + commonExpenseValueDouble);
                             }
                         }
                     }
@@ -166,7 +215,8 @@ public class SettleExpenseFragment extends Fragment {
                 }
                 settleExpensePerPersonAdapter.setExpensePerPersonHashMap(expensePerPersonHashMap);
                 settleExpensePerPersonAdapter.notifyDataSetChanged();
-                alertDialog.dismiss();
+                calculateSettleExpense();
+
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -176,4 +226,24 @@ public class SettleExpenseFragment extends Fragment {
         });
     }
 
+    public void calculateSettleExpense() {
+        double averageAmountToPay = totalAmountToSettle/expensePerPersonHashMap.size();
+        for (Map.Entry<String, Double> set : expensePerPersonHashMap.entrySet()) {
+            String displayName = set.getKey();
+            double valueToSettle = set.getValue() - averageAmountToPay;
+            valueToSettle = round(valueToSettle, 2);
+            expenseToSettleHashMap.put(displayName, valueToSettle);
+        }
+        settleExpenseAdapter.setExpenseHashMap(expenseToSettleHashMap);
+        settleExpenseAdapter.notifyDataSetChanged();
+        alertDialog.dismiss();
+    }
+
+    public static double round(double value, int places) {
+        if (places < 0) throw new IllegalArgumentException();
+
+        BigDecimal bd = BigDecimal.valueOf(value);
+        bd = bd.setScale(places, RoundingMode.HALF_UP);
+        return bd.doubleValue();
+    }
 }

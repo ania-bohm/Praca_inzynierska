@@ -155,5 +155,7 @@
     <string name="settle_expense_item_paid">"wydana suma: "</string>
     <string name="settle_expense_details">"Detale rozliczenia"</string>
     <string name="settle_expense_per_person">"Wydane pieniądze do rozliczenia"</string>
+    <string name="settle_expense_gives">oddaje:</string>
+    <string name="settle_expense_receives">otrzymuje:</string>
 
 </resources>
