@@ -150,7 +150,7 @@
     <string name="common_expense_to_settle">"To settle: "</string>
     <string name="to_do_creator">"Creator: "</string>
     <string name="common_expense_error">Only event author or paying user can delete the expense from the list</string>
-    <string name="to_do_error">Only event author or to do creator can deletethe to do from the list</string>
+    <string name="to_do_error">Only event author or to do creator can delete the to do from the list</string>
     <string name="settle_expense">Settle expenses</string>
     <string name="no_settle_expense_list">You haven\'t got any expenses to settle yet</string>
     <string name="settle_expense_item_paid">"paid value: "</string>
@@ -171,4 +171,9 @@
     <string name="common_expense_header">Common expenses</string>
     <string name="message_sender">"Sent by: "</string>
     <string name="message_hint">Type a message here...</string>
+    <string name="message_empty_error">You cannot send an empty message</string>
+    <string name="message_delete">Delete</string>
+    <string name="message_cancel">Cancel</string>
+    <string name="message_select_action">Select action</string>
+    <string name="message_error">Only event author or sender can delete the message from the chat</string>
 </resources>

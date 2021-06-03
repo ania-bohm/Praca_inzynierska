@@ -14,10 +14,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -25,10 +27,16 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 import dmax.dialog.SpotsDialog;
 
@@ -54,6 +62,22 @@ public class ChatFragment extends Fragment {
     ChatAdapter chatAdapter;
     ArrayList<Message> messageList;
     LinearLayoutManager linearLayoutManager;
+    View.OnClickListener sendMessageOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            if (!sendMessageEditText.getText().toString().trim().isEmpty()) {
+                String messageContent = sendMessageEditText.getText().toString().trim();
+                Date createdAt = new Date();
+                String senderName = currentUserDisplayName;
+                String senderId = currentUserId;
+                sendMessage(messageContent, createdAt, senderName, senderId);
+                sendMessageEditText.setText("");
+            } else {
+                Toast.makeText(context, R.string.message_empty_error, Toast.LENGTH_SHORT).show();
+                return;
+            }
+        }
+    };
 
     public ChatFragment() {
         // Required empty public constructor
@@ -115,23 +139,79 @@ public class ChatFragment extends Fragment {
         linearLayoutManager.setStackFromEnd(true);
         messageRecyclerView.setLayoutManager(linearLayoutManager);
 
-        messageList = new ArrayList<>();
-
-        chatAdapter = new ChatAdapter(context, messageList, currentUserId);
-
         alertDialog = new SpotsDialog(context);
+
+        loadData();
 
         sendMessageButton.setOnClickListener(sendMessageOnClickListener);
     }
 
-    View.OnClickListener sendMessageOnClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            //sendMessage();
+    @Override
+    public boolean onContextItemSelected(@NonNull MenuItem item) {
+        if (item.getTitle().equals(getString(R.string.message_delete))) {
+            if (currentUserId.equals(eventAuthor) || currentUserId.equals(messageList.get(item.getOrder()).getMessageSenderId())) {
+                deleteItem(item.getOrder());
+            }
+            else {
+                Toast.makeText(context, R.string.message_error, Toast.LENGTH_SHORT).show();
+            }
         }
-    };
+        return super.onContextItemSelected(item);
+    }
 
-    public void sendMessage(String messageContent, Date createdAt, String senderName, String senderId){
+    private void deleteItem(int index) {
+        messageLists.document(eventId).collection("MessageList").document(messageList.get(index).getMessageId()).delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                loadData();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d(TAG, e.toString());
+            }
+        });
+    }
 
+    public void sendMessage(String messageContent, Date createdAt, String senderName, String senderId) {
+        Map<String, Object> messageObject = new HashMap<>();
+        String messageId = UUID.randomUUID().toString();
+        messageObject.put("messageId", messageId);
+        messageObject.put("messageContent", messageContent);
+        messageObject.put("createdAt", createdAt);
+        messageObject.put("messageSenderName", senderName);
+        messageObject.put("messageSenderId", senderId);
+
+        messageLists.document(eventId).collection("MessageList").document(messageId).set(messageObject).addOnSuccessListener(new OnSuccessListener<Void>() {
+            @Override
+            public void onSuccess(Void aVoid) {
+                loadData();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d(TAG, e.toString());
+            }
+        });
+    }
+
+    public void loadData() {
+        messageList = new ArrayList<>();
+        messageLists.document(eventId).collection("MessageList").addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                if (error != null) {
+                    Log.d(TAG, error.toString());
+                    return;
+                }
+                messageList.clear();
+                for (DocumentSnapshot documentSnapshot : value.getDocuments()) {
+                    Message message = documentSnapshot.toObject(Message.class);
+                    messageList.add(message);
+                }
+                chatAdapter = new ChatAdapter(context, messageList, currentUserId);
+                messageRecyclerView.setAdapter(chatAdapter);
+            }
+        });
     }
 }

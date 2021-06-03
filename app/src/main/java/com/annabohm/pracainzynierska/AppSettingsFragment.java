@@ -60,7 +60,8 @@ public class AppSettingsFragment extends Fragment {
         changeLanguageButton = view.findViewById(R.id.changeLanguageButton);
         alertDialog.show();
         languageOptions = new String[]{getString(R.string.language_polish), getString(R.string.language_english)};
-        languageOptionsAdapter = new ArrayAdapter<>(context, android.R.layout.simple_spinner_dropdown_item, languageOptions);
+        languageOptionsAdapter = new ArrayAdapter<>(context, R.layout.custom_spinner_list_item, languageOptions);
+        languageOptionsAdapter.setDropDownViewResource(R.layout.custom_spinner_dropdown_item);
         changeLanguageSpinner.setAdapter(languageOptionsAdapter);
         alertDialog.dismiss();
         changeLanguageButton.setOnClickListener(changeLanguageButtonOnClickListener);

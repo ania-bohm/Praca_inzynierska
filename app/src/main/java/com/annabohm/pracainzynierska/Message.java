@@ -9,6 +9,10 @@ public class Message {
     private String messageSenderName;
     private String messageSenderId;
 
+    public Message() {
+
+    }
+
     public Message(String messageId, String messageContent, Date createdAt, String messageSenderName, String messageSenderId) {
         this.messageId = messageId;
         this.messageContent = messageContent;

@@ -67,9 +67,12 @@
     <string name="event_cost_select_action">Wybierz akcję</string>
     <string name="to_do_delete">Usuń</string>
     <string name="to_do_cancel">Anuluj</string>
+    <string name="message_delete">Usuń</string>
+    <string name="message_cancel">Anuluj</string>
     <string name="score_delete">Usuń</string>
     <string name="score_cancel">Anuluj</string>
     <string name="to_do_select_action">Wybierz akcję</string>
+    <string name="message_select_action">Wybierz akcję</string>
     <string name="score_select_action">Wybierz akcję</string>
     <string name="event_add_success">Wydarzenie zostało utworzone</string>
     <string name="event_add_fail">Wydarzenie nie zostało utworzone</string>
@@ -144,6 +147,7 @@
     <string name="common_expense_to_settle">Do rozliczenia: </string>
     <string name="common_expense_error">Tylko autor wydarzenia lub płacący może usunąć wydatek z listy</string>
     <string name="to_do_error">Tylko autor wydarzenia lub twórca może usunąć zadanie z listy</string>
+    <string name="message_error">Tylko autor wydarzenia lub nadawca może usunąć wiadomość z chatu</string>
     <string name="signout_title">Wylogowywanie</string>
     <string name="signout_message">Czy chcesz się wylogować?</string>
     <string name="signout_yes">Tak</string>
@@ -170,4 +174,5 @@
     <string name="scoreboard_value">Liczba wygranych gier</string>
     <string name="message_sender">"Wysłane przez: "</string>
     <string name="message_hint">"Napisz wiadomość..."</string>
+    <string name="message_empty_error">"Nie możesz wysłać pustej wiadomości"</string>
 </resources>
