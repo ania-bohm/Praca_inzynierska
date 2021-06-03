@@ -131,6 +131,11 @@ public class ScoreboardFragment extends Fragment {
             }
         });
 
+        scoreboardAdapter = new ScoreboardAdapter(fragmentThis, scoreList, eventId, currentUserId, eventAuthorId);
+        scoreRecyclerView.setAdapter(scoreboardAdapter);
+
+        loadData();
+
         scoreFloatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -138,11 +143,10 @@ public class ScoreboardFragment extends Fragment {
                     Toast.makeText(context, R.string.event_budget_empty_fields, Toast.LENGTH_SHORT).show();
                     return;
                 }
+                int scoreboardValue = Integer.valueOf(scoreboardValueMaterialEditText.getText().toString().trim());
                 if (!isUpdate) {
-                    int scoreboardValue = Integer.valueOf(scoreboardValueMaterialEditText.getText().toString().trim());
                     setData(scoreboardGuestNameMaterialEditText.getText().toString().trim(), scoreboardValue);
                 } else {
-                    int scoreboardValue = Integer.valueOf(scoreboardValueMaterialEditText.getText().toString().trim());
                     updateData(scoreboardGuestNameMaterialEditText.getText().toString().trim(), scoreboardValue);
                     isUpdate = !isUpdate;
                 }
@@ -233,10 +237,9 @@ public class ScoreboardFragment extends Fragment {
                     if (documentSnapshot.exists()) {
                         Score score = documentSnapshot.toObject(Score.class);
                         scoreList.add(score);
+                        scoreboardAdapter.notifyDataSetChanged();
                     }
                 }
-                scoreboardAdapter = new ScoreboardAdapter(fragmentThis, scoreList, eventId,currentUserId, eventAuthorId);
-                scoreRecyclerView.setAdapter(scoreboardAdapter);
                 alertDialog.dismiss();
             }
         }).addOnFailureListener(new OnFailureListener() {

@@ -55,13 +55,13 @@ public class ScoreboardAdapter extends RecyclerView.Adapter<ScoreboardAdapter.Sc
     @Override
     public void onBindViewHolder(@NonNull ScoreItemHolder holder, final int position) {
         holder.scoreItemGuestNameTextView.setText(scoreList.get(position).getScoreGuestName());
-        holder.scoreItemValueTextView.setText(scoreList.get(position).getScoreValue());
+        holder.scoreItemValueTextView.setText(String.valueOf(scoreList.get(position).getScoreValue()));
 
         holder.setItemClickListener(new ScoreboardAdapter.ItemClickListener() {
             @Override
             public void onClick(View view, int position, boolean isLongClick) {
                 scoreboardFragment.scoreboardGuestNameMaterialEditText.setText(scoreList.get(position).getScoreGuestName());
-                scoreboardFragment.scoreboardValueMaterialEditText.setText(scoreList.get(position).getScoreValue());
+                scoreboardFragment.scoreboardValueMaterialEditText.setText(String.valueOf(scoreList.get(position).getScoreValue()));
                 scoreboardFragment.isUpdate = true;
                 scoreboardFragment.scoreItemToUpdateId = scoreList.get(position).getScoreId();
             }
@@ -70,38 +70,45 @@ public class ScoreboardAdapter extends RecyclerView.Adapter<ScoreboardAdapter.Sc
         holder.scoreDecrementValueButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final int newValue = scoreList.get(position).getScoreValue() - 1;
-                scoreLists.document(eventId).collection("ScoreList").document(scoreList.get(position).getScoreId()).update("scoreValue", newValue).addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        scoreList.get(position).setScoreValue(newValue);
-                        notifyDataSetChanged();
+                if (scoreList.size() > 0) {
+                    final int newValue = scoreList.get(position).getScoreValue() - 1;
+                    if (newValue >= 0) {
+                        scoreLists.document(eventId).collection("ScoreList").document(scoreList.get(position).getScoreId()).update("scoreValue", newValue).addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void aVoid) {
+                                scoreList.get(position).setScoreValue(newValue);
+                                notifyDataSetChanged();
+                            }
+
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.d(TAG, e.toString());
+                            }
+                        });
                     }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.d(TAG, e.toString());
-                    }
-                });
+                }
             }
         });
 
         holder.scoreIncrementValueButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final int newValue = scoreList.get(position).getScoreValue() + 1;
-                scoreLists.document(eventId).collection("ScoreList").document(scoreList.get(position).getScoreId()).update("scoreValue", newValue).addOnSuccessListener(new OnSuccessListener<Void>() {
-                    @Override
-                    public void onSuccess(Void aVoid) {
-                        scoreList.get(position).setScoreValue(newValue);
-                        notifyDataSetChanged();
-                    }
-                }).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.d(TAG, e.toString());
-                    }
-                });
+                if (scoreList.size() > 0) {
+                    final int newValue = scoreList.get(position).getScoreValue() + 1;
+                    scoreLists.document(eventId).collection("ScoreList").document(scoreList.get(position).getScoreId()).update("scoreValue", newValue).addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            scoreList.get(position).setScoreValue(newValue);
+                            notifyDataSetChanged();
+                        }
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.d(TAG, e.toString());
+                        }
+                    });
+                }
             }
         });
     }
