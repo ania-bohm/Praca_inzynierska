@@ -169,4 +169,5 @@
     <string name="scoreboard_value">Number of games won</string>
     <string name="to_do_header">To do list</string>
     <string name="common_expense_header">Common expenses</string>
+    <string name="message_sender">"Sent by: "</string>
 </resources>

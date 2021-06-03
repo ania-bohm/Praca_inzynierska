@@ -168,4 +168,5 @@
     <string name="common_expense_header">Wspólne wydatki</string>
     <string name="scoreboard_guest_name">Imię i nazwisko gracza</string>
     <string name="scoreboard_value">Liczba wygranych gier</string>
+    <string name="message_sender">"Wysłane przez: "</string>
 </resources>

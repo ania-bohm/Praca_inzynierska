@@ -9,10 +9,13 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.EditText;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
@@ -34,6 +37,9 @@ public class ChatFragment extends Fragment {
     Context context;
     Bundle bundle;
     String eventId, eventAuthor;
+    EditText sendMessageEditText;
+    Button sendMessageButton;
+    RecyclerView messageRecyclerView;
 
     public ChatFragment() {
         // Required empty public constructor
@@ -65,6 +71,12 @@ public class ChatFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         navController = Navigation.findNavController(view);
+
+        sendMessageEditText = view.findViewById(R.id.sendMessageEditText);
+        sendMessageButton = view.findViewById(R.id.sendMessageButton);
+        messageRecyclerView = view.findViewById(R.id.messageRecyclerView);
+
+
 
         alertDialog = new SpotsDialog(context);
 
