@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="300dp"
+    android:layout_height="wrap_content"
+    android:padding="8dp">
+
+    <TextView
+        android:id="@+id/messageSenderTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="5dp"
+        android:fontFamily="@font/montserrat"
+        android:text="Paulina"
+        android:textColor="@color/colorTextDarkSeeThrough"
+        android:textSize="12sp" />
+
+    <TextView
+        android:id="@+id/messageContentTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/messageSenderTextView"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="2dp"
+        android:background="@drawable/background_message_left"
+        android:fontFamily="@font/montserrat"
+        android:padding="8dp"
+        android:text="Hello"
+        android:textColor="@color/colorTextDark"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/messageCreatedAtTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/messageContentTextView"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="2dp"
+        android:fontFamily="@font/montserrat"
+        android:text="12:30 "
+        android:textColor="@color/colorTextDarkSeeThrough"
+        android:textSize="12sp" />
+
+
+</RelativeLayout>

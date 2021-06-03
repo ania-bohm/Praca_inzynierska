@@ -7,12 +7,14 @@ public class Message {
     private String messageContent;
     private Date createdAt;
     private String messageSenderName;
+    private String messageSenderId;
 
-    public Message(String messageId, String messageContent, Date createdAt, String messageSenderName) {
+    public Message(String messageId, String messageContent, Date createdAt, String messageSenderName, String messageSenderId) {
         this.messageId = messageId;
         this.messageContent = messageContent;
         this.createdAt = createdAt;
         this.messageSenderName = messageSenderName;
+        this.messageSenderId = messageSenderId;
     }
 
     public String getMessageId() {
@@ -45,5 +47,13 @@ public class Message {
 
     public void setMessageSenderName(String messageSenderName) {
         this.messageSenderName = messageSenderName;
+    }
+
+    public String getMessageSenderId() {
+        return messageSenderId;
+    }
+
+    public void setMessageSenderId(String messageSenderId) {
+        this.messageSenderId = messageSenderId;
     }
 }

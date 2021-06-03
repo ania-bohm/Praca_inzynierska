@@ -169,4 +169,5 @@
     <string name="scoreboard_guest_name">Imię i nazwisko gracza</string>
     <string name="scoreboard_value">Liczba wygranych gier</string>
     <string name="message_sender">"Wysłane przez: "</string>
+    <string name="message_hint">"Napisz wiadomość..."</string>
 </resources>
