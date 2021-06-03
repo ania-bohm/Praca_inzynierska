@@ -41,7 +41,7 @@ import static android.content.ContentValues.TAG;
 public class DisplayEventFragment extends Fragment {
 
     NavController navController;
-    ImageView toDoListButton, eventBudgetButton, editEventButton, commonExpenseButton;
+    ImageView toDoListButton, scoreboardButton, editEventButton, commonExpenseButton, chatButton;
     TextView showEventAuthorTextView, showEventNameTextView, showEventDateStartTextView, showEventTimeStartTextView, showEventDateFinishTextView, showEventTimeFinishTextView, showEventLocationTextView, showEventDescriptionTextView;
     ListView displayEventGuestListListView;
     ArrayList<User> userList;
@@ -64,10 +64,10 @@ public class DisplayEventFragment extends Fragment {
             navController.navigate(R.id.displayEventToToDoList, bundle);
         }
     };
-    private View.OnClickListener eventBudgetOnClickListener = new View.OnClickListener() {
+    private View.OnClickListener scoreboardOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            navController.navigate(R.id.displayEventToEventBudget, bundle);
+            navController.navigate(R.id.displayEventToScoreboard, bundle);
         }
     };
     private View.OnClickListener editEventOnClickListener = new View.OnClickListener() {
@@ -81,6 +81,13 @@ public class DisplayEventFragment extends Fragment {
         @Override
         public void onClick(View v) {
             navController.navigate(R.id.displayEventToCommonExpense, bundle);
+        }
+    };
+
+    private View.OnClickListener chatOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            navController.navigate(R.id.displayEventToChat, bundle);
         }
     };
 
@@ -111,9 +118,10 @@ public class DisplayEventFragment extends Fragment {
         navController = Navigation.findNavController(view);
 
         toDoListButton = view.findViewById(R.id.toDoListButton);
-        eventBudgetButton = view.findViewById(R.id.eventBudgetButton);
+        scoreboardButton = view.findViewById(R.id.scoreboardButton);
         editEventButton = view.findViewById(R.id.editEventButton);
         commonExpenseButton = view.findViewById(R.id.commonExpenseButton);
+        chatButton = view.findViewById(R.id.chatButton);
         showEventAuthorTextView = view.findViewById(R.id.showEventAuthorTextView);
         showEventNameTextView = view.findViewById(R.id.showEventNameTextView);
         showEventDateStartTextView = view.findViewById(R.id.showEventDateStartTextView);
@@ -138,7 +146,9 @@ public class DisplayEventFragment extends Fragment {
         displayEventGuestListListView.setAdapter(adapter);
 
         toDoListButton.setOnClickListener(toDoListOnClickListener);
-        eventBudgetButton.setOnClickListener(eventBudgetOnClickListener);
+        scoreboardButton.setOnClickListener(scoreboardOnClickListener);
+        commonExpenseButton.setOnClickListener(commonExpenseOnClickListener);
+        chatButton.setOnClickListener(chatOnClickListener);
 
         loadData();
         initialiseGuestList();
@@ -158,7 +168,7 @@ public class DisplayEventFragment extends Fragment {
                     } else {
                         editEventButton.setVisibility(View.GONE);
                     }
-                    commonExpenseButton.setOnClickListener(commonExpenseOnClickListener);
+
                     final DateFormat dateFormatterPrint = new SimpleDateFormat("dd/MM/yyyy");
                     final DateFormat timeFormatterPrint = new SimpleDateFormat("HH:mm");
                     users.document(event.getEventAuthor()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {

@@ -5,11 +5,11 @@
     android:layout_width="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="match_parent"
-    tools:context=".SettleExpenseFragment"
+    tools:context=".ChatFragment"
     android:background="@drawable/main_background">
 
     <TextView
-        android:id="@+id/settleHeaderTextView"
+        android:id="@+id/chatHeaderTextView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -20,7 +20,7 @@
         android:shadowDx="1"
         android:shadowDy="4"
         android:shadowRadius="0.6"
-        android:text="@string/settle_expense"
+        android:text="@string/chat_header"
         android:textColor="@color/colorAccent"
         android:textSize="24sp"
         android:textStyle="bold"
@@ -37,44 +37,10 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/settleHeaderTextView">
+        app:layout_constraintTop_toBottomOf="@+id/chatHeaderTextView">
 
         <TextView
-            android:id="@+id/settleExpensePerPersonTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:fontFamily="@font/montserrat"
-            android:text="@string/settle_expense_per_person"
-            android:textColor="@color/colorTextDark"
-            android:textSize="16sp"
-            android:textStyle="bold" />
-
-        <ListView
-            android:id="@+id/settleExpensePerPersonListView"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:layout_marginTop="10dp"/>
-
-        <TextView
-            android:id="@+id/settleExpenseTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:fontFamily="@font/montserrat"
-            android:text="@string/settle_expense_details"
-            android:textColor="@color/colorTextDark"
-            android:textSize="16sp"
-            android:textStyle="bold" />
-
-        <ListView
-            android:id="@+id/settleExpenseListView"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:layout_marginTop="10dp" />
-
-        <TextView
-            android:id="@+id/settleExpenseEmptyTextView"
+            android:id="@+id/chatNoMessagesTextView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
@@ -82,7 +48,7 @@
             android:layout_marginEnd="10dp"
             android:fontFamily="@font/montserrat"
             android:gravity="center_horizontal"
-            android:text="@string/no_settle_expense_list"
+            android:text="@string/chat_no_messages_list"
             android:textColor="@color/colorTextDark"
             android:textSize="16dp"
             android:textStyle="italic" />

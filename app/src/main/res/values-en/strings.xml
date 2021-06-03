@@ -158,4 +158,8 @@
     <string name="settle_expense_details">Settlement details</string>
     <string name="settle_expense_gives">gives back:</string>
     <string name="settle_expense_receives">receives:</string>
+    <string name="chat_header">Event chat</string>
+    <string name="scoreboard_header">Scoreboard</string>
+    <string name="chat_no_messages_list">You haven\'t got any messages yet</string>
+    <string name="no_score_list">You haven\'t got any scores yet</string>
 </resources>

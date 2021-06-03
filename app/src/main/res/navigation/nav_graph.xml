@@ -107,6 +107,12 @@
         <action
             android:id="@+id/displayEventToCommonExpense"
             app:destination="@id/commonExpenseFragment" />
+        <action
+            android:id="@+id/displayEventToScoreboard"
+            app:destination="@id/scoreboardFragment" />
+        <action
+            android:id="@+id/displayEventToChat"
+            app:destination="@id/chatFragment" />
     </fragment>
     <fragment
         android:id="@+id/editEventFragment"
@@ -145,4 +151,14 @@
         android:id="@+id/settleExpenseFragment"
         android:name="com.annabohm.pracainzynierska.SettleExpenseFragment"
         android:label="SettleExpenseFragment" />
+    <fragment
+        android:id="@+id/scoreboardFragment"
+        android:name="com.annabohm.pracainzynierska.ScoreboardFragment"
+        android:label="fragment_scoreboard"
+        tools:layout="@layout/fragment_scoreboard" />
+    <fragment
+        android:id="@+id/chatFragment"
+        android:name="com.annabohm.pracainzynierska.ChatFragment"
+        android:label="fragment_chat"
+        tools:layout="@layout/fragment_chat" />
 </navigation>

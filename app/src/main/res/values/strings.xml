@@ -124,6 +124,8 @@
     <string name="my_no_invitations_list">Nie masz w tym momencie żadnych zaproszeń</string>
     <string name="no_settle_expense_list">Nie masz w tym momencie żadnych wydatków do rozliczenia</string>
     <string name="my_no_past_events_list">Nie masz w tym momencie żadnych zakończonych wydarzeń</string>
+    <string name="chat_no_messages_list">Nie masz w tym momencie żadnych wiadomości</string>
+    <string name="no_score_list">Nie masz w tym momencie żadnych wyników</string>
     <string name="past_events">Moje zakończone wydarzenia</string>
     <string name="past_events_start">Początek</string>
     <string name="past_events_finish">Koniec</string>
@@ -157,5 +159,7 @@
     <string name="settle_expense_per_person">"Wydane pieniądze do rozliczenia"</string>
     <string name="settle_expense_gives">oddaje:</string>
     <string name="settle_expense_receives">otrzymuje:</string>
+    <string name="chat_header">Chat wydarzenia</string>
+    <string name="scoreboard_header">Tablica wyników</string>
 
 </resources>
