@@ -27,7 +27,8 @@
             android:layout_marginTop="15dp"
             android:fontFamily="@font/montserrat"
             android:textAlignment="center"
-            android:textSize="18dp"
+            android:textColor="@color/colorTextDark"
+            android:textSize="18sp"
             android:textStyle="bold" />
 
         <TextView
@@ -37,7 +38,8 @@
             android:layout_marginTop="5dp"
             android:fontFamily="@font/montserrat"
             android:textAlignment="center"
-            android:textSize="18dp" />
+            android:textColor="@color/colorTextDark"
+            android:textSize="18sp" />
 
 
         <TextView
@@ -47,7 +49,8 @@
             android:layout_marginTop="5dp"
             android:fontFamily="@font/montserrat"
             android:textAlignment="center"
-            android:textSize="18dp" />
+            android:textColor="@color/colorTextDark"
+            android:textSize="18sp" />
 
 
         <TextView
@@ -57,6 +60,7 @@
             android:layout_marginStart="5dp"
             android:fontFamily="@font/montserrat"
             android:textAlignment="center"
-            android:textSize="18dp" />
+            android:textColor="@color/colorTextDark"
+            android:textSize="18sp" />
     </LinearLayout>
 </androidx.cardview.widget.CardView>

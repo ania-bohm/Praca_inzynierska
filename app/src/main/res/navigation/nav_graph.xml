@@ -102,9 +102,6 @@
             android:id="@+id/displayEventToToDoList"
             app:destination="@id/toDoFragment" />
         <action
-            android:id="@+id/displayEventToEventBudget"
-            app:destination="@id/eventBudgetFragment" />
-        <action
             android:id="@+id/displayEventToCommonExpense"
             app:destination="@id/commonExpenseFragment" />
         <action
@@ -133,11 +130,6 @@
             android:id="@+id/pastEventsToDisplayEvent"
             app:destination="@id/displayEventFragment" />
     </fragment>
-    <fragment
-        android:id="@+id/eventBudgetFragment"
-        android:name="com.annabohm.pracainzynierska.EventBudgetFragment"
-        android:label="fragment_event_budget"
-        tools:layout="@layout/fragment_event_budget" />
     <fragment
         android:id="@+id/commonExpenseFragment"
         android:name="com.annabohm.pracainzynierska.CommonExpenseFragment"

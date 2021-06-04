@@ -58,7 +58,7 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
     CollectionReference eventAttendees = db.collection("EventAttendees");
     CollectionReference attendeeEvents = db.collection("AttendeeEvents");
     Button eventReadyButton, eventCancelButton;
-    EditText eventNameEditText, eventDateStartEditText, eventTimeStartEditText, eventDateFinishEditText, eventTimeFinishEditText, eventLocationEditText, eventDescriptionEditText, eventBudgetEditText;
+    EditText eventNameEditText, eventDateStartEditText, eventTimeStartEditText, eventDateFinishEditText, eventTimeFinishEditText, eventLocationEditText, eventDescriptionEditText;
     SearchView eventGuestListSearchView;
     ListView eventUserSearchListView, eventGuestListListView;
     Spinner eventImageSpinner;
@@ -74,7 +74,6 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
         public void onClick(View v) {
             String eventName = eventNameEditText.getText().toString();
             String eventDescription = eventDescriptionEditText.getText().toString();
-            String eventBudgetString = eventBudgetEditText.getText().toString();
             String eventLocation = eventLocationEditText.getText().toString();
             String dateStartValue = eventDateStartEditText.getText().toString();
             String dateFinishValue = eventDateFinishEditText.getText().toString();
@@ -83,12 +82,11 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
             Integer eventImage = chosenImage;
             String eventAuthor = firebaseAuth.getCurrentUser().getUid();
 
-            if (eventName.trim().isEmpty() || eventBudgetString.trim().isEmpty() || dateStartValue.trim().isEmpty() || dateFinishValue.trim().isEmpty() || timeStartValue.trim().isEmpty() || timeFinishValue.trim().isEmpty() || eventLocation.trim().isEmpty()) {
+            if (eventName.trim().isEmpty() || dateStartValue.trim().isEmpty() || dateFinishValue.trim().isEmpty() || timeStartValue.trim().isEmpty() || timeFinishValue.trim().isEmpty() || eventLocation.trim().isEmpty()) {
                 Toast.makeText(context, R.string.event_empty_fields, Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            long eventBudgetLong = convertBudgetStringToLong(eventBudgetString);
             DateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy");
             DateFormat timeFormatter = new SimpleDateFormat("HH:mm");
             Date eventDateStart = null;
@@ -106,7 +104,7 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
                 Log.i(TAG, e.toString());
             }
 
-            final Event event = new Event(eventName, eventDateStart, eventTimeStart, eventDateFinish, eventTimeFinish, eventLocation, eventDescription, eventImage, eventAuthor, eventBudgetLong);
+            final Event event = new Event(eventName, eventDateStart, eventTimeStart, eventDateFinish, eventTimeFinish, eventLocation, eventDescription, eventImage, eventAuthor);
             events.add(event).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                 @Override
                 public void onSuccess(DocumentReference documentReference) {
@@ -170,13 +168,6 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
         return fragment;
     }
 
-    private long convertBudgetStringToLong(String eventBudgetString) {
-        double eventBudgetDouble = Double.valueOf(eventBudgetString);
-        eventBudgetDouble *= 100;
-        long eventBudgetLong = (new Double(eventBudgetDouble)).longValue();
-        return eventBudgetLong;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -206,7 +197,6 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
         eventTimeFinishEditText = view.findViewById(R.id.eventTimeFinishEditText);
         eventLocationEditText = view.findViewById(R.id.eventLocationEditText);
         eventDescriptionEditText = view.findViewById(R.id.eventDescriptionEditText);
-        eventBudgetEditText = view.findViewById(R.id.eventBudgetEditText);
         eventGuestListSearchView = view.findViewById(R.id.eventGuestListSearchView);
         eventUserSearchListView = view.findViewById(R.id.eventUserSearchListView);
         eventImageSpinner = view.findViewById(R.id.eventImageSpinner);
@@ -223,7 +213,17 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
         eventUserSearchListView.setAdapter(foundUsersAdapter);
 
         imageArrayAdapter = new SimpleImageArrayAdapter(context,
-                new Integer[]{R.drawable.rectangular_background_1, R.drawable.rectangular_background,  R.drawable.rectangular_background_3});
+                new Integer[]{
+                        R.drawable.ic_empty_small,
+                        R.drawable.ic_boardgame_small,
+                        R.drawable.ic_card_small,
+                        R.drawable.ic_dice_small,
+                        R.drawable.ic_rpg_small,
+                        R.drawable.ic_billiards_small,
+                        R.drawable.ic_bowling_small,
+                        R.drawable.ic_darts_small,
+                        R.drawable.ic_pingpong_small,
+                        R.drawable.ic_poker_small});
         eventImageSpinner.setAdapter(imageArrayAdapter);
         eventImageSpinner.setOnItemSelectedListener(this);
 
@@ -233,27 +233,6 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
 
         eventReadyButton.setOnClickListener(eventReadyOnClickListener);
         eventCancelButton.setOnClickListener(eventCancelOnClickListener);
-
-        eventBudgetEditText.addTextChangedListener(new TextWatcher() {
-            public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
-            }
-
-            public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
-            }
-
-            public void afterTextChanged(Editable arg0) {
-                String str = eventBudgetEditText.getText().toString();
-                if (str.isEmpty()) {
-                    return;
-                }
-                String str2 = perfectDecimal(str, 6, 2);
-
-                if (!str2.equals(str)) {
-                    eventBudgetEditText.setText(str2);
-                    eventBudgetEditText.setSelection(str2.length());
-                }
-            }
-        });
 
         eventGuestListSearchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override

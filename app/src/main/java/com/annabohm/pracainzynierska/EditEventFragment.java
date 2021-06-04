@@ -56,7 +56,7 @@ public class EditEventFragment extends Fragment implements AdapterView.OnItemSel
     NavController navController;
     Bundle bundle;
     Context context;
-    EditText editEventNameEditText, editEventDateStartEditText, editEventTimeStartEditText, editEventDateFinishEditText, editEventTimeFinishEditText, editEventLocationEditText, editEventDescriptionEditText, editEventBudgetEditText;
+    EditText editEventNameEditText, editEventDateStartEditText, editEventTimeStartEditText, editEventDateFinishEditText, editEventTimeFinishEditText, editEventLocationEditText, editEventDescriptionEditText;
     Button editEventReadyButton, editEventCancelButton;
     Spinner editEventImageSpinner;
     SearchView editEventGuestListSearchView;
@@ -138,12 +138,6 @@ public class EditEventFragment extends Fragment implements AdapterView.OnItemSel
                 event.update("eventDescription", editEventDescriptionEditText.getText().toString());
             }
 
-            if (!editEventBudgetEditText.getText().toString().trim().isEmpty()) {
-                double eventBudgetDouble = Double.valueOf(editEventBudgetEditText.getText().toString());
-                long eventBudgetLong = (long) (eventBudgetDouble * 100);
-                event.update("eventBudget", eventBudgetLong);
-            }
-
             if (chosenImage != 0) {
                 event.update("eventImage", chosenImage);
             }
@@ -190,7 +184,6 @@ public class EditEventFragment extends Fragment implements AdapterView.OnItemSel
                     && editEventTimeFinishEditText.getText().toString().isEmpty()
                     && editEventLocationEditText.getText().toString().isEmpty()
                     && editEventDescriptionEditText.getText().toString().isEmpty()
-                    & editEventBudgetEditText.getText().toString().isEmpty()
                     && chosenImage == 0) {
                 Toast.makeText(context, R.string.edit_event_error_empty, Toast.LENGTH_SHORT).show();
                 return;
@@ -240,7 +233,6 @@ public class EditEventFragment extends Fragment implements AdapterView.OnItemSel
         editEventTimeFinishEditText = view.findViewById(R.id.editEventTimeFinishEditText);
         editEventLocationEditText = view.findViewById(R.id.editEventLocationEditText);
         editEventDescriptionEditText = view.findViewById(R.id.editEventDescriptionEditText);
-        editEventBudgetEditText = view.findViewById(R.id.editEventBudgetEditText);
         editEventReadyButton = view.findViewById(R.id.editEventReadyButton);
         editEventCancelButton = view.findViewById(R.id.editEventCancelButton);
         editEventImageSpinner = view.findViewById(R.id.editEventImageSpinner);
@@ -255,7 +247,17 @@ public class EditEventFragment extends Fragment implements AdapterView.OnItemSel
         eventId = event.getId();
 
         imageArrayAdapter = new SimpleImageArrayAdapter(context,
-                new Integer[]{R.drawable.rectangular_background_1, R.drawable.rectangular_background, R.drawable.rectangular_background_3});
+                new Integer[]{
+                        R.drawable.ic_empty_small,
+                        R.drawable.ic_boardgame_small,
+                        R.drawable.ic_card_small,
+                        R.drawable.ic_dice_small,
+                        R.drawable.ic_rpg_small,
+                        R.drawable.ic_billiards_small,
+                        R.drawable.ic_bowling_small,
+                        R.drawable.ic_darts_small,
+                        R.drawable.ic_pingpong_small,
+                        R.drawable.ic_poker_small});
         editEventImageSpinner.setAdapter(imageArrayAdapter);
         editEventImageSpinner.setOnItemSelectedListener(this);
 
@@ -270,26 +272,6 @@ public class EditEventFragment extends Fragment implements AdapterView.OnItemSel
 
         editEventReadyButton.setOnClickListener(editEventReadyOnClickListener);
         editEventCancelButton.setOnClickListener(editEventCancelOnClickListener);
-
-        editEventBudgetEditText.addTextChangedListener(new TextWatcher() {
-            public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
-            }
-
-            public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
-            }
-
-            public void afterTextChanged(Editable arg0) {
-                String str = editEventBudgetEditText.getText().toString();
-                if (str.isEmpty()) {
-                    return;
-                }
-                String str2 = PerfectDecimal(str, 6, 2);
-                if (!str2.equals(str)) {
-                    editEventBudgetEditText.setText(str2);
-                    editEventBudgetEditText.setSelection(str2.length());
-                }
-            }
-        });
 
         editEventGuestListListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
@@ -371,9 +353,6 @@ public class EditEventFragment extends Fragment implements AdapterView.OnItemSel
                     editEventTimeFinishEditText.setHint(timeFormatterPrint.format(event.getEventTimeFinish()));
                     editEventLocationEditText.setHint(event.getEventLocation());
                     editEventDescriptionEditText.setHint(event.getEventDescription());
-                    long eventBudgetLong = event.getEventBudget();
-                    double eventBudgetDouble = eventBudgetLong / 100;
-                    editEventBudgetEditText.setHint(String.valueOf(eventBudgetDouble));
                     alertDialog.dismiss();
                 }
             }

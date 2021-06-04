@@ -204,28 +204,6 @@
                 </LinearLayout>
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/eventBudgetTextView"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
-                android:fontFamily="@font/montserrat"
-                android:text="@string/set_event_budget"
-                android:textColor="@color/colorTextDark"
-                android:textSize="16sp"
-                android:textStyle="bold" />
-
-            <EditText
-                android:id="@+id/eventBudgetEditText"
-                android:layout_width="180dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="5dp"
-                android:fontFamily="@font/montserrat"
-                android:inputType="numberDecimal"
-                android:textColor="@color/colorTextDark"
-                android:textSize="14dp" />
 
             <TextView
                 android:id="@+id/eventImageTextView"
@@ -241,8 +219,8 @@
 
             <Spinner
                 android:id="@+id/eventImageSpinner"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="75dp"
+                android:layout_height="75dp"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="5dp" />
 
