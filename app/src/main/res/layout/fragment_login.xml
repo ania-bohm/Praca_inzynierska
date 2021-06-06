@@ -135,7 +135,7 @@
         android:text="@string/register"
         android:textAllCaps="false"
         android:textColor="@color/colorWhiteSemiTransparent"
-        android:textSize="18dp"
+        android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.805"

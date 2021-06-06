@@ -16,10 +16,10 @@
         android:shadowDx="1"
         android:shadowDy="4"
         android:shadowRadius="0.6"
+        android:text="@string/registration"
         android:textColor="@color/colorAccent"
         android:textSize="30sp"
         android:textStyle="bold"
-        android:text="@string/registration"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -55,6 +55,7 @@
             android:id="@+id/registerLastNameEditText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
             android:ems="10"
             android:fontFamily="@font/montserrat"
             android:hint="@string/last_name"
@@ -65,6 +66,7 @@
             android:id="@+id/registerEmailEditText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
             android:ems="10"
             android:fontFamily="@font/montserrat"
             android:hint="@string/email1"
@@ -75,35 +77,30 @@
             android:id="@+id/registerPhoneNumberEditText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
             android:ems="10"
             android:fontFamily="@font/montserrat"
             android:hint="@string/phone_number"
             android:inputType="phone"
             android:textColor="@color/colorTextDark" />
 
-        <LinearLayout
+        <EditText
+            android:id="@+id/registerPasswordEditText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <EditText
-                android:id="@+id/registerPasswordEditText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:ems="10"
-                android:fontFamily="@font/montserrat"
-                android:hint="@string/password1"
-                android:inputType="textPassword"
-                android:textColor="@color/colorTextDark" />
-
-        </LinearLayout>
+            android:layout_marginTop="5dp"
+            android:ems="10"
+            android:fontFamily="@font/montserrat"
+            android:hint="@string/password1"
+            android:inputType="textPassword"
+            android:textColor="@color/colorTextDark" />
 
         <Button
             android:id="@+id/createAccountButton"
             android:layout_width="160dp"
             android:layout_height="40dp"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="15dp"
             android:background="@drawable/custom_button_outline"
             android:elevation="5dp"
             android:fontFamily="@font/montserrat"
@@ -125,7 +122,7 @@
         app:layout_constraintHorizontal_bias="0.815"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.615" />
+        app:layout_constraintVertical_bias="0.641" />
 
     <ProgressBar
         android:id="@+id/registerProgressBar"
@@ -146,7 +143,7 @@
         android:layout_height="wrap_content"
         android:fontFamily="@font/montserrat"
         android:text="@string/exist_account"
-        android:textColor="@color/colorTextDark"
+        android:textColor="@color/colorWhiteSemiTransparent"
         android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -159,12 +156,12 @@
         android:id="@+id/backToLoginButton"
         android:layout_width="140dp"
         android:layout_height="wrap_content"
-        android:background="@drawable/custom_button_outline"
+        android:background="@drawable/custom_button_outline_white"
         android:fontFamily="@font/montserrat"
         android:text="@string/login"
         android:textAllCaps="false"
-        android:textColor="@color/colorTextDark"
-        android:textSize="18dp"
+        android:textColor="@color/colorWhiteSemiTransparent"
+        android:textSize="18sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.805"

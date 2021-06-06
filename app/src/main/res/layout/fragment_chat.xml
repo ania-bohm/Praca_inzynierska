@@ -62,9 +62,9 @@
                 android:layout_height="match_parent"
                 android:layout_marginStart="10dp"
                 android:fontFamily="@font/montserrat"
-                android:textColor="@color/colorTextDark"
                 android:hint="@string/message_hint"
                 android:inputType="textMultiLine"
+                android:textColor="@color/colorTextDark"
                 android:textSize="18sp" />
 
             <Button
