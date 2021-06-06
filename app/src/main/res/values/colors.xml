@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#FFA3A5</color>
-    <color name="colorPrimaryLight">#FFDADA</color>
+    <color name="colorPrimaryLight">#FFD0D1</color>
     <color name="colorPrimaryFaded">#FFDFE5</color>
     <color name="colorPrimaryDark">#FFBF81</color>
     <color name="colorPrimaryDarkLighter">#F3E8CD</color>
@@ -9,16 +9,16 @@
     <color name="colorAccent">#FFD363</color>-->
     <!--    <color name="colorAccent">#FFDC5E</color>-->
     <color name="colorAccentFaded">#E6FFDC5E</color>
-    <color name="colorSecondary">#E877FB</color>
-    <color name="colorSecondarySemiTransparent">#D0FF9ED3</color>
-    <color name="colorSecondaryFaded">#E6FF86C8</color>
-    <color name="colorSecondaryDark">#FF69EB</color>
+    <color name="colorSecondary">#8B39FF</color>
     <color name="colorSecondaryDarkFaded">#E6FF69EB</color>
     <color name="colorText">#FFFFFF</color>
     <color name="colorTextGray">#EDE3E3</color>
     <color name="colorTextDark">#555956</color>
     <color name="colorTextDarkSeeThrough">#99555956</color>
     <color name="colorWhiteTransparent">#4DFFFFFF</color>
+    <color name="colorWhite10Transparent">#1AFFFFFF</color>
+    <color name="colorWhite20Transparent">#33FFFFFF</color>
+    <color name="colorWhite30Transparent">#4DFFFFFF</color>
     <color name="colorWhite40Transparent">#66FFFFFF</color>
     <color name="colorWhiteSemiTransparent">#99FFFFFF</color>
     <color name="colorPrimarySemiTransparent">#BCEAABAC</color>

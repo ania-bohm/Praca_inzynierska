@@ -8,24 +8,45 @@
     android:orientation="vertical"
     tools:context=".MainFragment">
 
-    <TextView
-        android:id="@+id/welcomeUserFirstNameTextView"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="10dp"
-        android:fontFamily="@font/montserrat"
-        android:padding="10dp"
-        android:text=""
-        android:shadowColor="@color/colorTextDarkSeeThrough"
-        android:shadowDx="1"
-        android:shadowDy="4"
-        android:shadowRadius="0.6"
-        android:textColor="@color/colorAccent"
-        android:textSize="26sp"
-        android:textStyle="bold" />
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/welcomeUserFirstNameTextView"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/montserrat"
+            android:padding="10dp"
+            android:text=""
+            android:shadowColor="@color/colorTextDarkSeeThrough"
+            android:shadowDx="1"
+            android:shadowDy="4"
+            android:shadowRadius="0.6"
+            android:textColor="@color/colorAccent"
+            android:textSize="26sp"
+            android:textStyle="bold" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/addEventFloatingActionButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="35dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_toEndOf="@+id/welcomeUserFirstNameTextView"
+            android:layout_alignParentEnd="true"
+            android:src="@drawable/ic_add"
+            app:elevation="6dp"
+            app:fabSize="normal"
+            app:pressedTranslationZ="12dp" />
+    </RelativeLayout>
+
 
     <LinearLayout
+        android:id="@+id/mainFragmentLinearLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="10dp"
@@ -122,18 +143,5 @@
 
         </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/addEventFloatingActionButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="10dp"
-            android:layout_marginTop="-10dp"
-            android:layout_marginStart="340dp"
-            android:src="@drawable/ic_add"
-            app:elevation="6dp"
-            app:fabSize="normal"
-            app:layout_anchorGravity="bottom|right"
-            app:layout_anchor="@id/allEventsTextView"
-            app:pressedTranslationZ="12dp" />
     </LinearLayout>
 </LinearLayout>

@@ -146,6 +146,9 @@ public class SettleExpenseFragment extends Fragment {
                     }
                     expensePerPersonHashMap.put(eventAuthor, (double) 0);
                     calculateSettleExpensePerPersonId();
+                } else {
+                    settleExpenseEmptyTextView.setVisibility(View.VISIBLE);
+                    alertDialog.dismiss();
                 }
             }
         }).addOnFailureListener(new OnFailureListener() {

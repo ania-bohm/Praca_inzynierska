@@ -162,7 +162,7 @@ public class ScoreboardFragment extends Fragment {
             if (currentUserId.equals(eventAuthorId)) {
                 deleteItem(item.getOrder());
             } else {
-                Toast.makeText(context, R.string.common_expense_error, Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, R.string.scoreboard_error, Toast.LENGTH_SHORT).show();
             }
         }
         return super.onContextItemSelected(item);

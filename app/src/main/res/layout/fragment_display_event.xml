@@ -13,7 +13,7 @@
         android:focusableInTouchMode="true"
         android:orientation="vertical">
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -39,44 +39,49 @@
                 android:id="@+id/editEventButton"
                 android:layout_width="30sp"
                 android:layout_height="30sp"
-                android:layout_marginStart="2dp"
+                android:layout_marginStart="4dp"
                 android:layout_marginTop="12dp"
-                android:src="@drawable/ic_edit" />
+                android:src="@drawable/ic_edit"
+                android:layout_toRightOf="@id/eventNameTextView"/>
 
 
             <ImageView
                 android:id="@+id/toDoListButton"
                 android:layout_width="40sp"
                 android:layout_height="40sp"
-                android:layout_marginStart="20dp"
+                android:layout_marginEnd="8dp"
                 android:layout_marginTop="8dp"
-                android:src="@drawable/ic_to_do_list_3" />
+                android:src="@drawable/ic_to_do_list_3"
+                android:layout_toLeftOf="@id/commonExpenseButton"/>
 
             <ImageView
                 android:id="@+id/commonExpenseButton"
                 android:layout_width="40sp"
                 android:layout_height="40sp"
-                android:layout_marginStart="8dp"
+                android:layout_marginEnd="5dp"
                 android:layout_marginTop="8dp"
-                android:src="@drawable/ic_budget_2" />
+                android:src="@drawable/ic_budget_2"
+                android:layout_toLeftOf="@id/scoreboardButton"/>
 
             <ImageView
                 android:id="@+id/scoreboardButton"
                 android:layout_width="40sp"
                 android:layout_height="40sp"
-                android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                android:src="@drawable/ic_success" />
+                android:layout_marginEnd="5dp"
+                android:src="@drawable/ic_success"
+                android:layout_toLeftOf="@id/chatButton"/>
 
             <ImageView
                 android:id="@+id/chatButton"
                 android:layout_width="40sp"
                 android:layout_height="40sp"
-                android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="5dp"
                 android:src="@drawable/ic_chat_2" />
 
-        </LinearLayout>
+        </RelativeLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
