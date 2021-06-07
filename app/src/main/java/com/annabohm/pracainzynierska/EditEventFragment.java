@@ -47,6 +47,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import dmax.dialog.SpotsDialog;
 
@@ -54,6 +55,12 @@ import static android.content.ContentValues.TAG;
 
 public class EditEventFragment extends Fragment implements AdapterView.OnItemSelectedListener {
     NavController navController;
+    private final View.OnClickListener editEventCancelOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            navController.popBackStack();
+        }
+    };
     Bundle bundle;
     Context context;
     EditText editEventNameEditText, editEventDateStartEditText, editEventTimeStartEditText, editEventDateFinishEditText, editEventTimeFinishEditText, editEventLocationEditText, editEventDescriptionEditText;
@@ -66,17 +73,11 @@ public class EditEventFragment extends Fragment implements AdapterView.OnItemSel
     ArrayList<User> oldGuestList, newGuestList, foundUsersList;
     ArrayList<String> oldGuestIdList, newGuestIdList, foundUsersIdList;
     DocumentReference event;
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
-    CollectionReference events = db.collection("Events");
-    CollectionReference users = db.collection("Users");
-    CollectionReference eventAttendees = db.collection("EventAttendees");
-    CollectionReference attendeeEvents = db.collection("AttendeeEvents");
-    UserSearchListAdapter oldGuestListAdapter, newGuestListAdapter, foundUsersAdapter;
-    SimpleImageArrayAdapter imageArrayAdapter;
-    InputMethodManager imm;
-    AlertDialog alertDialog;
-
-    private View.OnClickListener editEventReadyOnClickListener = new View.OnClickListener() {
+    FirestoreInstanceSingleton firestoreInstanceSingleton = FirestoreInstanceSingleton.getInstance();
+    CollectionReference users = firestoreInstanceSingleton.getFirebaseFirestoreRef().collection("Users");
+    CollectionReference eventAttendees = firestoreInstanceSingleton.getFirebaseFirestoreRef().collection("EventAttendees");
+    CollectionReference attendeeEvents = firestoreInstanceSingleton.getFirebaseFirestoreRef().collection("AttendeeEvents");
+    private final View.OnClickListener editEventReadyOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             DateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy");
@@ -192,19 +193,16 @@ public class EditEventFragment extends Fragment implements AdapterView.OnItemSel
             navController.popBackStack();
         }
     };
-    private View.OnClickListener editEventCancelOnClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            navController.popBackStack();
-        }
-    };
+    UserSearchListAdapter oldGuestListAdapter, newGuestListAdapter, foundUsersAdapter;
+    SimpleImageArrayAdapter imageArrayAdapter;
+    InputMethodManager imm;
+    AlertDialog alertDialog;
 
     public EditEventFragment() {
     }
 
-    public static EditEventFragment newInstance(String param1, String param2) {
-        EditEventFragment fragment = new EditEventFragment();
-        return fragment;
+    public static EditEventFragment newInstance() {
+        return new EditEventFragment();
     }
 
     @Override
@@ -216,8 +214,8 @@ public class EditEventFragment extends Fragment implements AdapterView.OnItemSel
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        ((MainActivity) getActivity()).setDrawerLocked();
-        imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        ((MainActivity) requireActivity()).setDrawerLocked();
+        imm = (InputMethodManager) requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         return inflater.inflate(R.layout.fragment_edit_event, container, false);
     }
 
@@ -242,8 +240,9 @@ public class EditEventFragment extends Fragment implements AdapterView.OnItemSel
         editEventNewGuestListListView = view.findViewById(R.id.editEventNewGuestListListView);
 
         bundle = this.getArguments();
+        assert bundle != null;
         String path = bundle.getString("path");
-        event = db.document(path);
+        event = firestoreInstanceSingleton.getFirebaseFirestoreRef().document(path);
         eventId = event.getId();
 
         imageArrayAdapter = new SimpleImageArrayAdapter(context,
@@ -346,6 +345,7 @@ public class EditEventFragment extends Fragment implements AdapterView.OnItemSel
 
                     populateOldGuestList();
 
+                    assert event != null;
                     editEventNameEditText.setHint(event.getEventName());
                     editEventDateStartEditText.setHint(dateFormatterPrint.format(event.getEventDateStart()));
                     editEventTimeStartEditText.setHint(timeFormatterPrint.format(event.getEventTimeStart()));
@@ -362,32 +362,6 @@ public class EditEventFragment extends Fragment implements AdapterView.OnItemSel
                 Log.d(TAG, e.toString());
             }
         });
-    }
-
-    public String PerfectDecimal(String str, int MAX_BEFORE_POINT, int MAX_DECIMAL) {
-        if (str.charAt(0) == '.') str = "0" + str;
-        int max = str.length();
-
-        String rFinal = "";
-        boolean after = false;
-        int i = 0, up = 0, decimal = 0;
-        char t;
-        while (i < max) {
-            t = str.charAt(i);
-            if (t != '.' && after == false) {
-                up++;
-                if (up > MAX_BEFORE_POINT) return rFinal;
-            } else if (t == '.') {
-                after = true;
-            } else {
-                decimal++;
-                if (decimal > MAX_DECIMAL)
-                    return rFinal;
-            }
-            rFinal = rFinal + t;
-            i++;
-        }
-        return rFinal;
     }
 
     public boolean containsUserId(String userId) {
@@ -407,13 +381,8 @@ public class EditEventFragment extends Fragment implements AdapterView.OnItemSel
     public void setFoundUsersList(ArrayList<User> userList, ArrayList<String> userIdList) {
         foundUsersList.clear();
         foundUsersIdList.clear();
-        for (int i = 0; i < userList.size(); i++) {
-            foundUsersList.add(userList.get(i));
-        }
-
-        for (int i = 0; i < userIdList.size(); i++) {
-            foundUsersIdList.add(userIdList.get(i));
-        }
+        foundUsersList.addAll(userList);
+        foundUsersIdList.addAll(userIdList);
     }
 
     public void loadUsers(final ArrayList<User> userList, ArrayList<String> userIdList) {
@@ -447,21 +416,22 @@ public class EditEventFragment extends Fragment implements AdapterView.OnItemSel
         final ArrayList<User> userList = new ArrayList<>();
         final ArrayList<String> userIdList = new ArrayList<>();
         for (int i = 0; i < inputArray.length; i++) {
-            String firstPart = "", secondPart = "";
+            StringBuilder firstPart = new StringBuilder();
+            StringBuilder secondPart = new StringBuilder();
             for (int j = 0; j < i; j++) {
-                firstPart += inputArray[j];
-                firstPart += " ";
+                firstPart.append(inputArray[j]);
+                firstPart.append(" ");
             }
-            firstPart = firstPart.trim();
+            firstPart = new StringBuilder(firstPart.toString().trim());
 
             for (int j = i; j < inputArray.length; j++) {
-                secondPart += inputArray[j];
-                secondPart += " ";
+                secondPart.append(inputArray[j]);
+                secondPart.append(" ");
             }
-            secondPart = secondPart.trim();
+            secondPart = new StringBuilder(secondPart.toString().trim());
 
-            Query firstQuery = users.whereEqualTo("userFirstName", firstPart).whereGreaterThanOrEqualTo("userLastName", secondPart).whereLessThanOrEqualTo("userLastName", secondPart + '\uf8ff');
-            Query secondQuery = users.whereEqualTo("userLastName", firstPart).whereGreaterThanOrEqualTo("userFirstName", secondPart).whereLessThanOrEqualTo("userFirstName", secondPart + '\uf8ff');
+            Query firstQuery = users.whereEqualTo("userFirstName", firstPart.toString()).whereGreaterThanOrEqualTo("userLastName", secondPart.toString()).whereLessThanOrEqualTo("userLastName", secondPart.toString() + '\uf8ff');
+            Query secondQuery = users.whereEqualTo("userLastName", firstPart.toString()).whereGreaterThanOrEqualTo("userFirstName", secondPart.toString()).whereLessThanOrEqualTo("userFirstName", secondPart.toString() + '\uf8ff');
             Task firstTask = firstQuery.get();
             Task secondTask = secondQuery.get();
 
@@ -481,7 +451,7 @@ public class EditEventFragment extends Fragment implements AdapterView.OnItemSel
             taskList.add(secondTask);
         }
 
-        Task<List<QuerySnapshot>> allTasks = Tasks.whenAllSuccess(taskList.toArray(new Task[taskList.size()]));
+        Task<List<QuerySnapshot>> allTasks = Tasks.whenAllSuccess(taskList.toArray(new Task[0]));
         allTasks.addOnSuccessListener(new OnSuccessListener<List<QuerySnapshot>>() {
             @Override
             public void onSuccess(List<QuerySnapshot> querySnapshots) {
@@ -521,9 +491,9 @@ public class EditEventFragment extends Fragment implements AdapterView.OnItemSel
         super.onCreateContextMenu(menu, v, menuInfo);
 
         if (v.getId() == R.id.editEventNewGuestListListView) {
-            getActivity().getMenuInflater().inflate(R.menu.floating_context_menu, menu);
+            requireActivity().getMenuInflater().inflate(R.menu.floating_context_menu, menu);
         } else if (v.getId() == R.id.editEventGuestListListView) {
-            getActivity().getMenuInflater().inflate(R.menu.floating_context_menu_special, menu);
+            requireActivity().getMenuInflater().inflate(R.menu.floating_context_menu_special, menu);
         }
     }
 
@@ -538,6 +508,7 @@ public class EditEventFragment extends Fragment implements AdapterView.OnItemSel
                 extendEventNewGuestListListView();
                 return true;
             case R.id.cancelDeleteGuest:
+            case R.id.cancelDeleteGuestSpecial:
                 return true;
             case R.id.deleteGuestSpecial:
                 final String userId = oldGuestIdList.get(info.position);
@@ -546,7 +517,7 @@ public class EditEventFragment extends Fragment implements AdapterView.OnItemSel
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
-                            for (DocumentSnapshot documentSnapshot : task.getResult()) {
+                            for (DocumentSnapshot documentSnapshot : Objects.requireNonNull(task.getResult())) {
                                 attendeeEvents.document(userId).collection("Invited").document(documentSnapshot.getId()).delete();
                                 modificationCount++;
                             }
@@ -558,7 +529,7 @@ public class EditEventFragment extends Fragment implements AdapterView.OnItemSel
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
-                            for (DocumentSnapshot documentSnapshot : task.getResult()) {
+                            for (DocumentSnapshot documentSnapshot : Objects.requireNonNull(task.getResult())) {
                                 attendeeEvents.document(userId).collection("Confirmed").document(documentSnapshot.getId()).delete();
                                 modificationCount++;
                             }
@@ -570,7 +541,7 @@ public class EditEventFragment extends Fragment implements AdapterView.OnItemSel
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
-                            for (DocumentSnapshot documentSnapshot : task.getResult()) {
+                            for (DocumentSnapshot documentSnapshot : Objects.requireNonNull(task.getResult())) {
                                 attendeeEvents.document(userId).collection("Declined").document(documentSnapshot.getId()).delete();
                                 modificationCount++;
                             }
@@ -582,7 +553,7 @@ public class EditEventFragment extends Fragment implements AdapterView.OnItemSel
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
-                            for (DocumentSnapshot documentSnapshot : task.getResult()) {
+                            for (DocumentSnapshot documentSnapshot : Objects.requireNonNull(task.getResult())) {
                                 eventAttendees.document(eventId).collection("Invited").document(documentSnapshot.getId()).delete();
                                 modificationCount++;
                             }
@@ -594,7 +565,7 @@ public class EditEventFragment extends Fragment implements AdapterView.OnItemSel
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
-                            for (DocumentSnapshot documentSnapshot : task.getResult()) {
+                            for (DocumentSnapshot documentSnapshot : Objects.requireNonNull(task.getResult())) {
                                 eventAttendees.document(eventId).collection("Confirmed").document(documentSnapshot.getId()).delete();
                                 modificationCount++;
                             }
@@ -606,7 +577,7 @@ public class EditEventFragment extends Fragment implements AdapterView.OnItemSel
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
-                            for (DocumentSnapshot documentSnapshot : task.getResult()) {
+                            for (DocumentSnapshot documentSnapshot : Objects.requireNonNull(task.getResult())) {
                                 eventAttendees.document(eventId).collection("Declined").document(documentSnapshot.getId()).delete();
                                 modificationCount++;
                             }
@@ -617,8 +588,6 @@ public class EditEventFragment extends Fragment implements AdapterView.OnItemSel
                 oldGuestIdList.remove(info.position);
                 oldGuestListAdapter.notifyDataSetChanged();
                 extendEventOldGuestListListView();
-                return true;
-            case R.id.cancelDeleteGuestSpecial:
                 return true;
             default:
                 return super.onContextItemSelected(item);
@@ -654,7 +623,7 @@ public class EditEventFragment extends Fragment implements AdapterView.OnItemSel
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 if (!queryDocumentSnapshots.getDocuments().isEmpty()) {
                     for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                        final String guestId = documentSnapshot.get("User").toString();
+                        final String guestId = Objects.requireNonNull(documentSnapshot.get("User")).toString();
                         users.document(guestId).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                             @Override
                             public void onSuccess(DocumentSnapshot documentSnapshot) {

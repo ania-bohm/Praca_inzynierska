@@ -30,10 +30,10 @@ public class CommonExpenseAdapter extends RecyclerView.Adapter<CommonExpenseAdap
     CommonExpenseFragment commonExpenseFragment;
     ArrayList<CommonExpense> commonExpenseList;
     String eventId, currentUserId;
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
-    CollectionReference commonExpenseLists = db.collection("CommonExpenseLists");
-    CollectionReference users = db.collection("Users");
-    CollectionReference events = db.collection("Events");
+    FirestoreInstanceSingleton firestoreInstanceSingleton = FirestoreInstanceSingleton.getInstance();
+    CollectionReference commonExpenseLists = firestoreInstanceSingleton.getFirebaseFirestoreRef().collection("CommonExpenseLists");
+    CollectionReference users = firestoreInstanceSingleton.getFirebaseFirestoreRef().collection("Users");
+    CollectionReference events = firestoreInstanceSingleton.getFirebaseFirestoreRef().collection("Events");
     String eventAuthorId;
 
     public CommonExpenseAdapter(CommonExpenseFragment commonExpenseFragment, ArrayList<CommonExpense> commonExpenseList, String eventId, String currentUserId) {
@@ -57,6 +57,7 @@ public class CommonExpenseAdapter extends RecyclerView.Adapter<CommonExpenseAdap
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 User user = documentSnapshot.toObject(User.class);
+                assert user != null;
                 String displayName = user.getUserFirstName() + " " + user.getUserLastName();
                 holder.commonExpenseItemPayingUserDisplayTextView.setText(displayName);
             }
@@ -101,6 +102,7 @@ public class CommonExpenseAdapter extends RecyclerView.Adapter<CommonExpenseAdap
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 if (documentSnapshot.exists()) {
                     Event event = documentSnapshot.toObject(Event.class);
+                    assert event != null;
                     eventAuthorId = event.getEventAuthor();
                     if (currentUserId.equals(eventAuthorId)) {
                         holder.commonExpenseItemToSettleCheckBox.setEnabled(true);
@@ -121,7 +123,7 @@ public class CommonExpenseAdapter extends RecyclerView.Adapter<CommonExpenseAdap
                         @Override
                         public void onSuccess(Void aVoid) {
                             commonExpenseList.get(position).setCommonExpenseToSettle(true);
-                            double currentCommonExpenseToSettleDouble = Double.valueOf(commonExpenseFragment.displayCommonExpenseToSettleTextView.getText().toString());
+                            double currentCommonExpenseToSettleDouble = Double.parseDouble(commonExpenseFragment.displayCommonExpenseToSettleTextView.getText().toString());
                             long currentCommonExpenseToSettleLong = (long) (currentCommonExpenseToSettleDouble * 100);
                             long newCommonExpenseToSettleLong = commonExpenseList.get(position).getCommonExpenseValue();
                             double newBudgetLeftDouble = (currentCommonExpenseToSettleLong + newCommonExpenseToSettleLong) / 100;
@@ -144,7 +146,7 @@ public class CommonExpenseAdapter extends RecyclerView.Adapter<CommonExpenseAdap
                         @Override
                         public void onSuccess(Void aVoid) {
                             commonExpenseList.get(position).setCommonExpenseToSettle(false);
-                            double currentCommonExpenseToSettleDouble = Double.valueOf(commonExpenseFragment.displayCommonExpenseToSettleTextView.getText().toString());
+                            double currentCommonExpenseToSettleDouble = Double.parseDouble(commonExpenseFragment.displayCommonExpenseToSettleTextView.getText().toString());
                             long currentCommonExpenseToSettleLong = (long) (currentCommonExpenseToSettleDouble * 100);
                             long newCommonExpenseToSettleLong = commonExpenseList.get(position).getCommonExpenseValue();
                             double newBudgetLeftDouble = (currentCommonExpenseToSettleLong - newCommonExpenseToSettleLong) / 100;

@@ -6,15 +6,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -31,9 +33,8 @@ public class ConfirmedEventAdapter extends RecyclerView.Adapter<ConfirmedEventAd
     HashMap<String, Event> eventMap;
     ArrayList<Event> sortedEventsList;
     OnItemClickListener listener;
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
-    CollectionReference events = db.collection("Events");
-    CollectionReference users = db.collection("Users");
+    FirestoreInstanceSingleton firestoreInstanceSingleton = FirestoreInstanceSingleton.getInstance();
+    CollectionReference users = firestoreInstanceSingleton.getFirebaseFirestoreRef().collection("Users");
     DocumentReference userAuthor;
 
     public ConfirmedEventAdapter(HashMap<String, Event> eventMap) {
@@ -82,8 +83,11 @@ public class ConfirmedEventAdapter extends RecyclerView.Adapter<ConfirmedEventAd
                         User user = documentSnapshot.toObject(User.class);
                         viewHolder.miniEventLinearLayout.setBackgroundResource(sortedEventsList.get(position).getEventImage());
                         viewHolder.miniEventNameTextView.setText(sortedEventsList.get(position).getEventName());
+                        assert finalEventDateStart != null;
                         viewHolder.miniEventDateStartTextView.setText(dateFormatterPrint.format(finalEventDateStart));
+                        assert finalEventTimeStart != null;
                         viewHolder.miniEventTimeStartTextView.setText(timeFormatterPrint.format(finalEventTimeStart));
+                        assert user != null;
                         viewHolder.miniEventAuthorTextView.setText(user.getUserFirstName() + " " + user.getUserLastName());
                         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -123,11 +127,6 @@ public class ConfirmedEventAdapter extends RecyclerView.Adapter<ConfirmedEventAd
             }
         }
         return null;
-    }
-
-    public void deleteItem(int position) {
-        events.document(getEventId(position)).delete();
-        notifyDataSetChanged();
     }
 
     public interface OnItemClickListener {

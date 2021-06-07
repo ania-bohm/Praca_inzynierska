@@ -6,19 +6,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.firestore.DocumentSnapshot;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MessageItemHolder> {
 
@@ -37,13 +31,13 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MessageItemHol
     @NonNull
     @Override
     public MessageItemHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view;
         if(viewType == MSG_TYPE_RIGHT){
-            View view = LayoutInflater.from(context).inflate(R.layout.message_item_right, parent, false);
-            return new ChatAdapter.MessageItemHolder(view);
+            view = LayoutInflater.from(context).inflate(R.layout.message_item_right, parent, false);
         } else {
-            View view = LayoutInflater.from(context).inflate(R.layout.message_item_left, parent, false);
-            return new ChatAdapter.MessageItemHolder(view);
+            view = LayoutInflater.from(context).inflate(R.layout.message_item_left, parent, false);
         }
+        return new MessageItemHolder(view);
     }
 
     @Override
@@ -86,10 +80,6 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MessageItemHol
             messageContentTextView = itemView.findViewById(R.id.messageContentTextView);
             messageSenderTextView = itemView.findViewById(R.id.messageSenderTextView);
             messageCreatedAtTextView = itemView.findViewById(R.id.messageCreatedAtTextView);
-        }
-
-        public void setItemClickListener(ChatAdapter.ItemClickListener itemClickListener) {
-            this.itemClickListener = itemClickListener;
         }
 
         @Override

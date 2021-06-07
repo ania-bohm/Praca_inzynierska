@@ -45,24 +45,26 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import static android.content.ContentValues.TAG;
 
 public class AddEventFragment extends Fragment implements AdapterView.OnItemSelectedListener {
     NavController navController;
     Context context;
-    FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
-    CollectionReference events = db.collection("Events");
-    CollectionReference users = db.collection("Users");
-    CollectionReference eventAttendees = db.collection("EventAttendees");
-    CollectionReference attendeeEvents = db.collection("AttendeeEvents");
+    FirestoreInstanceSingleton firestoreInstanceSingleton = FirestoreInstanceSingleton.getInstance();
+    FirebaseAuthInstanceSingleton firebaseAuthInstanceSingleton = FirebaseAuthInstanceSingleton.getInstance();
+    CollectionReference events = firestoreInstanceSingleton.getFirebaseFirestoreRef().collection("Events");
+    CollectionReference users = firestoreInstanceSingleton.getFirebaseFirestoreRef().collection("Users");
+    CollectionReference eventAttendees = firestoreInstanceSingleton.getFirebaseFirestoreRef().collection("EventAttendees");
+    CollectionReference attendeeEvents = firestoreInstanceSingleton.getFirebaseFirestoreRef().collection("AttendeeEvents");
     Button eventReadyButton, eventCancelButton;
     EditText eventNameEditText, eventDateStartEditText, eventTimeStartEditText, eventDateFinishEditText, eventTimeFinishEditText, eventLocationEditText, eventDescriptionEditText;
     SearchView eventGuestListSearchView;
     ListView eventUserSearchListView, eventGuestListListView;
     Spinner eventImageSpinner;
     Integer chosenImage;
+    String eventAuthor = Objects.requireNonNull(firebaseAuthInstanceSingleton.getFirebaseAuthRef().getCurrentUser()).getUid();
     ArrayList<User> invitedUsersList, foundUsersList;
     ArrayList<String> invitedUsersIdList, foundUsersIdList;
     UserSearchListAdapter invitedUsersAdapter, foundUsersAdapter;
@@ -80,7 +82,6 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
             String timeStartValue = eventTimeStartEditText.getText().toString();
             String timeFinishValue = eventTimeFinishEditText.getText().toString();
             Integer eventImage = chosenImage;
-            String eventAuthor = firebaseAuth.getCurrentUser().getUid();
 
             if (eventName.trim().isEmpty() || dateStartValue.trim().isEmpty() || dateFinishValue.trim().isEmpty() || timeStartValue.trim().isEmpty() || timeFinishValue.trim().isEmpty() || eventLocation.trim().isEmpty()) {
                 Toast.makeText(context, R.string.event_empty_fields, Toast.LENGTH_SHORT).show();
@@ -99,6 +100,10 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
                 eventDateFinish = dateFormatter.parse(dateFinishValue);
                 eventTimeStart = timeFormatter.parse(timeStartValue);
                 eventTimeFinish = timeFormatter.parse(timeFinishValue);
+                if (!datesCorrect(eventDateStart, eventTimeStart, eventDateFinish, eventTimeFinish)) {
+                    Toast.makeText(context, R.string.event_dates_incorrect, Toast.LENGTH_SHORT).show();
+                    return;
+                }
             } catch (java.text.ParseException e) {
                 e.printStackTrace();
                 Log.i(TAG, e.toString());
@@ -280,32 +285,6 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
         });
     }
 
-    public String perfectDecimal(String str, int MAX_BEFORE_POINT, int MAX_DECIMAL) {
-        if (str.charAt(0) == '.') str = "0" + str;
-        int max = str.length();
-
-        String rFinal = "";
-        boolean after = false;
-        int i = 0, up = 0, decimal = 0;
-        char t;
-        while (i < max) {
-            t = str.charAt(i);
-            if (t != '.' && after == false) {
-                up++;
-                if (up > MAX_BEFORE_POINT) return rFinal;
-            } else if (t == '.') {
-                after = true;
-            } else {
-                decimal++;
-                if (decimal > MAX_DECIMAL)
-                    return rFinal;
-            }
-            rFinal = rFinal + t;
-            i++;
-        }
-        return rFinal;
-    }
-
     @Override
     public void onCreateContextMenu(@NonNull ContextMenu menu, @NonNull View v, @Nullable ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
@@ -456,5 +435,14 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
         chosenImage = (Integer) parent.getItemAtPosition(0);
+    }
+
+    public boolean datesCorrect(Date eventDateStart, Date eventDateFinish, Date eventTimeStart, Date eventTimeFinish) {
+        Date dateNow = new Date();
+        if (dateNow.after(eventDateFinish)) {
+            return false;
+        }
+        // date start < date finish with times
+        return false;
     }
 }

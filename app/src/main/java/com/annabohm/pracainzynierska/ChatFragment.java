@@ -3,15 +3,6 @@ package com.annabohm.pracainzynierska;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -21,14 +12,20 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -36,6 +33,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 import dmax.dialog.SpotsDialog;
@@ -45,16 +43,15 @@ import static android.content.ContentValues.TAG;
 public class ChatFragment extends Fragment {
     NavController navController;
     AlertDialog alertDialog;
-    FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
-    CollectionReference messageLists = db.collection("MessageLists");
-    CollectionReference events = db.collection("Events");
-    CollectionReference users = db.collection("Users");
+    FirebaseAuthInstanceSingleton firebaseAuthInstanceSingleton = FirebaseAuthInstanceSingleton.getInstance();
+    FirestoreInstanceSingleton firestoreInstanceSingleton = FirestoreInstanceSingleton.getInstance();
+    CollectionReference messageLists = firestoreInstanceSingleton.getFirebaseFirestoreRef().collection("MessageLists");
+    CollectionReference users = firestoreInstanceSingleton.getFirebaseFirestoreRef().collection("Users");
     DocumentReference eventReference;
     Context context;
     Bundle bundle;
     String eventId, eventAuthor;
-    String currentUserId = firebaseAuth.getCurrentUser().getUid();
+    String currentUserId = Objects.requireNonNull(firebaseAuthInstanceSingleton.getFirebaseAuthRef().getCurrentUser()).getUid();
     String currentUserDisplayName = "";
     EditText sendMessageEditText;
     Button sendMessageButton;
@@ -74,7 +71,6 @@ public class ChatFragment extends Fragment {
                 sendMessageEditText.setText("");
             } else {
                 Toast.makeText(context, R.string.message_empty_error, Toast.LENGTH_SHORT).show();
-                return;
             }
         }
     };
@@ -83,9 +79,8 @@ public class ChatFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static ChatFragment newInstance(String param1, String param2) {
-        ChatFragment fragment = new ChatFragment();
-        return fragment;
+    public static ChatFragment newInstance() {
+        return new ChatFragment();
     }
 
     @Override
@@ -97,9 +92,9 @@ public class ChatFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        ((MainActivity) getActivity()).setDrawerLocked();
-        if (((MainActivity) getActivity()).getSupportActionBar() != null) {
-            ((MainActivity) getActivity()).getSupportActionBar().hide();
+        ((MainActivity) requireActivity()).setDrawerLocked();
+        if (((MainActivity) requireActivity()).getSupportActionBar() != null) {
+            Objects.requireNonNull(((MainActivity) requireActivity()).getSupportActionBar()).hide();
         }
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_chat, container, false);
@@ -115,8 +110,9 @@ public class ChatFragment extends Fragment {
         messageRecyclerView = view.findViewById(R.id.messageRecyclerView);
 
         bundle = this.getArguments();
+        assert bundle != null;
         String path = bundle.getString("path");
-        eventReference = db.document(path);
+        eventReference = firestoreInstanceSingleton.getFirebaseFirestoreRef().document(path);
         eventId = eventReference.getId();
 
         users.document(currentUserId).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -124,6 +120,7 @@ public class ChatFragment extends Fragment {
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 if (documentSnapshot.exists()) {
                     User currentUser = documentSnapshot.toObject(User.class);
+                    assert currentUser != null;
                     currentUserDisplayName = currentUser.getUserFirstName() + " " + currentUser.getUserLastName();
                 }
             }
@@ -151,8 +148,7 @@ public class ChatFragment extends Fragment {
         if (item.getTitle().equals(getString(R.string.message_delete))) {
             if (currentUserId.equals(eventAuthor) || currentUserId.equals(messageList.get(item.getOrder()).getMessageSenderId())) {
                 deleteItem(item.getOrder());
-            }
-            else {
+            } else {
                 Toast.makeText(context, R.string.message_error, Toast.LENGTH_SHORT).show();
             }
         }
@@ -205,6 +201,7 @@ public class ChatFragment extends Fragment {
                     return;
                 }
                 messageList.clear();
+                assert value != null;
                 for (DocumentSnapshot documentSnapshot : value.getDocuments()) {
                     Message message = documentSnapshot.toObject(Message.class);
                     messageList.add(message);

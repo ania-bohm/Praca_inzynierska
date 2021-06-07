@@ -3,11 +3,6 @@ package com.annabohm.pracainzynierska;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
 import android.text.TextUtils;
 import android.text.method.PasswordTransformationMethod;
 import android.util.Log;
@@ -18,14 +13,19 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import static android.content.ContentValues.TAG;
 
@@ -38,8 +38,7 @@ public class ChangePasswordFragment extends Fragment {
     Button confirmChangePasswordButton;
     Button rejectChangePasswordButton;
     ImageView changePasswordShowPasswordButton;
-    FirebaseFirestore firebaseFirestore;
-    FirebaseAuth firebaseAuth;
+    FirebaseAuthInstanceSingleton firebaseAuthInstanceSingleton = FirebaseAuthInstanceSingleton.getInstance();
     FirebaseUser firebaseUser;
     AuthCredential authCredential;
     SharedPreferences sharedPreferences;
@@ -47,7 +46,7 @@ public class ChangePasswordFragment extends Fragment {
     boolean hiddenPassword = true;
     Context context;
 
-    private View.OnClickListener confirmChangePasswordOnClickListener = new View.OnClickListener() {
+    private final View.OnClickListener confirmChangePasswordOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             String oldPassword = changePasswordOldEditText.getText().toString();
@@ -61,13 +60,13 @@ public class ChangePasswordFragment extends Fragment {
             changePassword(newPassword);
         }
     };
-    private View.OnClickListener rejectChangePasswordOnClickListener = new View.OnClickListener() {
+    private final View.OnClickListener rejectChangePasswordOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             navController.popBackStack();
         }
     };
-    private View.OnClickListener changePasswordShowPasswordOnClickListener = new View.OnClickListener() {
+    private final View.OnClickListener changePasswordShowPasswordOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             if (hiddenPassword) {
@@ -83,36 +82,29 @@ public class ChangePasswordFragment extends Fragment {
         // Required empty public constructor
     }
 
-    public static ChangePasswordFragment newInstance(String param1, String param2) {
-        ChangePasswordFragment fragment = new ChangePasswordFragment();
-        return fragment;
+    public static ChangePasswordFragment newInstance() {
+        return new ChangePasswordFragment();
     }
 
     private boolean checkOldPasswordCorrectness(String oldPassword) {
-        if (sharedPreferences.getString(Password, null).equals(oldPassword)) {
-            return true;
-        }
-        return false;
+        return sharedPreferences.getString(Password, null).equals(oldPassword);
     }
 
     private boolean checkNewPasswordCorrectness(String newPassword, String repeatPassword) {
-        if (newPassword.equals(repeatPassword)) {
-            return true;
-        }
-        return false;
+        return newPassword.equals(repeatPassword);
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        sharedPreferences = this.getActivity().getSharedPreferences(myPreference, Context.MODE_PRIVATE);
+        sharedPreferences = this.requireActivity().getSharedPreferences(myPreference, Context.MODE_PRIVATE);
         context = getContext();
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        ((MainActivity) getActivity()).setDrawerLocked();
+        ((MainActivity) requireActivity()).setDrawerLocked();
         return inflater.inflate(R.layout.fragment_change_password, container, false);
     }
 
@@ -126,9 +118,7 @@ public class ChangePasswordFragment extends Fragment {
         changePasswordOldEditText = view.findViewById(R.id.changePasswordOldEditText);
         changePasswordNewEditText = view.findViewById(R.id.changePasswordNewEditText);
         changePasswordRepeatEditText = view.findViewById(R.id.changePasswordRepeatEditText);
-        firebaseFirestore = FirebaseFirestore.getInstance();
-        firebaseAuth = FirebaseAuth.getInstance();
-        firebaseUser = firebaseAuth.getCurrentUser();
+        firebaseUser = firebaseAuthInstanceSingleton.getFirebaseAuthRef().getCurrentUser();
         confirmChangePasswordButton.setOnClickListener(confirmChangePasswordOnClickListener);
         rejectChangePasswordButton.setOnClickListener(rejectChangePasswordOnClickListener);
         changePasswordShowPasswordButton.setOnClickListener(changePasswordShowPasswordOnClickListener);
@@ -185,7 +175,7 @@ public class ChangePasswordFragment extends Fragment {
                                     if (task.isSuccessful()) {
                                         SharedPreferences.Editor editor = sharedPreferences.edit();
                                         editor.putString(Password, newPassword);
-                                        editor.commit();
+                                        editor.apply();
                                         Toast.makeText(context, R.string.change_password_success, Toast.LENGTH_SHORT).show();
                                         navController.popBackStack();
                                     } else {

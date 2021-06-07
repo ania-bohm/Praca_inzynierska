@@ -26,12 +26,10 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.rengwuxian.materialedittext.MaterialEditText;
@@ -39,6 +37,7 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 import dmax.dialog.SpotsDialog;
@@ -56,24 +55,22 @@ public class CommonExpenseFragment extends Fragment {
     FloatingActionButton commonExpenseFloatingActionButton, commonExpenseSumUpFloatingActionButton;
     RecyclerView commonExpenseRecyclerView;
     AlertDialog alertDialog;
-    FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
-    CollectionReference commonExpenseLists = db.collection("CommonExpenseLists");
-    CollectionReference events = db.collection("Events");
+    FirestoreInstanceSingleton firestoreInstanceSingleton = FirestoreInstanceSingleton.getInstance();
+    FirebaseAuthInstanceSingleton firebaseAuthInstanceSingleton = FirebaseAuthInstanceSingleton.getInstance();
+    CollectionReference commonExpenseLists = firestoreInstanceSingleton.getFirebaseFirestoreRef().collection("CommonExpenseLists");
     DocumentReference eventReference;
     Context context;
     Bundle bundle;
     boolean isUpdate = false;
     String eventId, eventAuthor;
     String commonExpenseItemToUpdateId = "";
-    String currentUserId;
+    String currentUserId = Objects.requireNonNull(firebaseAuthInstanceSingleton.getFirebaseAuthRef().getCurrentUser()).getUid();
 
     public CommonExpenseFragment() {
     }
 
-    public static CommonExpenseFragment newInstance(String param1, String param2) {
-        CommonExpenseFragment fragment = new CommonExpenseFragment();
-        return fragment;
+    public static CommonExpenseFragment newInstance() {
+        return new CommonExpenseFragment();
     }
 
     @Override
@@ -86,9 +83,9 @@ public class CommonExpenseFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        ((MainActivity) getActivity()).setDrawerLocked();
-        if (((MainActivity) getActivity()).getSupportActionBar() != null) {
-            ((MainActivity) getActivity()).getSupportActionBar().hide();
+        ((MainActivity) requireActivity()).setDrawerLocked();
+        if (((MainActivity) requireActivity()).getSupportActionBar() != null) {
+            Objects.requireNonNull(((MainActivity) requireActivity()).getSupportActionBar()).hide();
         }
         return inflater.inflate(R.layout.fragment_common_expense, container, false);
     }
@@ -96,7 +93,6 @@ public class CommonExpenseFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        currentUserId = firebaseAuth.getCurrentUser().getUid();
 
         navController = Navigation.findNavController(view);
         displayCommonExpenseSumTextView = view.findViewById(R.id.displayCommonExpenseSumTextView);
@@ -108,13 +104,14 @@ public class CommonExpenseFragment extends Fragment {
         commonExpenseRecyclerView = view.findViewById(R.id.commonExpenseRecyclerView);
 
         bundle = this.getArguments();
+        assert bundle != null;
         String path = bundle.getString("path");
-        eventReference = db.document(path);
+        eventReference = firestoreInstanceSingleton.getFirebaseFirestoreRef().document(path);
         eventId = eventReference.getId();
         eventReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
-                eventAuthor = documentSnapshot.toObject(Event.class).getEventAuthor();
+                eventAuthor = Objects.requireNonNull(documentSnapshot.toObject(Event.class)).getEventAuthor();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -139,9 +136,9 @@ public class CommonExpenseFragment extends Fragment {
             }
 
             public void afterTextChanged(Editable arg0) {
-                String str = commonExpenseValueMaterialEditText.getText().toString();
+                String str = Objects.requireNonNull(commonExpenseValueMaterialEditText.getText()).toString();
                 if (str.isEmpty()) return;
-                String str2 = PerfectDecimal(str, 6, 2);
+                String str2 = perfectDecimal(str, 6, 2);
 
                 if (!str2.equals(str)) {
                     commonExpenseValueMaterialEditText.setText(str2);
@@ -180,30 +177,30 @@ public class CommonExpenseFragment extends Fragment {
         });
     }
 
-    public String PerfectDecimal(String str, int MAX_BEFORE_POINT, int MAX_DECIMAL) {
+    public String perfectDecimal(String str, int MAX_BEFORE_POINT, int MAX_DECIMAL) {
         if (str.charAt(0) == '.') str = "0" + str;
         int max = str.length();
 
-        String rFinal = "";
+        StringBuilder rFinal = new StringBuilder();
         boolean after = false;
         int i = 0, up = 0, decimal = 0;
         char t;
         while (i < max) {
             t = str.charAt(i);
-            if (t != '.' && after == false) {
+            if (t != '.' && !after) {
                 up++;
-                if (up > MAX_BEFORE_POINT) return rFinal;
+                if (up > MAX_BEFORE_POINT) return rFinal.toString();
             } else if (t == '.') {
                 after = true;
             } else {
                 decimal++;
                 if (decimal > MAX_DECIMAL)
-                    return rFinal;
+                    return rFinal.toString();
             }
-            rFinal = rFinal + t;
+            rFinal.append(t);
             i++;
         }
-        return rFinal;
+        return rFinal.toString();
     }
 
     @Override
@@ -285,7 +282,7 @@ public class CommonExpenseFragment extends Fragment {
         commonExpenseLists.document(eventId).collection("CommonExpenseList").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                for (DocumentSnapshot documentSnapshot : task.getResult()) {
+                for (DocumentSnapshot documentSnapshot : Objects.requireNonNull(task.getResult())) {
                     if (documentSnapshot.exists()) {
                         CommonExpense commonExpense = documentSnapshot.toObject(CommonExpense.class);
                         commonExpenseList.add(commonExpense);

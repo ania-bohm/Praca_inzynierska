@@ -5,13 +5,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-
 import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
@@ -20,6 +13,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -31,7 +30,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.Objects;
 
 import dmax.dialog.SpotsDialog;
 
@@ -42,18 +42,22 @@ public class EditAccountSettingsFragment extends Fragment {
     public static final String Password = "Password";
     public static final String Email = "Email";
     NavController navController;
+    private final View.OnClickListener rejectEditOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            navController.popBackStack();
+        }
+    };
     Button confirmEditPersonalDataButton, rejectEditPersonalDataButton;
     EditText editAccountFirstNameEditText, editAccountLastNameEditText, editAccountEmailEditText, editAccountPhoneNumberEditText;
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
-    FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+    FirestoreInstanceSingleton firestoreInstanceSingleton = FirestoreInstanceSingleton.getInstance();
+    FirebaseAuthInstanceSingleton firebaseAuthInstanceSingleton = FirebaseAuthInstanceSingleton.getInstance();
     FirebaseUser firebaseUser;
     AuthCredential authCredential;
     DocumentReference documentReference;
     Context context;
     SharedPreferences sharedPreferences;
-    AlertDialog alertDialog;
-
-    private View.OnClickListener confirmEditOnClickListener = new View.OnClickListener() {
+    private final View.OnClickListener confirmEditOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             if (!editAccountFirstNameEditText.getText().toString().trim().isEmpty()) {
@@ -74,6 +78,7 @@ public class EditAccountSettingsFragment extends Fragment {
                                 @Override
                                 public void onComplete(@NonNull Task<Void> task) {
                                     FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                                    assert user != null;
                                     user.updateEmail(editAccountEmailEditText.getText().toString().trim())
                                             .addOnCompleteListener(new OnCompleteListener<Void>() {
                                                 @Override
@@ -108,32 +113,26 @@ public class EditAccountSettingsFragment extends Fragment {
             navController.popBackStack();
         }
     };
-    private View.OnClickListener rejectEditOnClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            navController.popBackStack();
-        }
-    };
+    AlertDialog alertDialog;
 
     public EditAccountSettingsFragment() {
     }
 
-    public static EditAccountSettingsFragment newInstance(String param1, String param2) {
-        EditAccountSettingsFragment fragment = new EditAccountSettingsFragment();
-        return fragment;
+    public static EditAccountSettingsFragment newInstance() {
+        return new EditAccountSettingsFragment();
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         context = getContext();
-        sharedPreferences = this.getActivity().getSharedPreferences(myPreference, Context.MODE_PRIVATE);
+        sharedPreferences = this.requireActivity().getSharedPreferences(myPreference, Context.MODE_PRIVATE);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        ((MainActivity) getActivity()).setDrawerLocked();
+        ((MainActivity) requireActivity()).setDrawerLocked();
         return inflater.inflate(R.layout.fragment_edit_account_settings, container, false);
     }
 
@@ -150,7 +149,7 @@ public class EditAccountSettingsFragment extends Fragment {
         editAccountPhoneNumberEditText = view.findViewById(R.id.editAccountPhoneNumberEditText);
 
         alertDialog.show();
-        documentReference = db.collection("Users").document(firebaseAuth.getCurrentUser().getUid());
+        documentReference = firestoreInstanceSingleton.getFirebaseFirestoreRef().collection("Users").document(Objects.requireNonNull(firebaseAuthInstanceSingleton.getFirebaseAuthRef().getCurrentUser()).getUid());
         displayPersonalData();
         confirmEditPersonalDataButton.setOnClickListener(confirmEditOnClickListener);
         rejectEditPersonalDataButton.setOnClickListener(rejectEditOnClickListener);
@@ -163,6 +162,7 @@ public class EditAccountSettingsFragment extends Fragment {
                 User user = new User();
                 if (documentSnapshot.exists()) {
                     user = documentSnapshot.toObject(User.class);
+                    assert user != null;
                     String firstName = user.getUserFirstName().substring(0, 1).toUpperCase() + user.getUserFirstName().substring(1).toLowerCase();
                     String lastName = user.getUserLastName().substring(0, 1).toUpperCase() + user.getUserLastName().substring(1).toLowerCase();
 

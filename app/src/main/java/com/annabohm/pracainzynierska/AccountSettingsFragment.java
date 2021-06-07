@@ -29,6 +29,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -49,10 +50,11 @@ public class AccountSettingsFragment extends Fragment {
     Button accountChangePasswordButton;
     Button accountPhotoDeleteButton;
     TextView accountFirstNameTextView, accountLastNameTextView, accountPhoneNumberTextView, accountEmailTextView;
-    FirebaseFirestore firebaseFirestore;
-    FirebaseAuth firebaseAuth;
-    DocumentReference documentReference;
-    StorageReference storageReference;
+    FirestoreInstanceSingleton firestoreInstanceSingleton = FirestoreInstanceSingleton.getInstance();
+    StorageInstanceSingleton storageInstanceSingleton = StorageInstanceSingleton.getInstance();
+    FirebaseAuthInstanceSingleton firebaseAuthInstanceSingleton = FirebaseAuthInstanceSingleton.getInstance();
+    DocumentReference documentReference = firestoreInstanceSingleton.getFirebaseFirestoreRef().collection("Users").document(firebaseAuthInstanceSingleton.getFirebaseAuthRef().getCurrentUser().getUid());
+    StorageReference storageReference = storageInstanceSingleton.getInstance().getFirebaseStorageRef().getReference("Images");
     String photoUri;
     Context context;
     AlertDialog alertDialog;
@@ -120,10 +122,7 @@ public class AccountSettingsFragment extends Fragment {
         accountLastNameTextView = view.findViewById(R.id.accountLastNameTextView);
         accountPhoneNumberTextView = view.findViewById(R.id.accountPhoneNumberTextView);
         accountEmailTextView = view.findViewById(R.id.accountEmailTextView);
-        storageReference = FirebaseStorage.getInstance().getReference("Images");
-        firebaseFirestore = FirebaseFirestore.getInstance();
-        firebaseAuth = FirebaseAuth.getInstance();
-        documentReference = firebaseFirestore.collection("Users").document(firebaseAuth.getCurrentUser().getUid());
+
         editAccountPhotoImageView.setOnClickListener(editAccountPhotoOnClickListener);
         editPersonalDataImageView.setOnClickListener(editPersonalDataOnClickListener);
         accountChangePasswordButton.setOnClickListener(accountChangePasswordOnClickListener);

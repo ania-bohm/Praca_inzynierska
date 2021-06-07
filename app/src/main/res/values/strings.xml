@@ -62,6 +62,7 @@
     <string name="event_guest_list">Lista gości</string>
     <string name="event_new_guest_list">Lista nowych gości</string>
     <string name="event_empty_fields">Uzupełnij wszystkie pola!</string>
+    <string name="event_dates_incorrect">Wprowadzono niepoprawne daty!</string>
     <string name="event_budget_empty_fields">Uzupełnij wszystkie pola!</string>
     <string name="event_cost_delete">Usuń</string>
     <string name="event_cost_cancel">Anuluj</string>

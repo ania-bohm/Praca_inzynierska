@@ -35,8 +35,7 @@ public class AppSettingsFragment extends Fragment {
     }
 
     public static AppSettingsFragment newInstance(String param1, String param2) {
-        AppSettingsFragment fragment = new AppSettingsFragment();
-        return fragment;
+        return new AppSettingsFragment();
     }
 
     @Override

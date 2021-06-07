@@ -3,13 +3,6 @@ package com.annabohm.pracainzynierska;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,22 +10,26 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Objects;
 
 import dmax.dialog.SpotsDialog;
 
@@ -50,53 +47,49 @@ public class DisplayEventFragment extends Fragment {
     GuestListAdapter adapter;
     Context context;
     Bundle bundle;
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
-    CollectionReference events = db.collection("Events");
-    CollectionReference users = db.collection("Users");
-    CollectionReference eventAttendees = db.collection("EventAttendees");
-    FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-    DocumentReference eventReference;
-    AlertDialog alertDialog;
-
-    private View.OnClickListener toDoListOnClickListener = new View.OnClickListener() {
+    private final View.OnClickListener toDoListOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             navController.navigate(R.id.displayEventToToDoList, bundle);
         }
     };
-    private View.OnClickListener scoreboardOnClickListener = new View.OnClickListener() {
+    private final View.OnClickListener scoreboardOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             navController.navigate(R.id.displayEventToScoreboard, bundle);
         }
     };
-    private View.OnClickListener editEventOnClickListener = new View.OnClickListener() {
+    private final View.OnClickListener editEventOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             navController.navigate(R.id.displayEventToEditEvent, bundle);
         }
     };
-
-    private View.OnClickListener commonExpenseOnClickListener = new View.OnClickListener() {
+    private final View.OnClickListener commonExpenseOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             navController.navigate(R.id.displayEventToCommonExpense, bundle);
         }
     };
-
-    private View.OnClickListener chatOnClickListener = new View.OnClickListener() {
+    private final View.OnClickListener chatOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             navController.navigate(R.id.displayEventToChat, bundle);
         }
     };
+    FirestoreInstanceSingleton firestoreInstanceSingleton = FirestoreInstanceSingleton.getInstance();
+    FirebaseAuthInstanceSingleton firebaseAuthInstanceSingleton = FirebaseAuthInstanceSingleton.getInstance();
+    CollectionReference users = firestoreInstanceSingleton.getFirebaseFirestoreRef().collection("Users");
+    CollectionReference eventAttendees = firestoreInstanceSingleton.getFirebaseFirestoreRef().collection("EventAttendees");
+    String currentUserId = firebaseAuthInstanceSingleton.getFirebaseAuthRef().getCurrentUser().getUid();
+    DocumentReference eventReference;
+    AlertDialog alertDialog;
 
     public DisplayEventFragment() {
     }
 
-    public static DisplayEventFragment newInstance(String param1, String param2) {
-        DisplayEventFragment fragment = new DisplayEventFragment();
-        return fragment;
+    public static DisplayEventFragment newInstance() {
+        return new DisplayEventFragment();
     }
 
     @Override
@@ -108,7 +101,7 @@ public class DisplayEventFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        ((MainActivity) getActivity()).setDrawerLocked();
+        ((MainActivity) requireActivity()).setDrawerLocked();
         return inflater.inflate(R.layout.fragment_display_event, container, false);
     }
 
@@ -136,8 +129,9 @@ public class DisplayEventFragment extends Fragment {
         editEventButton.setVisibility(View.GONE);
 
         bundle = this.getArguments();
+        assert bundle != null;
         String path = bundle.getString("path");
-        eventReference = db.document(path);
+        eventReference = firestoreInstanceSingleton.getFirebaseFirestoreRef().document(path);
         eventId = eventReference.getId();
 
         userList = new ArrayList<>();
@@ -160,9 +154,11 @@ public class DisplayEventFragment extends Fragment {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 DocumentSnapshot documentSnapshot = task.getResult();
+                assert documentSnapshot != null;
                 if (documentSnapshot.exists()) {
                     final Event event = documentSnapshot.toObject(Event.class);
-                    if (event.getEventAuthor().equals(firebaseAuth.getCurrentUser().getUid())) {
+                    assert event != null;
+                    if (event.getEventAuthor().equals(currentUserId)) {
                         editEventButton.setVisibility(View.VISIBLE);
                         editEventButton.setOnClickListener(editEventOnClickListener);
                     } else {
@@ -175,6 +171,7 @@ public class DisplayEventFragment extends Fragment {
                         @Override
                         public void onSuccess(DocumentSnapshot documentSnapshot) {
                             User userAuthor = documentSnapshot.toObject(User.class);
+                            assert userAuthor != null;
                             showEventAuthorTextView.setText(userAuthor.getUserFirstName() + " " + userAuthor.getUserLastName());
                             showEventNameTextView.setText(event.getEventName());
                             showEventDateStartTextView.setText(dateFormatterPrint.format(event.getEventDateStart()));
@@ -207,9 +204,10 @@ public class DisplayEventFragment extends Fragment {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 QuerySnapshot queryDocumentSnapshots = task.getResult();
+                assert queryDocumentSnapshots != null;
                 if (!queryDocumentSnapshots.getDocuments().isEmpty()) {
                     for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                        String guestId = documentSnapshot.get("User").toString();
+                        String guestId = Objects.requireNonNull(documentSnapshot.get("User")).toString();
                         users.document(guestId).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                             @Override
                             public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -238,9 +236,10 @@ public class DisplayEventFragment extends Fragment {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 QuerySnapshot queryDocumentSnapshots = task.getResult();
+                assert queryDocumentSnapshots != null;
                 if (!queryDocumentSnapshots.getDocuments().isEmpty()) {
                     for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                        String guestId = documentSnapshot.get("User").toString();
+                        String guestId = Objects.requireNonNull(documentSnapshot.get("User")).toString();
                         users.document(guestId).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                             @Override
                             public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -269,9 +268,10 @@ public class DisplayEventFragment extends Fragment {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 QuerySnapshot queryDocumentSnapshots = task.getResult();
+                assert queryDocumentSnapshots != null;
                 if (!queryDocumentSnapshots.getDocuments().isEmpty()) {
                     for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                        String guestId = documentSnapshot.get("User").toString();
+                        String guestId = Objects.requireNonNull(documentSnapshot.get("User")).toString();
                         users.document(guestId).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                             @Override
                             public void onSuccess(DocumentSnapshot documentSnapshot) {

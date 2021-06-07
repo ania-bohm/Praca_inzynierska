@@ -50,11 +50,11 @@ public class MainFragment extends Fragment {
     RecyclerView yourCurrentEventsRecyclerView, allEventsRecyclerView;
     TextView yourEventsEmptyTextView, allEventsEmptyTextView, welcomeUserFirstNameTextView;
     FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
-    CollectionReference events = db.collection("Events");
-    CollectionReference users = db.collection("Users");
-    CollectionReference attendeeEvents = db.collection("AttendeeEvents");
-    CollectionReference eventAttendees = db.collection("EventAttendees");
+    FirestoreInstanceSingleton singleton = FirestoreInstanceSingleton.getInstance();
+    CollectionReference events = FirestoreInstanceSingleton.getInstance().getFirebaseFirestoreRef().collection("Events");
+    CollectionReference users = singleton.getFirebaseFirestoreRef().collection("Users");
+    CollectionReference attendeeEvents = singleton.getFirebaseFirestoreRef().collection("AttendeeEvents");
+    CollectionReference eventAttendees = singleton.getFirebaseFirestoreRef().collection("EventAttendees");
     ArrayList<String> attendeesToDeleteIdList = new ArrayList<>();
     ConfirmedEventAdapter allEventsAdapter;
     ConfirmedEventAdapter yourCurrentEventsAdapter;
