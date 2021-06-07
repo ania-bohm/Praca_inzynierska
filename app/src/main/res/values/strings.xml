@@ -19,6 +19,7 @@
     <string name="email1_already_exists">Istnieje już konto o podanym adresie email</string>
     <string name="register_success">Zarejestrowano pomyślnie</string>
     <string name="email1_empty">Uzupełnij swój adres email</string>
+    <string name="email1_does_not_match_pattern">Podany ciąg znaków nie jest adresem email</string>
     <string name="phone_number">Numer telefonu*</string>
     <string name="phone_number_empty">Uzupełnij swój numer telefonu</string>
     <string name="password1">Hasło*</string>

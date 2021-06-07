@@ -11,6 +11,7 @@ import androidx.navigation.Navigation;
 
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -78,6 +79,11 @@ public class RegistrationFragment extends Fragment {
 
             if (TextUtils.isEmpty(registerEmail)) {
                 registerEmailEditText.setError(getString(R.string.email1_empty));
+                return;
+            }
+
+            if (!Patterns.EMAIL_ADDRESS.matcher(registerEmailEditText.getText().toString()).matches()) {
+                registerEmailEditText.setError(getString(R.string.email1_does_not_match_pattern));
                 return;
             }
 

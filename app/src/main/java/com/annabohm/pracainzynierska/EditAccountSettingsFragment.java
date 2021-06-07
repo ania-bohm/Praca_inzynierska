@@ -13,6 +13,7 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import android.util.Log;
+import android.util.Patterns;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -64,28 +65,33 @@ public class EditAccountSettingsFragment extends Fragment {
             }
 
             if (!editAccountEmailEditText.getText().toString().trim().isEmpty()) {
-                firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
-                authCredential = EmailAuthProvider
-                        .getCredential(sharedPreferences.getString(Email, null), sharedPreferences.getString(Password, null));
-                firebaseUser.reauthenticate(authCredential)
-                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                            @Override
-                            public void onComplete(@NonNull Task<Void> task) {
-                                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                                user.updateEmail(editAccountEmailEditText.getText().toString().trim())
-                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<Void> task) {
-                                                if (task.isSuccessful()) {
-                                                    Toast.makeText(context, R.string.change_email_success, Toast.LENGTH_SHORT).show();
-                                                } else {
-                                                    Toast.makeText(context, R.string.change_email_fail, Toast.LENGTH_SHORT).show();
+                if (Patterns.EMAIL_ADDRESS.matcher(editAccountEmailEditText.getText().toString()).matches()) {
+                    firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+                    authCredential = EmailAuthProvider
+                            .getCredential(sharedPreferences.getString(Email, null), sharedPreferences.getString(Password, null));
+                    firebaseUser.reauthenticate(authCredential)
+                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                                    user.updateEmail(editAccountEmailEditText.getText().toString().trim())
+                                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<Void> task) {
+                                                    if (task.isSuccessful()) {
+                                                        Toast.makeText(context, R.string.change_email_success, Toast.LENGTH_SHORT).show();
+                                                    } else {
+                                                        Toast.makeText(context, R.string.change_email_fail, Toast.LENGTH_SHORT).show();
+                                                    }
                                                 }
-                                            }
-                                        });
-                            }
-                        });
-                documentReference.update("userEmail", editAccountEmailEditText.getText().toString().trim());
+                                            });
+                                }
+                            });
+                    documentReference.update("userEmail", editAccountEmailEditText.getText().toString().trim());
+                } else {
+                    editAccountEmailEditText.setError(getString(R.string.email1_does_not_match_pattern));
+                    return;
+                }
             }
 
             if (!editAccountPhoneNumberEditText.getText().toString().trim().isEmpty()) {
