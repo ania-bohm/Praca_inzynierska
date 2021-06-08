@@ -147,8 +147,8 @@
                         android:fontFamily="@font/montserrat"
                         android:inputType="date"
                         android:textColor="@color/colorTextDark"
-                        android:textColorHighlight="@color/colorText"
                         android:textSize="16sp"
+                        android:theme="@style/MyEditTextTheme"
                         app:mask="##/##/####" />
 
                     <TextView
@@ -169,6 +169,7 @@
                         android:inputType="time"
                         android:textColor="@color/colorTextDark"
                         android:textSize="16sp"
+                        android:theme="@style/MyEditTextTheme"
                         app:mask="##:##" />
 
                 </LinearLayout>
@@ -204,6 +205,7 @@
                         android:inputType="date"
                         android:textColor="@color/colorTextDark"
                         android:textSize="16sp"
+                        android:theme="@style/MyEditTextTheme"
                         app:mask="##/##/####" />
 
                     <TextView
@@ -224,6 +226,7 @@
                         android:inputType="time"
                         android:textColor="@color/colorTextDark"
                         android:textSize="16sp"
+                        android:theme="@style/MyEditTextTheme"
                         app:mask="##:##" />
 
                 </LinearLayout>

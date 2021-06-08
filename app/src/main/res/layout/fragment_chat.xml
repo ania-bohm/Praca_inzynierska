@@ -4,63 +4,69 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/main_background"
+    android:background="@drawable/main_background_light"
     tools:context=".ChatFragment">
 
-    <TextView
-        android:id="@+id/chatHeaderTextView"
+    <RelativeLayout
+        android:id="@+id/chatHeaderRelativeLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:fontFamily="@font/montserrat"
-        android:padding="10dp"
-        android:shadowColor="@color/colorTextDarkSeeThrough"
-        android:shadowDx="1"
-        android:shadowDy="4"
-        android:shadowRadius="0.6"
-        android:text="@string/chat_header"
-        android:textColor="@color/colorAccent"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:background="@drawable/header_semi_rectangular_background_primary"
+        android:orientation="horizontal"
+        android:padding="10dp">
+
+        <TextView
+            android:id="@+id/chatHeaderTextView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:fontFamily="@font/montserrat"
+            android:padding="10dp"
+            android:text="@string/chat_header"
+            android:textColor="@color/colorTextDark"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </RelativeLayout>
+
 
     <LinearLayout
         android:id="@+id/linearLayout5"
-        android:layout_width="413dp"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="70dp"
-        android:background="@drawable/bottom_semi_rectangular_background"
+        android:layout_below="@+id/chatHeaderRelativeLayout"
+        android:layout_marginTop="5dp"
         android:orientation="vertical"
         android:padding="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/chatHeaderTextView"
-        app:layout_constraintVertical_bias="0.157">
+        app:layout_constraintTop_toBottomOf="@+id/chatHeaderRelativeLayout">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/messageRecyclerView"
             android:layout_width="match_parent"
-            android:layout_height="500dp" />
+            android:layout_height="480dp" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="70dp"
             android:layout_marginBottom="2dp"
+            android:layout_marginTop="2dp"
             android:background="@drawable/login_background"
             android:orientation="horizontal"
-            android:padding="7dp">
+            android:padding="5dp">
 
             <EditText
                 android:id="@+id/sendMessageEditText"
-                android:layout_width="325dp"
+                android:layout_width="320dp"
                 android:layout_height="match_parent"
-                android:layout_marginStart="10dp"
+                android:layout_marginStart="15dp"
                 android:fontFamily="@font/montserrat"
                 android:hint="@string/message_hint"
                 android:inputType="textMultiLine"
@@ -71,6 +77,7 @@
                 android:id="@+id/sendMessageButton"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
+                android:layout_marginEnd="5dp"
                 android:layout_marginStart="5dp"
                 android:background="@drawable/ic_send" />
         </LinearLayout>
