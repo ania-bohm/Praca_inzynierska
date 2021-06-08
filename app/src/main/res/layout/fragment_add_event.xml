@@ -9,26 +9,33 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/newEventTextView"
-            android:layout_width="wrap_content"
+
+        <RelativeLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginTop="10dp"
-            android:fontFamily="@font/montserrat"
-            android:padding="10dp"
-            android:text="@string/new_event"
-            android:textColor="@color/colorTextDark"
-            android:textSize="24sp" />
+            android:background="@drawable/header_semi_rectangular_background_primary"
+            android:orientation="horizontal"
+            android:padding="10dp">
+
+            <TextView
+                android:id="@+id/newEventTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat"
+                android:padding="10dp"
+                android:text="@string/new_event"
+                android:textColor="@color/colorTextDark"
+                android:textSize="24sp" />
+        </RelativeLayout>
+
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="10dp"
-            android:background="@drawable/bottom_semi_rectangular_background_primary"
             android:orientation="vertical"
             android:padding="10dp">
 
@@ -53,12 +60,14 @@
                 android:hint="@string/event_name"
                 android:inputType="text"
                 android:padding="5dp"
+                android:textColor="@color/colorTextDark"
                 android:textSize="18sp"
-                app:met_baseColor="@android:color/white"
+                app:met_baseColor="@color/colorTextDark"
                 app:met_floatingLabel="highlight"
-                app:met_primaryColor="@android:color/white"
+                app:met_floatingLabelTextColor="@color/colorTextDark"
+                app:met_primaryColor="@color/colorTextDark"
                 app:met_singleLineEllipsis="true"
-                app:met_textColorHint="@color/colorWhite60Transparent" />
+                app:met_textColorHint="@color/colorTextDarkSeeThrough" />
 
             <com.rengwuxian.materialedittext.MaterialEditText
                 android:id="@+id/eventLocationMaterialEditText"
@@ -70,12 +79,14 @@
                 android:hint="@string/event_location"
                 android:inputType="text"
                 android:padding="5dp"
+                android:textColor="@color/colorTextDark"
                 android:textSize="18sp"
-                app:met_baseColor="@android:color/white"
+                app:met_baseColor="@color/colorTextDark"
                 app:met_floatingLabel="highlight"
-                app:met_primaryColor="@android:color/white"
+                app:met_floatingLabelTextColor="@color/colorTextDark"
+                app:met_primaryColor="@color/colorTextDark"
                 app:met_singleLineEllipsis="true"
-                app:met_textColorHint="@color/colorWhite60Transparent" />
+                app:met_textColorHint="@color/colorTextDarkSeeThrough" />
 
             <com.rengwuxian.materialedittext.MaterialEditText
                 android:id="@+id/eventDescriptionMaterialEditText"
@@ -87,12 +98,14 @@
                 android:hint="@string/event_description"
                 android:inputType="text"
                 android:padding="5dp"
+                android:textColor="@color/colorTextDark"
                 android:textSize="18sp"
-                app:met_baseColor="@android:color/white"
+                app:met_baseColor="@color/colorTextDark"
                 app:met_floatingLabel="highlight"
-                app:met_primaryColor="@android:color/white"
+                app:met_floatingLabelTextColor="@color/colorTextDark"
+                app:met_primaryColor="@color/colorTextDark"
                 app:met_singleLineEllipsis="true"
-                app:met_textColorHint="@color/colorWhite60Transparent" />
+                app:met_textColorHint="@color/colorTextDarkSeeThrough" />
 
             <TextView
                 android:id="@+id/eventDurationTextView"
@@ -109,7 +122,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:padding="10dp">
+                android:padding="5dp">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -139,40 +152,6 @@
                         app:mask="##/##/####" />
 
                     <TextView
-                        android:id="@+id/eventDateFinishTextView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/montserrat"
-                        android:padding="2dp"
-                        android:text="@string/event_date_finish"
-                        android:textColor="@color/colorTextDark" />
-
-                    <br.com.sapereaude.maskedEditText.MaskedEditText
-                        android:id="@+id/eventDateFinishEditText"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:ems="10"
-                        android:fontFamily="@font/montserrat"
-                        android:inputType="date"
-                        android:textColor="@color/colorTextDark"
-                        android:textSize="16sp"
-                        app:mask="##/##/####" />
-                </LinearLayout>
-
-                <View
-                    android:layout_width="2dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginEnd="20dp"
-                    android:background="@drawable/login_background" />
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="10dp">
-
-                    <TextView
                         android:id="@+id/eventTimeStartTextView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -191,6 +170,41 @@
                         android:textColor="@color/colorTextDark"
                         android:textSize="16sp"
                         app:mask="##:##" />
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="2dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="15dp"
+                    android:layout_marginEnd="15dp"
+                    android:background="@drawable/login_background" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="10dp">
+
+                    <TextView
+                        android:id="@+id/eventDateFinishTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/montserrat"
+                        android:padding="2dp"
+                        android:text="@string/event_date_finish"
+                        android:textColor="@color/colorTextDark" />
+
+                    <br.com.sapereaude.maskedEditText.MaskedEditText
+                        android:id="@+id/eventDateFinishEditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ems="10"
+                        android:fontFamily="@font/montserrat"
+                        android:inputType="date"
+                        android:textColor="@color/colorTextDark"
+                        android:textSize="16sp"
+                        app:mask="##/##/####" />
 
                     <TextView
                         android:id="@+id/eventTimeFinishTextView"
@@ -221,8 +235,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/montserrat"
-                android:text="@string/event_image"
                 android:padding="10dp"
+                android:text="@string/event_image"
                 android:textColor="@color/colorTextDark"
                 android:textSize="18sp"
                 android:textStyle="bold" />
@@ -230,7 +244,8 @@
             <Spinner
                 android:id="@+id/eventImageSpinner"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp" />
 
             <TextView
                 android:id="@+id/eventGuestSearchListTextView"
@@ -249,7 +264,6 @@
                 android:layout_height="60dp"
                 android:focusable="true"
                 android:iconifiedByDefault="false"
-                android:padding="10dp"
                 android:queryHint="@string/event_guest_search"
                 android:textColor="@color/colorTextDark" />
 

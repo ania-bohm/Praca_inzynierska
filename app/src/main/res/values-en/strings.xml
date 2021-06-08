@@ -182,4 +182,6 @@
     <string name="invitation_author">"Author: "</string>
     <string name="event_duration">Event duration</string>
     <string name="edit_event_duration">Modify event duration</string>
+    <string name="event_whole_date_start">Event date start</string>
+    <string name="event_whole_date_finish">Event date finish</string>
 </resources>

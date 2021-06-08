@@ -59,6 +59,8 @@
     <string name="event_date_finish">Data zakończenia</string>
     <string name="event_time_start">Godzina rozpoczęcia</string>
     <string name="event_time_finish">Godzina zakończenia</string>
+    <string name="event_whole_date_start">Czas rozpoczęcia wydarzenia</string>
+    <string name="event_whole_date_finish">Czas zakończenia wydarzenia</string>
     <string name="event_location">Lokalizacja</string>
     <string name="event_description">Opis</string>
     <string name="event_guest_list">Lista gości</string>
