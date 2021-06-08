@@ -7,7 +7,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -26,15 +25,11 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -47,6 +42,12 @@ import static android.content.ContentValues.TAG;
 
 public class MainFragment extends Fragment {
     NavController navController;
+    private final View.OnClickListener addEventOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            navController.navigate(R.id.mainToAddEvent);
+        }
+    };
     FloatingActionButton addEventFloatingActionButton;
     RecyclerView yourCurrentEventsRecyclerView, allEventsRecyclerView;
     TextView yourEventsEmptyTextView, allEventsEmptyTextView, welcomeUserFirstNameTextView;
@@ -61,16 +62,10 @@ public class MainFragment extends Fragment {
     ConfirmedEventAdapter yourCurrentEventsAdapter;
     HashMap<String, Event> confirmedEvents;
     HashMap<String, Event> yourCurrentEvents;
+    DateHandler dateHandler = new DateHandler("dd/MM/yyyy", "HH:mm");
     String currentUserId = Objects.requireNonNull(firebaseAuthInstanceSingleton.getFirebaseAuthRef().getCurrentUser()).getUid();
     Context context;
     SpotsDialog alertDialog;
-
-    private final View.OnClickListener addEventOnClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            navController.navigate(R.id.mainToAddEvent);
-        }
-    };
 
     public MainFragment() {
     }
@@ -107,18 +102,16 @@ public class MainFragment extends Fragment {
                                 public void onSuccess(DocumentSnapshot documentSnapshot) {
                                     Event eventToCheck = documentSnapshot.toObject(Event.class);
                                     Date dateNow = new Date();
-                                    final DateFormat timeFormatterPrint = new SimpleDateFormat("HH:mm");
-                                    final DateFormat dateFormatterPrint = new SimpleDateFormat("dd/MM/yyyy");
                                     assert eventToCheck != null;
-                                    String newString = timeFormatterPrint.format(eventToCheck.getEventTimeFinish());
-                                    String newStringNow = timeFormatterPrint.format(dateNow);
+                                    String newString = dateHandler.convertTimeToString(eventToCheck.getEventTimeFinish());
+                                    String newStringNow = dateHandler.convertTimeToString(dateNow);
 
                                     int hourNow = Integer.parseInt(newStringNow.substring(0, 2));
                                     int hour = Integer.parseInt(newString.substring(0, 2));
                                     int minuteNow = Integer.parseInt(newStringNow.substring(3, 5));
                                     int minute = Integer.parseInt(newString.substring(3, 5));
-                                    String dateNowString = dateFormatterPrint.format(dateNow);
-                                    String dateString = dateFormatterPrint.format(eventToCheck.getEventDateFinish());
+                                    String dateNowString = dateHandler.convertDateToString(dateNow);
+                                    String dateString = dateHandler.convertDateToString(eventToCheck.getEventDateFinish());
 
                                     if (eventToCheck.getEventDateFinish().after(new Date())) {
                                         confirmedEvents.put(eventId, documentSnapshot.toObject(Event.class));
@@ -196,18 +189,16 @@ public class MainFragment extends Fragment {
                             final String eventId = documentSnapshot.getId();
                             Event eventToCheck = documentSnapshot.toObject(Event.class);
                             Date dateNow = new Date();
-                            final DateFormat timeFormatterPrint = new SimpleDateFormat("HH:mm");
-                            final DateFormat dateFormatterPrint = new SimpleDateFormat("dd/MM/yyyy");
                             assert eventToCheck != null;
-                            String newString = timeFormatterPrint.format(eventToCheck.getEventTimeFinish());
-                            String newStringNow = timeFormatterPrint.format(dateNow);
+                            String newString = dateHandler.convertTimeToString(eventToCheck.getEventTimeFinish());
+                            String newStringNow = dateHandler.convertTimeToString(dateNow);
 
                             int hourNow = Integer.parseInt(newStringNow.substring(0, 2));
                             int hour = Integer.parseInt(newString.substring(0, 2));
                             int minuteNow = Integer.parseInt(newStringNow.substring(3, 5));
                             int minute = Integer.parseInt(newString.substring(3, 5));
-                            String dateNowString = dateFormatterPrint.format(dateNow);
-                            String dateString = dateFormatterPrint.format(eventToCheck.getEventDateFinish());
+                            String dateNowString = dateHandler.convertDateToString(dateNow);
+                            String dateString = dateHandler.convertDateToString(eventToCheck.getEventDateFinish());
 
                             if (eventToCheck.getEventDateFinish().after(new Date())) {
                                 yourCurrentEvents.put(eventId, documentSnapshot.toObject(Event.class));

@@ -17,9 +17,6 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -36,6 +33,7 @@ public class ConfirmedEventAdapter extends RecyclerView.Adapter<ConfirmedEventAd
     FirestoreInstanceSingleton firestoreInstanceSingleton = FirestoreInstanceSingleton.getInstance();
     CollectionReference users = firestoreInstanceSingleton.getFirebaseFirestoreRef().collection("Users");
     DocumentReference userAuthor;
+    DateHandler dateHandler = new DateHandler("dd/MM/yyyy", "HH:mm");
 
     public ConfirmedEventAdapter(HashMap<String, Event> eventMap) {
         this.eventMap = eventMap;
@@ -61,17 +59,6 @@ public class ConfirmedEventAdapter extends RecyclerView.Adapter<ConfirmedEventAd
         if (sortedEventsList.size() > 0) {
             Date eventDateStart = sortedEventsList.get(position).getEventDateStart();
             Date eventTimeStart = sortedEventsList.get(position).getEventTimeStart();
-            DateFormat dateFormatterRead = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy");
-            final DateFormat dateFormatterPrint = new SimpleDateFormat("dd/MM/yyyy");
-            final DateFormat timeFormatterPrint = new SimpleDateFormat("HH:mm");
-
-            try {
-                eventDateStart = dateFormatterRead.parse(eventDateStart.toString());
-                eventTimeStart = dateFormatterRead.parse(eventTimeStart.toString());
-            } catch (ParseException e) {
-                e.printStackTrace();
-                Log.i(TAG, e.toString());
-            }
 
             userAuthor = users.document(sortedEventsList.get(position).getEventAuthor());
             final Date finalEventDateStart = eventDateStart;
@@ -84,9 +71,9 @@ public class ConfirmedEventAdapter extends RecyclerView.Adapter<ConfirmedEventAd
                         viewHolder.miniEventLinearLayout.setBackgroundResource(sortedEventsList.get(position).getEventImage());
                         viewHolder.miniEventNameTextView.setText(sortedEventsList.get(position).getEventName());
                         assert finalEventDateStart != null;
-                        viewHolder.miniEventDateStartTextView.setText(dateFormatterPrint.format(finalEventDateStart));
+                        viewHolder.miniEventDateStartTextView.setText(dateHandler.convertDateToString(finalEventDateStart));
                         assert finalEventTimeStart != null;
-                        viewHolder.miniEventTimeStartTextView.setText(timeFormatterPrint.format(finalEventTimeStart));
+                        viewHolder.miniEventTimeStartTextView.setText(dateHandler.convertTimeToString(finalEventTimeStart));
                         assert user != null;
                         viewHolder.miniEventAuthorTextView.setText(user.getUserFirstName() + " " + user.getUserLastName());
                         viewHolder.itemView.setOnClickListener(new View.OnClickListener() {

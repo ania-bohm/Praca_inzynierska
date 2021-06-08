@@ -22,8 +22,6 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Objects;
@@ -45,6 +43,7 @@ public class InvitationListFragment extends Fragment {
     CollectionReference events = firestoreInstanceSingleton.getFirebaseFirestoreRef().collection("Events");
     CollectionReference attendeeEvents = firestoreInstanceSingleton.getFirebaseFirestoreRef().collection("AttendeeEvents");
     Context context;
+    DateHandler dateHandler = new DateHandler("dd/MM/yyyy", "HH:mm");
     String currentUserId = firebaseAuthInstanceSingleton.getFirebaseAuthRef().getCurrentUser().getUid();
     AlertDialog alertDialog;
 
@@ -107,18 +106,16 @@ public class InvitationListFragment extends Fragment {
                                                 if (documentSnapshot.exists()) {
                                                     Event eventToCheck = documentSnapshot.toObject(Event.class);
                                                     Date dateNow = new Date();
-                                                    final DateFormat timeFormatterPrint = new SimpleDateFormat("HH:mm");
-                                                    final DateFormat dateFormatterPrint = new SimpleDateFormat("dd/MM/yyyy");
                                                     assert eventToCheck != null;
-                                                    String newString = timeFormatterPrint.format(eventToCheck.getEventTimeFinish());
-                                                    String newStringNow = timeFormatterPrint.format(dateNow);
+                                                    String newString = dateHandler.convertTimeToString(eventToCheck.getEventTimeFinish());
+                                                    String newStringNow = dateHandler.convertTimeToString(dateNow);
 
                                                     int hourNow = Integer.parseInt(newStringNow.substring(0, 2));
                                                     int hour = Integer.parseInt(newString.substring(0, 2));
                                                     int minuteNow = Integer.parseInt(newStringNow.substring(3, 5));
                                                     int minute = Integer.parseInt(newString.substring(3, 5));
-                                                    String dateNowString = dateFormatterPrint.format(dateNow);
-                                                    String dateString = dateFormatterPrint.format(eventToCheck.getEventDateFinish());
+                                                    String dateNowString = dateHandler.convertDateToString(dateNow);
+                                                    String dateString = dateHandler.convertDateToString(eventToCheck.getEventDateFinish());
 
                                                     if (eventToCheck.getEventDateFinish().after(new Date())) {
                                                         invitationEventList.add(documentSnapshot.toObject(Event.class));

@@ -28,8 +28,6 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Objects;
@@ -50,6 +48,7 @@ public class PastEventsFragment extends Fragment {
     CollectionReference attendeeEvents = firestoreInstanceSingleton.getFirebaseFirestoreRef().collection("AttendeeEvents");
     ArrayList<String> attendeesToDeleteIdList = new ArrayList<>();
     Context context;
+    DateHandler dateHandler = new DateHandler("dd/MM/yyyy", "HH:mm");
     String authorId = firebaseAuthInstanceSingleton.getFirebaseAuthRef().getCurrentUser().getUid();
 
     public PastEventsFragment() {
@@ -108,18 +107,16 @@ public class PastEventsFragment extends Fragment {
                     for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
                         Event pastEvent = documentSnapshot.toObject(Event.class);
                         Date dateNow = new Date();
-                        final DateFormat timeFormatterPrint = new SimpleDateFormat("HH:mm");
-                        final DateFormat dateFormatterPrint = new SimpleDateFormat("dd/MM/yyyy");
                         assert pastEvent != null;
-                        String newString = timeFormatterPrint.format(pastEvent.getEventTimeFinish());
-                        String newStringNow = timeFormatterPrint.format(dateNow);
+                        String newString = dateHandler.convertTimeToString(pastEvent.getEventTimeFinish());
+                        String newStringNow = dateHandler.convertTimeToString(dateNow);
 
                         int hourNow = Integer.parseInt(newStringNow.substring(0, 2));
                         int hour = Integer.parseInt(newString.substring(0, 2));
                         int minuteNow = Integer.parseInt(newStringNow.substring(3, 5));
                         int minute = Integer.parseInt(newString.substring(3, 5));
-                        String dateNowString = dateFormatterPrint.format(dateNow);
-                        String dateString = dateFormatterPrint.format(pastEvent.getEventDateFinish());
+                        String dateNowString = dateHandler.convertDateToString(dateNow);
+                        String dateString = dateHandler.convertDateToString(pastEvent.getEventDateFinish());
 
                         if (pastEvent.getEventDateFinish().before(new Date())) {
                             eventList.add(pastEvent);

@@ -3,16 +3,8 @@ package com.annabohm.pracainzynierska;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
+import android.util.Patterns;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -28,6 +20,12 @@ import android.widget.SearchView;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -36,7 +34,6 @@ import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -63,6 +60,7 @@ public class EditEventFragment extends Fragment implements AdapterView.OnItemSel
     };
     Bundle bundle;
     Context context;
+    Event editedEvent;
     EditText editEventNameEditText, editEventDateStartEditText, editEventTimeStartEditText, editEventDateFinishEditText, editEventTimeFinishEditText, editEventLocationEditText, editEventDescriptionEditText;
     Button editEventReadyButton, editEventCancelButton;
     Spinner editEventImageSpinner;
@@ -73,6 +71,11 @@ public class EditEventFragment extends Fragment implements AdapterView.OnItemSel
     ArrayList<User> oldGuestList, newGuestList, foundUsersList;
     ArrayList<String> oldGuestIdList, newGuestIdList, foundUsersIdList;
     DocumentReference event;
+    DateHandler dateHandler = new DateHandler("dd/MM/yyyy", "HH:mm");
+    UserSearchListAdapter oldGuestListAdapter, newGuestListAdapter, foundUsersAdapter;
+    SimpleImageArrayAdapter imageArrayAdapter;
+    InputMethodManager imm;
+    AlertDialog alertDialog;
     FirestoreInstanceSingleton firestoreInstanceSingleton = FirestoreInstanceSingleton.getInstance();
     CollectionReference users = firestoreInstanceSingleton.getFirebaseFirestoreRef().collection("Users");
     CollectionReference eventAttendees = firestoreInstanceSingleton.getFirebaseFirestoreRef().collection("EventAttendees");
@@ -80,123 +83,152 @@ public class EditEventFragment extends Fragment implements AdapterView.OnItemSel
     private final View.OnClickListener editEventReadyOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            DateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy");
-            DateFormat timeFormatter = new SimpleDateFormat("HH:mm");
+            String eventName = editEventNameEditText.getText().toString().trim();
+            String eventDescription = editEventDescriptionEditText.getText().toString().trim();
+            String eventLocation = editEventLocationEditText.getText().toString().trim();
+            String dateStartValue = editEventDateStartEditText.getText().toString().trim();
+            String dateFinishValue = editEventDateFinishEditText.getText().toString().trim();
+            String timeStartValue = editEventTimeStartEditText.getText().toString().trim();
+            String timeFinishValue = editEventTimeFinishEditText.getText().toString().trim();
+            Integer eventImage = chosenImage;
+
             Date eventDateStart = null;
             Date eventDateFinish = null;
             Date eventTimeStart = null;
             Date eventTimeFinish = null;
 
-            if (!editEventNameEditText.getText().toString().trim().isEmpty()) {
-                event.update("eventName", editEventNameEditText.getText().toString());
-            }
-
-            if (!editEventDateStartEditText.getText().toString().trim().isEmpty()) {
-                try {
-                    eventDateStart = dateFormatter.parse(editEventDateStartEditText.getText().toString());
-                } catch (java.text.ParseException e) {
-                    e.printStackTrace();
-                    Log.i(TAG, e.toString());
-                }
-                event.update("eventDateStart", eventDateStart);
-            }
-
-            if (!editEventTimeStartEditText.getText().toString().trim().isEmpty()) {
-                try {
-                    eventTimeStart = timeFormatter.parse(editEventTimeStartEditText.getText().toString());
-                } catch (java.text.ParseException e) {
-                    e.printStackTrace();
-                    Log.i(TAG, e.toString());
-                }
-                event.update("eventTimeStart", eventTimeStart);
-            }
-
-            if (!editEventDateFinishEditText.getText().toString().trim().isEmpty()) {
-                try {
-                    eventDateFinish = dateFormatter.parse(editEventDateFinishEditText.getText().toString());
-                } catch (java.text.ParseException e) {
-                    e.printStackTrace();
-                    Log.i(TAG, e.toString());
-                }
-                event.update("eventDateFinish", eventDateFinish);
-            }
-
-            if (!editEventTimeFinishEditText.getText().toString().trim().isEmpty()) {
-                try {
-                    eventTimeFinish = timeFormatter.parse(editEventTimeFinishEditText.getText().toString());
-                } catch (java.text.ParseException e) {
-                    e.printStackTrace();
-                    Log.i(TAG, e.toString());
-                }
-                event.update("eventTimeFinish", eventTimeFinish);
-            }
-
-            if (!editEventLocationEditText.getText().toString().trim().isEmpty()) {
-                event.update("eventLocation", editEventLocationEditText.getText().toString());
-            }
-
-            if (!editEventDescriptionEditText.getText().toString().trim().isEmpty()) {
-                event.update("eventDescription", editEventDescriptionEditText.getText().toString());
-            }
-
-            if (chosenImage != 0) {
-                event.update("eventImage", chosenImage);
-            }
-
-            if (!newGuestIdList.isEmpty()) {
-                for (int i = 0; i < newGuestIdList.size(); i++) {
-                    Map<String, String> docDataUserId = new HashMap<>();
-                    docDataUserId.put("User", newGuestIdList.get(i));
-
-                    eventAttendees.document(eventId).collection("Invited").add(docDataUserId).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                        @Override
-                        public void onSuccess(DocumentReference documentReference) {
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Log.d(TAG, e.toString());
-                        }
-                    });
-                }
-
-                for (int i = 0; i < newGuestIdList.size(); i++) {
-                    Map<String, String> docDataEventId = new HashMap<>();
-                    docDataEventId.put("Event", eventId);
-                    attendeeEvents.document(newGuestIdList.get(i)).collection("Invited").add(docDataEventId).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                        @Override
-                        public void onSuccess(DocumentReference documentReference) {
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                            Log.d(TAG, e.toString());
-                        }
-                    });
-                }
-            }
-
             if (modificationCount == 0
                     && newGuestIdList.isEmpty()
-                    && editEventNameEditText.getText().toString().trim().isEmpty()
-                    && editEventDateStartEditText.getText().toString().trim().isEmpty()
-                    && editEventTimeStartEditText.getText().toString().isEmpty()
-                    && editEventDateFinishEditText.getText().toString().isEmpty()
-                    && editEventTimeFinishEditText.getText().toString().isEmpty()
-                    && editEventLocationEditText.getText().toString().isEmpty()
-                    && editEventDescriptionEditText.getText().toString().isEmpty()
-                    && chosenImage == 0) {
+                    && eventName.isEmpty()
+                    && dateStartValue.isEmpty()
+                    && timeStartValue.isEmpty()
+                    && dateFinishValue.isEmpty()
+                    && timeFinishValue.isEmpty()
+                    && eventLocation.isEmpty()
+                    && eventDescription.isEmpty()
+                    && eventImage == 0) {
                 Toast.makeText(context, R.string.edit_event_error_empty, Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            navController.popBackStack();
+            if (!dateStartValue.isEmpty()) {
+                if (dateHandler.isDateValid(dateStartValue)) {
+                    eventDateStart = dateHandler.convertStringToDate(dateStartValue);
+                } else {
+                    Toast.makeText(context, R.string.event_dates_incorrect, Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            }
+
+            if (!timeStartValue.isEmpty()) {
+                if (dateHandler.isTimeValid(timeStartValue)) {
+                    eventTimeStart = dateHandler.convertStringToTime(timeStartValue);
+                } else {
+                    Toast.makeText(context, R.string.event_dates_incorrect, Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            }
+
+            if (!dateFinishValue.isEmpty()) {
+                if (dateHandler.isDateValid(dateFinishValue)) {
+                    eventDateFinish = dateHandler.convertStringToDate(dateFinishValue);
+                } else {
+                    Toast.makeText(context, R.string.event_dates_incorrect, Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            }
+
+            if (!timeFinishValue.isEmpty()) {
+                if (dateHandler.isTimeValid(timeFinishValue)) {
+                    eventTimeFinish = dateHandler.convertStringToTime(timeFinishValue);
+                } else {
+                    Toast.makeText(context, R.string.event_dates_incorrect, Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            }
+
+            if (eventName.isEmpty()) {
+                eventName = editedEvent.getEventName();
+            }
+
+            if (dateStartValue.isEmpty()) {
+                eventDateStart = editedEvent.getEventDateStart();
+            }
+
+            if (timeStartValue.isEmpty()) {
+                eventTimeStart = editedEvent.getEventTimeStart();
+            }
+
+            if (dateFinishValue.isEmpty()) {
+                eventDateFinish = editedEvent.getEventDateFinish();
+            }
+
+            if (timeFinishValue.isEmpty()) {
+                eventTimeFinish = editedEvent.getEventTimeFinish();
+            }
+
+            if (eventLocation.isEmpty()) {
+                eventLocation = editedEvent.getEventLocation();
+            }
+
+            if (eventDescription.isEmpty()) {
+                eventDescription = editedEvent.getEventDescription();
+            }
+
+            if (eventImage == 0) {
+                eventImage = editedEvent.getEventImage();
+            }
+
+            if (dateHandler.datesCorrect(eventDateStart, eventDateFinish, eventTimeStart, eventTimeFinish)) {
+                event.update("eventName", eventName);
+                event.update("eventDateStart", eventDateStart);
+                event.update("eventTimeStart", eventTimeStart);
+                event.update("eventDateFinish", eventDateFinish);
+                event.update("eventTimeFinish", eventTimeFinish);
+                event.update("eventLocation", eventLocation);
+                event.update("eventDescription", eventDescription);
+                event.update("eventImage", eventImage);
+
+                if (!newGuestIdList.isEmpty()) {
+                    for (int i = 0; i < newGuestIdList.size(); i++) {
+                        Map<String, String> docDataUserId = new HashMap<>();
+                        docDataUserId.put("User", newGuestIdList.get(i));
+
+                        eventAttendees.document(eventId).collection("Invited").add(docDataUserId).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                            @Override
+                            public void onSuccess(DocumentReference documentReference) {
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.d(TAG, e.toString());
+                            }
+                        });
+                    }
+
+                    for (int i = 0; i < newGuestIdList.size(); i++) {
+                        Map<String, String> docDataEventId = new HashMap<>();
+                        docDataEventId.put("Event", eventId);
+                        attendeeEvents.document(newGuestIdList.get(i)).collection("Invited").add(docDataEventId).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                            @Override
+                            public void onSuccess(DocumentReference documentReference) {
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Log.d(TAG, e.toString());
+                            }
+                        });
+                    }
+                }
+
+                navController.popBackStack();
+            } else {
+                Toast.makeText(context, R.string.event_dates_incorrect, Toast.LENGTH_SHORT).show();
+            }
         }
     };
-    UserSearchListAdapter oldGuestListAdapter, newGuestListAdapter, foundUsersAdapter;
-    SimpleImageArrayAdapter imageArrayAdapter;
-    InputMethodManager imm;
-    AlertDialog alertDialog;
+
 
     public EditEventFragment() {
     }
@@ -327,11 +359,8 @@ public class EditEventFragment extends Fragment implements AdapterView.OnItemSel
         event.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
-                Event event = new Event();
                 if (documentSnapshot.exists()) {
-                    event = documentSnapshot.toObject(Event.class);
-                    DateFormat dateFormatterPrint = new SimpleDateFormat("dd/MM/yyyy");
-                    DateFormat timeFormatterPrint = new SimpleDateFormat("HH:mm");
+                    editedEvent = documentSnapshot.toObject(Event.class);
 
                     oldGuestListAdapter = new UserSearchListAdapter(context, oldGuestList);
                     newGuestListAdapter = new UserSearchListAdapter(context, newGuestList);
@@ -345,14 +374,14 @@ public class EditEventFragment extends Fragment implements AdapterView.OnItemSel
 
                     populateOldGuestList();
 
-                    assert event != null;
-                    editEventNameEditText.setHint(event.getEventName());
-                    editEventDateStartEditText.setHint(dateFormatterPrint.format(event.getEventDateStart()));
-                    editEventTimeStartEditText.setHint(timeFormatterPrint.format(event.getEventTimeStart()));
-                    editEventDateFinishEditText.setHint(dateFormatterPrint.format(event.getEventDateFinish()));
-                    editEventTimeFinishEditText.setHint(timeFormatterPrint.format(event.getEventTimeFinish()));
-                    editEventLocationEditText.setHint(event.getEventLocation());
-                    editEventDescriptionEditText.setHint(event.getEventDescription());
+                    assert editedEvent != null;
+                    editEventNameEditText.setHint(editedEvent.getEventName());
+                    editEventDateStartEditText.setHint(dateHandler.convertDateToString(editedEvent.getEventDateStart()));
+                    editEventTimeStartEditText.setHint(dateHandler.convertTimeToString(editedEvent.getEventTimeStart()));
+                    editEventDateFinishEditText.setHint(dateHandler.convertDateToString(editedEvent.getEventDateFinish()));
+                    editEventTimeFinishEditText.setHint(dateHandler.convertTimeToString(editedEvent.getEventTimeFinish()));
+                    editEventLocationEditText.setHint(editedEvent.getEventLocation());
+                    editEventDescriptionEditText.setHint(editedEvent.getEventDescription());
                     alertDialog.dismiss();
                 }
             }

@@ -2,8 +2,6 @@ package com.annabohm.pracainzynierska;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
@@ -30,18 +28,13 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -59,6 +52,9 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
         }
     };
     Context context;
+    UserSearchListAdapter invitedUsersAdapter, foundUsersAdapter;
+    SimpleImageArrayAdapter imageArrayAdapter;
+    InputMethodManager imm;
     FirestoreInstanceSingleton firestoreInstanceSingleton = FirestoreInstanceSingleton.getInstance();
     FirebaseAuthInstanceSingleton firebaseAuthInstanceSingleton = FirebaseAuthInstanceSingleton.getInstance();
     CollectionReference events = firestoreInstanceSingleton.getFirebaseFirestoreRef().collection("Events");
@@ -74,42 +70,44 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
     String eventAuthor = Objects.requireNonNull(firebaseAuthInstanceSingleton.getFirebaseAuthRef().getCurrentUser()).getUid();
     ArrayList<User> invitedUsersList, foundUsersList;
     ArrayList<String> invitedUsersIdList, foundUsersIdList;
+    DateHandler dateHandler;
     private final View.OnClickListener eventReadyOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            String eventName = eventNameEditText.getText().toString();
-            String eventDescription = eventDescriptionEditText.getText().toString();
-            String eventLocation = eventLocationEditText.getText().toString();
-            String dateStartValue = eventDateStartEditText.getText().toString();
-            String dateFinishValue = eventDateFinishEditText.getText().toString();
-            String timeStartValue = eventTimeStartEditText.getText().toString();
-            String timeFinishValue = eventTimeFinishEditText.getText().toString();
+            String eventName = eventNameEditText.getText().toString().trim();
+            String eventDescription = eventDescriptionEditText.getText().toString().trim();
+            String eventLocation = eventLocationEditText.getText().toString().trim();
+            String dateStartValue = eventDateStartEditText.getText().toString().trim();
+            String dateFinishValue = eventDateFinishEditText.getText().toString().trim();
+            String timeStartValue = eventTimeStartEditText.getText().toString().trim();
+            String timeFinishValue = eventTimeFinishEditText.getText().toString().trim();
             Integer eventImage = chosenImage;
 
-            if (eventName.trim().isEmpty() || dateStartValue.trim().isEmpty() || dateFinishValue.trim().isEmpty() || timeStartValue.trim().isEmpty() || timeFinishValue.trim().isEmpty() || eventLocation.trim().isEmpty()) {
+            if (eventName.isEmpty() || dateStartValue.isEmpty() || dateFinishValue.isEmpty() || timeStartValue.isEmpty() || timeFinishValue.isEmpty() || eventLocation.isEmpty()) {
                 Toast.makeText(context, R.string.event_empty_fields, Toast.LENGTH_SHORT).show();
                 return;
             }
 
-            DateFormat dateFormatter = new SimpleDateFormat("dd/MM/yyyy");
-            DateFormat timeFormatter = new SimpleDateFormat("HH:mm");
-            Date eventDateStart = null;
-            Date eventDateFinish = null;
-            Date eventTimeStart = null;
-            Date eventTimeFinish = null;
+            Date eventDateStart;
+            Date eventDateFinish;
+            Date eventTimeStart;
+            Date eventTimeFinish;
 
-            try {
-                eventDateStart = dateFormatter.parse(dateStartValue);
-                eventDateFinish = dateFormatter.parse(dateFinishValue);
-                eventTimeStart = timeFormatter.parse(timeStartValue);
-                eventTimeFinish = timeFormatter.parse(timeFinishValue);
-                if (!datesCorrect(eventDateStart, eventTimeStart, eventDateFinish, eventTimeFinish)) {
+            if (dateHandler.isDateValid(dateStartValue)
+                    && dateHandler.isTimeValid(dateStartValue)
+                    && dateHandler.isDateValid(dateFinishValue)
+                    && dateHandler.isTimeValid(timeFinishValue)) {
+                eventDateStart = dateHandler.convertStringToDate(dateStartValue);
+                eventDateFinish = dateHandler.convertStringToDate(dateFinishValue);
+                eventTimeStart = dateHandler.convertStringToTime(timeStartValue);
+                eventTimeFinish = dateHandler.convertStringToTime(timeFinishValue);
+                if (!dateHandler.datesCorrect(eventDateStart, eventTimeStart, eventDateFinish, eventTimeFinish)) {
                     Toast.makeText(context, R.string.event_dates_incorrect, Toast.LENGTH_SHORT).show();
                     return;
                 }
-            } catch (java.text.ParseException e) {
-                e.printStackTrace();
-                Log.i(TAG, e.toString());
+            } else {
+                Toast.makeText(context, R.string.event_dates_incorrect, Toast.LENGTH_SHORT).show();
+                return;
             }
 
             final Event event = new Event(eventName, eventDateStart, eventTimeStart, eventDateFinish, eventTimeFinish, eventLocation, eventDescription, eventImage, eventAuthor);
@@ -161,9 +159,6 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
             navController.popBackStack();
         }
     };
-    UserSearchListAdapter invitedUsersAdapter, foundUsersAdapter;
-    SimpleImageArrayAdapter imageArrayAdapter;
-    InputMethodManager imm;
 
     public AddEventFragment() {
     }
@@ -205,6 +200,8 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
         eventUserSearchListView = view.findViewById(R.id.eventUserSearchListView);
         eventImageSpinner = view.findViewById(R.id.eventImageSpinner);
         eventGuestListListView = view.findViewById(R.id.eventGuestListListView);
+
+        dateHandler = new DateHandler("dd/MM/yyyy", "HH:mm");
 
         invitedUsersList = new ArrayList<>();
         foundUsersList = new ArrayList<>();
@@ -437,24 +434,4 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
         chosenImage = (Integer) parent.getItemAtPosition(0);
     }
 
-    public boolean datesCorrect(Date eventDateStart, Date eventDateFinish, Date eventTimeStart, Date eventTimeFinish) {
-        Date eventDateStartMerged = mergeDateAndTime(eventDateStart, eventTimeStart);
-        Date eventDateFinishMerged = mergeDateAndTime(eventDateFinish, eventTimeFinish);
-        return !eventDateStartMerged.after(eventDateFinishMerged);
-    }
-
-    public Date mergeDateAndTime(Date date, Date time) {
-        Calendar calendarA = Calendar.getInstance();
-        calendarA.setTime(date);
-
-        Calendar calendarB = Calendar.getInstance();
-        calendarB.setTime(time);
-
-        calendarA.set(Calendar.HOUR_OF_DAY, calendarB.get(Calendar.HOUR_OF_DAY));
-        calendarA.set(Calendar.MINUTE, calendarB.get(Calendar.MINUTE));
-        calendarA.set(Calendar.SECOND, calendarB.get(Calendar.SECOND));
-        calendarA.set(Calendar.MILLISECOND, calendarB.get(Calendar.MILLISECOND));
-
-        return calendarA.getTime();
-    }
 }

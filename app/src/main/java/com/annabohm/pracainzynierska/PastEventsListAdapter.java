@@ -37,6 +37,7 @@ public class PastEventsListAdapter extends ArrayAdapter<Event> implements View.O
     private ArrayList<Event> eventList;
     private ArrayList<String> eventIdList;
     private Context context;
+    DateHandler dateHandler = new DateHandler("dd/MM/yyyy", "HH:mm");
 
     public PastEventsListAdapter(@NonNull Context context, @NonNull List<Event> eventList, List<String> eventIdList, NavController navController) {
         super(context, R.layout.past_event_list_item, eventList);
@@ -69,29 +70,16 @@ public class PastEventsListAdapter extends ArrayAdapter<Event> implements View.O
         Date eventTimeStart = event.getEventTimeStart();
         Date eventDateFinish = event.getEventDateFinish();
         Date eventTimeFinish = event.getEventTimeFinish();
-        DateFormat dateFormatterRead = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy");
-        DateFormat dateFormatterPrint = new SimpleDateFormat("dd/MM/yyyy");
-        DateFormat timeFormatterPrint = new SimpleDateFormat("HH:mm");
-
-        try {
-            eventDateStart = dateFormatterRead.parse(eventDateStart.toString());
-            eventTimeStart = dateFormatterRead.parse(eventTimeStart.toString());
-            eventDateFinish = dateFormatterRead.parse(eventDateFinish.toString());
-            eventTimeFinish = dateFormatterRead.parse(eventTimeFinish.toString());
-        } catch (java.text.ParseException e) {
-            e.printStackTrace();
-            Log.i(TAG, e.toString());
-        }
 
         pastEventNameTextView.setText(event.getEventName());
         assert eventDateStart != null;
-        pastEventDateStartTextView.setText(dateFormatterPrint.format(eventDateStart));
+        pastEventDateStartTextView.setText(dateHandler.convertDateToString(eventDateStart));
         assert eventTimeStart != null;
-        pastEventTimeStartTextView.setText(timeFormatterPrint.format(eventTimeStart));
+        pastEventTimeStartTextView.setText(dateHandler.convertTimeToString(eventTimeStart));
         assert eventDateFinish != null;
-        pastEventDateFinishTextView.setText(dateFormatterPrint.format(eventDateFinish));
+        pastEventDateFinishTextView.setText(dateHandler.convertDateToString(eventDateFinish));
         assert eventTimeFinish != null;
-        pastEventTimeFinishTextView.setText(timeFormatterPrint.format(eventTimeFinish));
+        pastEventTimeFinishTextView.setText(dateHandler.convertTimeToString(eventTimeFinish));
 
         pastEventLinearLayout.setLongClickable(true);
 

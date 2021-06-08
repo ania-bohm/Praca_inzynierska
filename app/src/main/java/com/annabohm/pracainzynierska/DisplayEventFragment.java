@@ -44,6 +44,14 @@ public class DisplayEventFragment extends Fragment {
     ArrayList<User> userList;
     ArrayList<String> userStatusList;
     String eventId;
+    FirestoreInstanceSingleton firestoreInstanceSingleton = FirestoreInstanceSingleton.getInstance();
+    FirebaseAuthInstanceSingleton firebaseAuthInstanceSingleton = FirebaseAuthInstanceSingleton.getInstance();
+    CollectionReference users = firestoreInstanceSingleton.getFirebaseFirestoreRef().collection("Users");
+    CollectionReference eventAttendees = firestoreInstanceSingleton.getFirebaseFirestoreRef().collection("EventAttendees");
+    String currentUserId = firebaseAuthInstanceSingleton.getFirebaseAuthRef().getCurrentUser().getUid();
+    DocumentReference eventReference;
+    AlertDialog alertDialog;
+    DateHandler dateHandler = new DateHandler("dd/MM/yyyy", "HH:mm");
     GuestListAdapter adapter;
     Context context;
     Bundle bundle;
@@ -77,13 +85,7 @@ public class DisplayEventFragment extends Fragment {
             navController.navigate(R.id.displayEventToChat, bundle);
         }
     };
-    FirestoreInstanceSingleton firestoreInstanceSingleton = FirestoreInstanceSingleton.getInstance();
-    FirebaseAuthInstanceSingleton firebaseAuthInstanceSingleton = FirebaseAuthInstanceSingleton.getInstance();
-    CollectionReference users = firestoreInstanceSingleton.getFirebaseFirestoreRef().collection("Users");
-    CollectionReference eventAttendees = firestoreInstanceSingleton.getFirebaseFirestoreRef().collection("EventAttendees");
-    String currentUserId = firebaseAuthInstanceSingleton.getFirebaseAuthRef().getCurrentUser().getUid();
-    DocumentReference eventReference;
-    AlertDialog alertDialog;
+
 
     public DisplayEventFragment() {
     }
@@ -165,8 +167,6 @@ public class DisplayEventFragment extends Fragment {
                         editEventButton.setVisibility(View.GONE);
                     }
 
-                    final DateFormat dateFormatterPrint = new SimpleDateFormat("dd/MM/yyyy");
-                    final DateFormat timeFormatterPrint = new SimpleDateFormat("HH:mm");
                     users.document(event.getEventAuthor()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                         @Override
                         public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -174,10 +174,10 @@ public class DisplayEventFragment extends Fragment {
                             assert userAuthor != null;
                             showEventAuthorTextView.setText(userAuthor.getUserFirstName() + " " + userAuthor.getUserLastName());
                             showEventNameTextView.setText(event.getEventName());
-                            showEventDateStartTextView.setText(dateFormatterPrint.format(event.getEventDateStart()));
-                            showEventTimeStartTextView.setText(timeFormatterPrint.format(event.getEventTimeStart()));
-                            showEventDateFinishTextView.setText(dateFormatterPrint.format(event.getEventDateFinish()));
-                            showEventTimeFinishTextView.setText(timeFormatterPrint.format(event.getEventTimeFinish()));
+                            showEventDateStartTextView.setText(dateHandler.convertDateToString(event.getEventDateStart()));
+                            showEventTimeStartTextView.setText(dateHandler.convertTimeToString(event.getEventTimeStart()));
+                            showEventDateFinishTextView.setText(dateHandler.convertDateToString(event.getEventDateFinish()));
+                            showEventTimeFinishTextView.setText(dateHandler.convertTimeToString(event.getEventTimeFinish()));
                             showEventLocationTextView.setText(event.getEventLocation());
                             showEventDescriptionTextView.setText(event.getEventDescription());
                             alertDialog.dismiss();
