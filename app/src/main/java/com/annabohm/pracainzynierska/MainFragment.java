@@ -100,36 +100,38 @@ public class MainFragment extends Fragment {
                             events.document(eventId).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                                 @Override
                                 public void onSuccess(DocumentSnapshot documentSnapshot) {
-                                    Event eventToCheck = documentSnapshot.toObject(Event.class);
-                                    Date dateNow = new Date();
-                                    assert eventToCheck != null;
-                                    String newString = dateHandler.convertTimeToString(eventToCheck.getEventTimeFinish());
-                                    String newStringNow = dateHandler.convertTimeToString(dateNow);
+                                    if (documentSnapshot != null) {
+                                        Event eventToCheck = documentSnapshot.toObject(Event.class);
+                                        Date dateNow = new Date();
+                                        assert eventToCheck != null;
+                                        String newString = dateHandler.convertTimeToString(eventToCheck.getEventTimeFinish());
+                                        String newStringNow = dateHandler.convertTimeToString(dateNow);
 
-                                    int hourNow = Integer.parseInt(newStringNow.substring(0, 2));
-                                    int hour = Integer.parseInt(newString.substring(0, 2));
-                                    int minuteNow = Integer.parseInt(newStringNow.substring(3, 5));
-                                    int minute = Integer.parseInt(newString.substring(3, 5));
-                                    String dateNowString = dateHandler.convertDateToString(dateNow);
-                                    String dateString = dateHandler.convertDateToString(eventToCheck.getEventDateFinish());
+                                        int hourNow = Integer.parseInt(newStringNow.substring(0, 2));
+                                        int hour = Integer.parseInt(newString.substring(0, 2));
+                                        int minuteNow = Integer.parseInt(newStringNow.substring(3, 5));
+                                        int minute = Integer.parseInt(newString.substring(3, 5));
+                                        String dateNowString = dateHandler.convertDateToString(dateNow);
+                                        String dateString = dateHandler.convertDateToString(eventToCheck.getEventDateFinish());
 
-                                    if (eventToCheck.getEventDateFinish().after(new Date())) {
-                                        confirmedEvents.put(eventId, documentSnapshot.toObject(Event.class));
-                                        allEventsAdapter.notifyDataSetChanged();
-                                    } else if (dateString.equals(dateNowString)) {
-                                        if (hourNow == 0) {
-                                            if (hour == 0) {
-                                                if (minute > minuteNow) {
-                                                    confirmedEvents.put(eventId, documentSnapshot.toObject(Event.class));
-                                                    allEventsAdapter.notifyDataSetChanged();
+                                        if (eventToCheck.getEventDateFinish().after(new Date())) {
+                                            confirmedEvents.put(eventId, documentSnapshot.toObject(Event.class));
+                                            allEventsAdapter.notifyDataSetChanged();
+                                        } else if (dateString.equals(dateNowString)) {
+                                            if (hourNow == 0) {
+                                                if (hour == 0) {
+                                                    if (minute > minuteNow) {
+                                                        confirmedEvents.put(eventId, documentSnapshot.toObject(Event.class));
+                                                        allEventsAdapter.notifyDataSetChanged();
+                                                    }
                                                 }
+                                            } else if (hour == hourNow && minute > minuteNow) {
+                                                confirmedEvents.put(eventId, documentSnapshot.toObject(Event.class));
+                                                allEventsAdapter.notifyDataSetChanged();
+                                            } else if (hour > hourNow) {
+                                                confirmedEvents.put(eventId, documentSnapshot.toObject(Event.class));
+                                                allEventsAdapter.notifyDataSetChanged();
                                             }
-                                        } else if (hour == hourNow && minute > minuteNow) {
-                                            confirmedEvents.put(eventId, documentSnapshot.toObject(Event.class));
-                                            allEventsAdapter.notifyDataSetChanged();
-                                        } else if (hour > hourNow) {
-                                            confirmedEvents.put(eventId, documentSnapshot.toObject(Event.class));
-                                            allEventsAdapter.notifyDataSetChanged();
                                         }
                                     }
                                 }
@@ -138,13 +140,19 @@ public class MainFragment extends Fragment {
                                 public void onFailure(@NonNull Exception e) {
                                     Log.d(TAG, e.toString());
                                 }
+                            }).addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                    allEventsAdapter.notifyDataSetChanged();
+                                    if (confirmedEvents.size() == 0) {
+                                        allEventsEmptyTextView.setVisibility(View.VISIBLE);
+                                    }
+                                }
                             });
                         }
                     }
                 }
-                if (confirmedEvents.size() == 0) {
-                    allEventsEmptyTextView.setVisibility(View.VISIBLE);
-                }
+
 
                 allEventsAdapter.setOnItemClickListener(new ConfirmedEventAdapter.OnItemClickListener() {
                     @Override

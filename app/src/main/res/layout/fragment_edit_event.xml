@@ -114,6 +114,42 @@
                         app:mask="##/##/####" />
 
                     <TextView
+                        android:id="@+id/editEventDateFinishTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/montserrat"
+                        android:padding="2dp"
+                        android:text="@string/event_date_finish"
+                        android:textColor="@color/colorTextDark" />
+
+                    <br.com.sapereaude.maskedEditText.MaskedEditText
+                        android:id="@+id/editEventDateFinishEditText"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:ems="10"
+                        android:fontFamily="@font/montserrat"
+                        android:inputType="date"
+                        android:textColor="@color/colorTextDark"
+                        android:textSize="16sp"
+                        android:theme="@style/MyEditTextTheme"
+                        app:mask="##/##/####" />
+
+                </LinearLayout>
+
+                <View
+                    android:layout_width="2dp"
+                    android:layout_height="match_parent"
+                    android:layout_marginStart="30dp"
+                    android:layout_marginEnd="25dp"
+                    android:background="@drawable/login_background" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="10dp">
+
+                    <TextView
                         android:id="@+id/editEventTimeStartTextView"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -134,42 +170,6 @@
                         android:theme="@style/MyEditTextTheme"
                         app:mask="##:##" />
 
-
-                </LinearLayout>
-
-                <View
-                    android:layout_width="2dp"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="15dp"
-                    android:layout_marginEnd="15dp"
-                    android:background="@drawable/login_background" />
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="10dp">
-
-                    <TextView
-                        android:id="@+id/editEventDateFinishTextView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/montserrat"
-                        android:padding="2dp"
-                        android:text="@string/event_date_finish"
-                        android:textColor="@color/colorTextDark" />
-
-                    <br.com.sapereaude.maskedEditText.MaskedEditText
-                        android:id="@+id/editEventDateFinishEditText"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:ems="10"
-                        android:fontFamily="@font/montserrat"
-                        android:inputType="date"
-                        android:textColor="@color/colorTextDark"
-                        android:textSize="16sp"
-                        android:theme="@style/MyEditTextTheme"
-                        app:mask="##/##/####" />
 
                     <TextView
                         android:id="@+id/editEventTimeFinishTextView"
