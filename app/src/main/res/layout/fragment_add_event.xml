@@ -45,7 +45,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/montserrat"
                 android:padding="10dp"
-                android:text="@string/event_data"
+                android:text="@string/event_data_general"
                 android:textColor="@color/colorTextDark"
                 android:textSize="18sp"
                 android:textStyle="bold" />
@@ -58,44 +58,6 @@
                 android:layout_marginEnd="5dp"
                 android:fontFamily="@font/montserrat"
                 android:hint="@string/event_name"
-                android:inputType="text"
-                android:padding="5dp"
-                android:textColor="@color/colorTextDark"
-                android:textSize="18sp"
-                app:met_baseColor="@color/colorTextDark"
-                app:met_floatingLabel="highlight"
-                app:met_floatingLabelTextColor="@color/colorTextDark"
-                app:met_primaryColor="@color/colorTextDark"
-                app:met_singleLineEllipsis="true"
-                app:met_textColorHint="@color/colorTextDarkSeeThrough" />
-
-            <com.rengwuxian.materialedittext.MaterialEditText
-                android:id="@+id/eventLocationMaterialEditText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:layout_marginEnd="5dp"
-                android:fontFamily="@font/montserrat"
-                android:hint="@string/event_location"
-                android:inputType="text"
-                android:padding="5dp"
-                android:textColor="@color/colorTextDark"
-                android:textSize="18sp"
-                app:met_baseColor="@color/colorTextDark"
-                app:met_floatingLabel="highlight"
-                app:met_floatingLabelTextColor="@color/colorTextDark"
-                app:met_primaryColor="@color/colorTextDark"
-                app:met_singleLineEllipsis="true"
-                app:met_textColorHint="@color/colorTextDarkSeeThrough" />
-
-            <com.rengwuxian.materialedittext.MaterialEditText
-                android:id="@+id/eventDescriptionMaterialEditText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:layout_marginEnd="5dp"
-                android:fontFamily="@font/montserrat"
-                android:hint="@string/event_description"
                 android:inputType="text"
                 android:padding="5dp"
                 android:textColor="@color/colorTextDark"
@@ -232,6 +194,56 @@
                 </LinearLayout>
             </LinearLayout>
 
+            <TextView
+                android:id="@+id/eventAdditionalDataTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/montserrat"
+                android:padding="10dp"
+                android:text="@string/event_data_additional"
+                android:textColor="@color/colorTextDark"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <com.rengwuxian.materialedittext.MaterialEditText
+                android:id="@+id/eventLocationMaterialEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
+                android:fontFamily="@font/montserrat"
+                android:hint="@string/event_location"
+                android:inputType="text"
+                android:padding="5dp"
+                android:textColor="@color/colorTextDark"
+                android:textSize="18sp"
+                app:met_baseColor="@color/colorTextDark"
+                app:met_floatingLabel="highlight"
+                app:met_floatingLabelTextColor="@color/colorTextDark"
+                app:met_primaryColor="@color/colorTextDark"
+                app:met_singleLineEllipsis="true"
+                app:met_textColorHint="@color/colorTextDarkSeeThrough" />
+
+            <com.rengwuxian.materialedittext.MaterialEditText
+                android:id="@+id/eventDescriptionMaterialEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
+                android:fontFamily="@font/montserrat"
+                android:hint="@string/event_description"
+                android:inputType="text"
+                android:padding="5dp"
+                android:textColor="@color/colorTextDark"
+                android:textSize="18sp"
+                app:met_baseColor="@color/colorTextDark"
+                app:met_floatingLabel="highlight"
+                app:met_floatingLabelTextColor="@color/colorTextDark"
+                app:met_primaryColor="@color/colorTextDark"
+                app:met_singleLineEllipsis="true"
+                app:met_textColorHint="@color/colorTextDarkSeeThrough" />
+
+
 
             <TextView
                 android:id="@+id/eventImageTextView"
@@ -275,7 +287,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:nestedScrollingEnabled="true"
-                android:padding="10dp"
                 android:textColor="@color/colorTextDark" />
 
             <TextView
@@ -293,8 +304,7 @@
                 android:id="@+id/eventGuestListListView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:nestedScrollingEnabled="true"
-                android:padding="10dp" />
+                android:nestedScrollingEnabled="true"/>
 
             <LinearLayout
                 android:layout_width="match_parent"

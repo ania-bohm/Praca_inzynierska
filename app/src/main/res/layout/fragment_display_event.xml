@@ -316,8 +316,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="260dp"
                 android:focusable="false"
-                android:nestedScrollingEnabled="true"
-                android:padding="5dp" />
+                android:nestedScrollingEnabled="true"/>
 
         </LinearLayout>
     </LinearLayout>

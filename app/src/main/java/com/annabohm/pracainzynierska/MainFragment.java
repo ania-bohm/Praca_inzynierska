@@ -141,7 +141,8 @@ public class MainFragment extends Fragment {
                             });
                         }
                     }
-                } else {
+                }
+                if (confirmedEvents.size() == 0) {
                     allEventsEmptyTextView.setVisibility(View.VISIBLE);
                 }
 

@@ -49,6 +49,8 @@ public class DisplayEventFragment extends Fragment {
     CollectionReference users = firestoreInstanceSingleton.getFirebaseFirestoreRef().collection("Users");
     CollectionReference eventAttendees = firestoreInstanceSingleton.getFirebaseFirestoreRef().collection("EventAttendees");
     String currentUserId = firebaseAuthInstanceSingleton.getFirebaseAuthRef().getCurrentUser().getUid();
+    String eventAuthor;
+    boolean isCurrentUserGuestOrAuthor = false;
     DocumentReference eventReference;
     AlertDialog alertDialog;
     DateHandler dateHandler = new DateHandler("dd/MM/yyyy", "HH:mm");
@@ -129,6 +131,11 @@ public class DisplayEventFragment extends Fragment {
         alertDialog = new SpotsDialog(context);
 
         editEventButton.setVisibility(View.GONE);
+        toDoListButton.setVisibility(View.GONE);
+        scoreboardButton.setVisibility(View.GONE);
+        editEventButton.setVisibility(View.GONE);
+        commonExpenseButton.setVisibility(View.GONE);
+        chatButton.setVisibility(View.GONE);
 
         bundle = this.getArguments();
         assert bundle != null;
@@ -146,8 +153,27 @@ public class DisplayEventFragment extends Fragment {
         commonExpenseButton.setOnClickListener(commonExpenseOnClickListener);
         chatButton.setOnClickListener(chatOnClickListener);
 
-        loadData();
-        initialiseGuestList();
+        eventAttendees.document(eventId).collection("Confirmed").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                if (!queryDocumentSnapshots.isEmpty()) {
+                    for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                        if (documentSnapshot.exists()) {
+                            if (documentSnapshot.get("User").equals(currentUserId)) {
+                                isCurrentUserGuestOrAuthor = true;
+                            }
+                        }
+                    }
+                }
+                loadData();
+                initialiseGuestList();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d(TAG, e.toString());
+            }
+        });
     }
 
     public void loadData() {
@@ -161,10 +187,18 @@ public class DisplayEventFragment extends Fragment {
                     final Event event = documentSnapshot.toObject(Event.class);
                     assert event != null;
                     if (event.getEventAuthor().equals(currentUserId)) {
+                        isCurrentUserGuestOrAuthor = true;
                         editEventButton.setVisibility(View.VISIBLE);
                         editEventButton.setOnClickListener(editEventOnClickListener);
                     } else {
                         editEventButton.setVisibility(View.GONE);
+                    }
+                    if(isCurrentUserGuestOrAuthor){
+                        toDoListButton.setVisibility(View.VISIBLE);
+                        scoreboardButton.setVisibility(View.VISIBLE);
+                        editEventButton.setVisibility(View.VISIBLE);
+                        commonExpenseButton.setVisibility(View.VISIBLE);
+                        chatButton.setVisibility(View.VISIBLE);
                     }
 
                     users.document(event.getEventAuthor()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {

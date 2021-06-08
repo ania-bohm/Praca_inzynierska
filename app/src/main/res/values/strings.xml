@@ -50,9 +50,13 @@
     <string name="new_event">Nowe wydarzenie</string>
     <string name="event">Wydarzenie</string>
     <string name="event_data">Dane wydarzenia</string>
+    <string name="event_data_general">Ogólne dane wydarzenia</string>
+    <string name="event_data_additional">Dodatkowe dane wydarzenia</string>
     <string name="event_duration">Czas trwania wydarzenia</string>
     <string name="edit_event_duration">Zmień czas trwania wydarzenia</string>
     <string name="modify_event_data">Zmień dane wydarzenia</string>
+    <string name="modify_general_event_data">Zmień ogólne dane wydarzenia</string>
+    <string name="modify_additional_event_data">Zmień dodatkowe dane wydarzenia</string>
     <string name="event_name">Nazwa</string>
     <string name="event_author">Autor</string>
     <string name="event_date_start">Data rozpoczęcia</string>
