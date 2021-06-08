@@ -50,6 +50,7 @@
     <string name="new_event">Nowe wydarzenie</string>
     <string name="event">Wydarzenie</string>
     <string name="event_data">Dane wydarzenia</string>
+    <string name="event_duration">Czas trwania wydarzenia</string>
     <string name="modify_event_data">Zmień dane wydarzenia</string>
     <string name="event_name">Nazwa</string>
     <string name="event_author">Autor</string>
@@ -83,7 +84,7 @@
     <string name="event_guest_search_list_error_duplicate">Taki użytkownik istnieje już na liście gości</string>
     <string name="edit_event_guest_search_list">Dodaj nowych gości</string>
     <string name="event_guest_search">Wyszukaj użytkownika...</string>
-    <string name="event_image">Ustaw kolor wydarzenia</string>
+    <string name="event_image">Ustaw tło wydarzenia</string>
     <string name="set_event_budget">Ustaw budżet wydarzenia</string>
     <string name="edit_event_budget">Zmień budżet wydarzenia</string>
     <string name="edit_event_image">Zmień kolor wydarzenia</string>

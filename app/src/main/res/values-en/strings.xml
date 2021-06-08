@@ -72,7 +72,7 @@
     <string name="event_guest_search_list_error_duplicate">This user already exists on the guest list</string>
     <string name="edit_event_guest_search_list">Add new guests</string>
     <string name="event_guest_search">Search for a user...</string>
-    <string name="event_image">Set event color</string>
+    <string name="event_image">Set event background</string>
     <string name="set_event_budget">Set event budget</string>
     <string name="edit_event_budget">Change event budget</string>
     <string name="edit_event_image">Change event color</string>
@@ -180,4 +180,5 @@
     <string name="email1_does_not_match_pattern">Character sequence does not match email address pattern</string>
     <string name="event_dates_incorrect">Entered dates are incorrect!</string>
     <string name="invitation_author">"Author: "</string>
+    <string name="event_duration">Event duration</string>
 </resources>

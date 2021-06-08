@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="colorPrimary">#FFA3A5</color>
+    <color name="colorPrimaryTransparent">#CCFFA3A5</color>
     <color name="colorPrimaryLight">#FFD0D1</color>
     <color name="colorPrimaryFaded">#FFDFE5</color>
     <color name="colorPrimaryDark">#FFBF81</color>
@@ -20,6 +21,11 @@
     <color name="colorWhite20Transparent">#33FFFFFF</color>
     <color name="colorWhite30Transparent">#4DFFFFFF</color>
     <color name="colorWhite40Transparent">#66FFFFFF</color>
+    <color name="colorWhite50Transparent">#80FFFFFF</color>
+    <color name="colorWhite60Transparent">#99FFFFFF</color>
+    <color name="colorWhite70Transparent">#B3FFFFFF</color>
+    <color name="colorWhite80Transparent">#CCFFFFFF</color>
+    <color name="colorWhite90Transparent">#E6FFFFFF</color>
     <color name="colorWhiteSemiTransparent">#99FFFFFF</color>
     <color name="colorPrimarySemiTransparent">#BCEAABAC</color>
     <color name="colorBackgroundPink">#fea1ab</color>

@@ -33,6 +33,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.rengwuxian.materialedittext.MaterialEditText;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -62,7 +63,8 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
     CollectionReference eventAttendees = firestoreInstanceSingleton.getFirebaseFirestoreRef().collection("EventAttendees");
     CollectionReference attendeeEvents = firestoreInstanceSingleton.getFirebaseFirestoreRef().collection("AttendeeEvents");
     Button eventReadyButton, eventCancelButton;
-    EditText eventNameEditText, eventDateStartEditText, eventTimeStartEditText, eventDateFinishEditText, eventTimeFinishEditText, eventLocationEditText, eventDescriptionEditText;
+    EditText eventDateStartEditText, eventTimeStartEditText, eventDateFinishEditText, eventTimeFinishEditText;
+    MaterialEditText eventNameMaterialEditText, eventLocationMaterialEditText, eventDescriptionMaterialEditText, test;
     SearchView eventGuestListSearchView;
     ListView eventUserSearchListView, eventGuestListListView;
     Spinner eventImageSpinner;
@@ -74,9 +76,9 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
     private final View.OnClickListener eventReadyOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            String eventName = eventNameEditText.getText().toString().trim();
-            String eventDescription = eventDescriptionEditText.getText().toString().trim();
-            String eventLocation = eventLocationEditText.getText().toString().trim();
+            String eventName = eventNameMaterialEditText.getText().toString().trim();
+            String eventDescription = eventDescriptionMaterialEditText.getText().toString().trim();
+            String eventLocation = eventLocationMaterialEditText.getText().toString().trim();
             String dateStartValue = eventDateStartEditText.getText().toString().trim();
             String dateFinishValue = eventDateFinishEditText.getText().toString().trim();
             String timeStartValue = eventTimeStartEditText.getText().toString().trim();
@@ -189,14 +191,15 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
 
         eventReadyButton = view.findViewById(R.id.eventReadyButton);
         eventCancelButton = view.findViewById(R.id.eventCancelButton);
-        eventNameEditText = view.findViewById(R.id.eventNameEditText);
+        eventGuestListSearchView = view.findViewById(R.id.eventGuestListSearchView);
+        eventNameMaterialEditText = view.findViewById(R.id.eventNameMaterialEditText);
         eventDateStartEditText = view.findViewById(R.id.eventDateStartEditText);
         eventTimeStartEditText = view.findViewById(R.id.eventTimeStartEditText);
         eventDateFinishEditText = view.findViewById(R.id.eventDateFinishEditText);
         eventTimeFinishEditText = view.findViewById(R.id.eventTimeFinishEditText);
-        eventLocationEditText = view.findViewById(R.id.eventLocationEditText);
-        eventDescriptionEditText = view.findViewById(R.id.eventDescriptionEditText);
-        eventGuestListSearchView = view.findViewById(R.id.eventGuestListSearchView);
+        eventLocationMaterialEditText = view.findViewById(R.id.eventLocationMaterialEditText);
+        eventDescriptionMaterialEditText = view.findViewById(R.id.eventDescriptionMaterialEditText);
+//        test = view.findViewById(R.id.test);
         eventUserSearchListView = view.findViewById(R.id.eventUserSearchListView);
         eventImageSpinner = view.findViewById(R.id.eventImageSpinner);
         eventGuestListListView = view.findViewById(R.id.eventGuestListListView);
