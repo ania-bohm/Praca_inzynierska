@@ -31,8 +31,8 @@ import java.util.List;
 import static android.content.ContentValues.TAG;
 
 public class PastEventsListAdapter extends ArrayAdapter<Event> implements View.OnClickListener {
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
-    CollectionReference events = db.collection("Events");
+    FirestoreInstanceSingleton firestoreInstanceSingleton = FirestoreInstanceSingleton.getInstance();
+    CollectionReference events = firestoreInstanceSingleton.getFirebaseFirestoreRef().collection("Events");
     NavController navController;
     private ArrayList<Event> eventList;
     private ArrayList<String> eventIdList;
@@ -84,9 +84,13 @@ public class PastEventsListAdapter extends ArrayAdapter<Event> implements View.O
         }
 
         pastEventNameTextView.setText(event.getEventName());
+        assert eventDateStart != null;
         pastEventDateStartTextView.setText(dateFormatterPrint.format(eventDateStart));
+        assert eventTimeStart != null;
         pastEventTimeStartTextView.setText(timeFormatterPrint.format(eventTimeStart));
+        assert eventDateFinish != null;
         pastEventDateFinishTextView.setText(dateFormatterPrint.format(eventDateFinish));
+        assert eventTimeFinish != null;
         pastEventTimeFinishTextView.setText(timeFormatterPrint.format(eventTimeFinish));
 
         pastEventLinearLayout.setLongClickable(true);
@@ -119,16 +123,12 @@ public class PastEventsListAdapter extends ArrayAdapter<Event> implements View.O
 
     public void setEventList(ArrayList<Event> eventList) {
         this.eventList.clear();
-        for (Event event : eventList) {
-            this.eventList.add(event);
-        }
+        this.eventList.addAll(eventList);
     }
 
     public void setEventIdList(ArrayList<String> eventIdList) {
         this.eventIdList.clear();
-        for (String eventId : eventIdList) {
-            this.eventIdList.add(eventId);
-        }
+        this.eventIdList.addAll(eventIdList);
     }
 
     public void deleteItem(int position) {

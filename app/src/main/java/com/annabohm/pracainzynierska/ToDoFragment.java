@@ -3,13 +3,6 @@ package com.annabohm.pracainzynierska;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -18,17 +11,21 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.rengwuxian.materialedittext.MaterialEditText;
@@ -36,6 +33,7 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 import dmax.dialog.SpotsDialog;
@@ -52,25 +50,25 @@ public class ToDoFragment extends Fragment {
     MaterialEditText toDoTitleMaterialEditText, toDoDescriptionMaterialEditText;
     TextView displayToDoDoneTextView, displayToDoSlashTextView, displayToDoAllTextView;
     ToDoAdapter toDoAdapter;
+    AlertDialog alertDialog;
+    FirebaseAuthInstanceSingleton firebaseAuthInstanceSingleton = FirebaseAuthInstanceSingleton.getInstance();
+    FirestoreInstanceSingleton firestoreInstanceSingleton = FirestoreInstanceSingleton.getInstance();
+    CollectionReference toDoLists = firestoreInstanceSingleton.getFirebaseFirestoreRef().collection("ToDoLists");
+    DocumentReference eventReference;
     int taskCounter = 0;
     int taskDoneCounter = 0;
     boolean isUpdate = false;
-    String eventId, currentUserId, eventAuthor;
+    String eventId, eventAuthor;
+    String currentUserId = Objects.requireNonNull(firebaseAuthInstanceSingleton.getFirebaseAuthRef().getCurrentUser()).getUid();
     String toDoItemToUpdateId = "";
-    AlertDialog alertDialog;
-    FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
-    CollectionReference toDoLists = db.collection("ToDoLists");
-    DocumentReference eventReference;
     Context context;
     Bundle bundle;
 
     public ToDoFragment() {
     }
 
-    public static ToDoFragment newInstance(String param1, String param2) {
-        ToDoFragment fragment = new ToDoFragment();
-        return fragment;
+    public static ToDoFragment newInstance() {
+        return new ToDoFragment();
     }
 
     @Override
@@ -83,9 +81,9 @@ public class ToDoFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        ((MainActivity) getActivity()).setDrawerLocked();
-        if (((MainActivity) getActivity()).getSupportActionBar() != null) {
-            ((MainActivity) getActivity()).getSupportActionBar().hide();
+        ((MainActivity) requireActivity()).setDrawerLocked();
+        if (((MainActivity) requireActivity()).getSupportActionBar() != null) {
+            Objects.requireNonNull(((MainActivity) requireActivity()).getSupportActionBar()).hide();
         }
         return inflater.inflate(R.layout.fragment_to_do, container, false);
     }
@@ -93,7 +91,6 @@ public class ToDoFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        currentUserId = firebaseAuth.getCurrentUser().getUid();
 
         toDoTitleMaterialEditText = view.findViewById(R.id.toDoTitleMaterialEditText);
         toDoDescriptionMaterialEditText = view.findViewById(R.id.toDoDescriptionMaterialEditText);
@@ -111,14 +108,15 @@ public class ToDoFragment extends Fragment {
         alertDialog = new SpotsDialog(context);
 
         bundle = this.getArguments();
+        assert bundle != null;
         String path = bundle.getString("path");
-        eventReference = db.document(path);
+        eventReference = firestoreInstanceSingleton.getFirebaseFirestoreRef().document(path);
         eventId = eventReference.getId();
 
         eventReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
-                eventAuthor = documentSnapshot.toObject(Event.class).getEventAuthor();
+                eventAuthor = Objects.requireNonNull(documentSnapshot.toObject(Event.class)).getEventAuthor();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -132,7 +130,7 @@ public class ToDoFragment extends Fragment {
         toDoFloatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (toDoTitleMaterialEditText.getText().toString().trim().isEmpty() || toDoDescriptionMaterialEditText.getText().toString().trim().isEmpty()) {
+                if (Objects.requireNonNull(toDoTitleMaterialEditText.getText()).toString().trim().isEmpty() || Objects.requireNonNull(toDoDescriptionMaterialEditText.getText()).toString().trim().isEmpty()) {
                     Toast.makeText(context, R.string.event_budget_empty_fields, Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -228,9 +226,10 @@ public class ToDoFragment extends Fragment {
         toDoLists.document(eventId).collection("ToDoList").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                for (DocumentSnapshot documentSnapshot : task.getResult()) {
+                for (DocumentSnapshot documentSnapshot : Objects.requireNonNull(task.getResult())) {
                     if (documentSnapshot.exists()) {
                         ToDo toDoItem = documentSnapshot.toObject(ToDo.class);
+                        assert toDoItem != null;
                         if (toDoItem.isToDoChecked()) {
                             taskDoneCounter++;
                         }

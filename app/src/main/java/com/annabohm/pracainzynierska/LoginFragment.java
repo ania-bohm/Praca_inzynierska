@@ -24,10 +24,8 @@ import androidx.navigation.Navigation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
 
 public class LoginFragment extends Fragment {
-
     public static final String myPreference = "myPref";
     public static final String Password = "Password";
     public static final String Email = "Email";
@@ -37,19 +35,19 @@ public class LoginFragment extends Fragment {
     EditText loginEmailEditText, loginPasswordEditText;
     ImageView loginShowPasswordButton;
     ProgressBar loginProgressBar;
-    FirebaseAuth firebaseAuth;
+   FirebaseAuthInstanceSingleton firebaseAuthInstanceSingleton = FirebaseAuthInstanceSingleton.getInstance();
     Context context;
     SharedPreferences sharedPreferences;
     InputMethodManager imm;
     boolean hiddenPassword = true;
-    private View.OnClickListener registerOnClickListener = new View.OnClickListener() {
+    private final View.OnClickListener registerOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             navController.navigate(R.id.loginToRegister);
         }
     };
 
-    private View.OnClickListener loginShowPasswordOnClickListener = new View.OnClickListener() {
+    private final View.OnClickListener loginShowPasswordOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             if (hiddenPassword) {
@@ -60,7 +58,7 @@ public class LoginFragment extends Fragment {
             hiddenPassword = !hiddenPassword;
         }
     };
-    private View.OnClickListener loginOnClickListener = new View.OnClickListener() {
+    private final View.OnClickListener loginOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             final String loginEmail = loginEmailEditText.getText().toString().trim();
@@ -81,23 +79,22 @@ public class LoginFragment extends Fragment {
     public LoginFragment() {
     }
 
-    public static LoginFragment newInstance(String param1, String param2) {
-        LoginFragment fragment = new LoginFragment();
-        return fragment;
+    public static LoginFragment newInstance() {
+        return new LoginFragment();
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         context = getContext();
-        sharedPreferences = this.getActivity().getSharedPreferences(myPreference, Context.MODE_PRIVATE);
+        sharedPreferences = this.requireActivity().getSharedPreferences(myPreference, Context.MODE_PRIVATE);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        ((MainActivity) getActivity()).setDrawerLocked();
-        imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        ((MainActivity) requireActivity()).setDrawerLocked();
+        imm = (InputMethodManager) requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         return inflater.inflate(R.layout.fragment_login, container, false);
     }
 
@@ -111,7 +108,6 @@ public class LoginFragment extends Fragment {
         loginEmailEditText = view.findViewById(R.id.loginEmailEditText);
         loginPasswordEditText = view.findViewById(R.id.loginPasswordEditText);
         loginProgressBar = view.findViewById(R.id.loginProgressBar);
-        firebaseAuth = FirebaseAuth.getInstance();
 
         registerButton.setOnClickListener(registerOnClickListener);
         loginShowPasswordButton.setOnClickListener(loginShowPasswordOnClickListener);
@@ -142,14 +138,14 @@ public class LoginFragment extends Fragment {
     }
 
     public void login(final String loginEmail, final String loginPassword){
-        firebaseAuth.signInWithEmailAndPassword(loginEmail, loginPassword).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+        firebaseAuthInstanceSingleton.getFirebaseAuthRef().signInWithEmailAndPassword(loginEmail, loginPassword).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.putString(Email, loginEmail);
                     editor.putString(Password, loginPassword);
-                    editor.commit();
+                    editor.apply();
                     Toast.makeText(context, R.string.login_success, Toast.LENGTH_SHORT).show();
                     loginEmailEditText.setText("");
                     loginPasswordEditText.setText("");

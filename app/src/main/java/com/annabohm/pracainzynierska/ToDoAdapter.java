@@ -19,7 +19,6 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 
@@ -30,10 +29,10 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ToDoItemHolder
     ArrayList<ToDo> toDoList;
     String eventId, currentUserId, eventAuthorId;
     ToDoFragment toDoFragment;
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
-    CollectionReference toDoLists = db.collection("ToDoLists");
-    CollectionReference events = db.collection("Events");
-    CollectionReference users = db.collection("Users");
+    FirestoreInstanceSingleton firestoreInstanceSingleton = FirestoreInstanceSingleton.getInstance();
+    CollectionReference toDoLists = firestoreInstanceSingleton.getFirebaseFirestoreRef().collection("ToDoLists");
+    CollectionReference events = firestoreInstanceSingleton.getFirebaseFirestoreRef().collection("Events");
+    CollectionReference users = firestoreInstanceSingleton.getFirebaseFirestoreRef().collection("Users");
 
     public ToDoAdapter(ToDoFragment toDoFragment, ArrayList<ToDo> toDoList, String eventId, String currentUserId) {
         this.toDoFragment = toDoFragment;
@@ -58,6 +57,7 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ToDoItemHolder
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 User user = documentSnapshot.toObject(User.class);
+                assert user != null;
                 String displayName = user.getUserFirstName() + " " + user.getUserLastName();
                 holder.displayToDoItemCreatorIdTextView.setText(displayName);
             }
@@ -98,6 +98,7 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ToDoItemHolder
                 public void onSuccess(DocumentSnapshot documentSnapshot) {
                     if (documentSnapshot.exists()) {
                         Event event = documentSnapshot.toObject(Event.class);
+                        assert event != null;
                         eventAuthorId = event.getEventAuthor();
                         if(currentUserId.equals(eventAuthorId)){
                             holder.toDoItemCheckedCheckBox.setEnabled(true);
@@ -121,7 +122,7 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ToDoItemHolder
                         public void onSuccess(Void aVoid) {
                             toDoList.get(position).setToDoChecked(true);
                             String currentDoneCounterString = toDoFragment.displayToDoDoneTextView.getText().toString();
-                            int currentDoneCounter = Integer.valueOf(currentDoneCounterString);
+                            int currentDoneCounter = Integer.parseInt(currentDoneCounterString);
                             currentDoneCounter++;
                             toDoFragment.displayToDoDoneTextView.setText(String.valueOf(currentDoneCounter));
                             toDoFragment.displayToDoDoneTextView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
@@ -143,7 +144,7 @@ public class ToDoAdapter extends RecyclerView.Adapter<ToDoAdapter.ToDoItemHolder
                         public void onSuccess(Void aVoid) {
                             toDoList.get(position).setToDoChecked(false);
                             String currentDoneCounterString = toDoFragment.displayToDoDoneTextView.getText().toString();
-                            int currentDoneCounter = Integer.valueOf(currentDoneCounterString);
+                            int currentDoneCounter = Integer.parseInt(currentDoneCounterString);
                             currentDoneCounter--;
                             toDoFragment.displayToDoDoneTextView.setText(String.valueOf(currentDoneCounter));
                             toDoFragment.displayToDoDoneTextView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));

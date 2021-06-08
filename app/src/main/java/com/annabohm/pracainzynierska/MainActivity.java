@@ -10,7 +10,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.NavController;
@@ -20,6 +19,8 @@ import androidx.navigation.fragment.NavHostFragment;
 
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+
+import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, DrawerController {
 
@@ -95,7 +96,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     @Override
     public void onBackPressed() {
-        NavDestination current = NavHostFragment.findNavController(getSupportFragmentManager().getPrimaryNavigationFragment().getFragmentManager().getFragments().get(0)).getCurrentDestination();
+        NavDestination current = NavHostFragment.findNavController(Objects.requireNonNull(getSupportFragmentManager().getPrimaryNavigationFragment()).requireFragmentManager().getFragments().get(0)).getCurrentDestination();
+        assert current != null;
         int currentId = current.getId();
 
         if (currentId == R.id.mainFragment) {

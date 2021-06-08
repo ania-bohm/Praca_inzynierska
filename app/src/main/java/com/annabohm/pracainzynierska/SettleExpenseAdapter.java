@@ -10,8 +10,6 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.google.firebase.firestore.FirebaseFirestore;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -34,7 +32,7 @@ public class SettleExpenseAdapter extends BaseAdapter {
     }
 
     @Override
-    public Map.Entry<String, Double> getItem(int position) {
+    public Map.Entry getItem(int position) {
         return (Map.Entry) list.get(position);
     }
 

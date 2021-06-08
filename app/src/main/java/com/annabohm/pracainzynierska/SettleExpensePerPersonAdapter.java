@@ -17,7 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class SettleExpensePerPersonAdapter extends BaseAdapter {
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
+
     ArrayList list;
     private Context context;
     private HashMap<String, Double> expensePerPersonHashMap;

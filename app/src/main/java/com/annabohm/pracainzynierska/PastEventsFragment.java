@@ -23,10 +23,8 @@ import androidx.navigation.Navigation;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -34,33 +32,31 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-
-import dmax.dialog.SpotsDialog;
+import java.util.Objects;
 
 import static android.content.ContentValues.TAG;
 
 public class PastEventsFragment extends Fragment {
-
     NavController navController;
     ListView pastEventsListListView;
     TextView pastEventsEmptyTextView;
     ArrayList<Event> eventList;
     ArrayList<String> eventIdList;
     PastEventsListAdapter pastEventsListAdapter;
-    FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
-    CollectionReference events = db.collection("Events");
-    CollectionReference eventAttendees = db.collection("EventAttendees");
-    CollectionReference attendeeEvents = db.collection("AttendeeEvents");
+    FirebaseAuthInstanceSingleton firebaseAuthInstanceSingleton = FirebaseAuthInstanceSingleton.getInstance();
+    FirestoreInstanceSingleton firestoreInstanceSingleton = FirestoreInstanceSingleton.getInstance();
+    CollectionReference events = firestoreInstanceSingleton.getFirebaseFirestoreRef().collection("Events");
+    CollectionReference eventAttendees = firestoreInstanceSingleton.getFirebaseFirestoreRef().collection("EventAttendees");
+    CollectionReference attendeeEvents = firestoreInstanceSingleton.getFirebaseFirestoreRef().collection("AttendeeEvents");
     ArrayList<String> attendeesToDeleteIdList = new ArrayList<>();
     Context context;
+    String authorId = firebaseAuthInstanceSingleton.getFirebaseAuthRef().getCurrentUser().getUid();
 
     public PastEventsFragment() {
     }
 
-    public static PastEventsFragment newInstance(String param1, String param2) {
-        PastEventsFragment fragment = new PastEventsFragment();
-        return fragment;
+    public static PastEventsFragment newInstance() {
+        return new PastEventsFragment();
     }
 
     @Override
@@ -73,7 +69,7 @@ public class PastEventsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        ((MainActivity) getActivity()).setDrawerLocked();
+        ((MainActivity) requireActivity()).setDrawerLocked();
         return inflater.inflate(R.layout.fragment_past_events, container, false);
     }
 
@@ -105,7 +101,6 @@ public class PastEventsFragment extends Fragment {
     }
 
     public void initialisePastEventsList() {
-        String authorId = firebaseAuth.getCurrentUser().getUid();
         events.whereEqualTo("eventAuthor", authorId).orderBy("eventDateFinish", Query.Direction.DESCENDING).orderBy("eventTimeFinish", Query.Direction.DESCENDING).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
@@ -115,6 +110,7 @@ public class PastEventsFragment extends Fragment {
                         Date dateNow = new Date();
                         final DateFormat timeFormatterPrint = new SimpleDateFormat("HH:mm");
                         final DateFormat dateFormatterPrint = new SimpleDateFormat("dd/MM/yyyy");
+                        assert pastEvent != null;
                         String newString = timeFormatterPrint.format(pastEvent.getEventTimeFinish());
                         String newStringNow = timeFormatterPrint.format(dateNow);
 
@@ -166,7 +162,7 @@ public class PastEventsFragment extends Fragment {
     @Override
     public void onCreateContextMenu(@NonNull ContextMenu menu, @NonNull View v, @Nullable ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
-        getActivity().getMenuInflater().inflate(R.menu.floating_context_menu_event, menu);
+        requireActivity().getMenuInflater().inflate(R.menu.floating_context_menu_event, menu);
     }
 
     @Override
@@ -215,7 +211,7 @@ public class PastEventsFragment extends Fragment {
                             @Override
                             public void onSuccess(DocumentSnapshot documentSnapshot) {
                                 if (documentSnapshot.exists()) {
-                                    attendeesToDeleteIdList.add(documentSnapshot.get("User").toString());
+                                    attendeesToDeleteIdList.add(Objects.requireNonNull(documentSnapshot.get("User")).toString());
                                 }
                             }
                         }).addOnFailureListener(new OnFailureListener() {
@@ -235,7 +231,7 @@ public class PastEventsFragment extends Fragment {
                                     @Override
                                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                                         if (documentSnapshot.exists()) {
-                                            attendeesToDeleteIdList.add(documentSnapshot.get("User").toString());
+                                            attendeesToDeleteIdList.add(Objects.requireNonNull(documentSnapshot.get("User")).toString());
                                         }
                                     }
                                 }).addOnFailureListener(new OnFailureListener() {
@@ -255,7 +251,7 @@ public class PastEventsFragment extends Fragment {
                                             @Override
                                             public void onSuccess(DocumentSnapshot documentSnapshot) {
                                                 if (documentSnapshot.exists()) {
-                                                    attendeesToDeleteIdList.add(documentSnapshot.get("User").toString());
+                                                    attendeesToDeleteIdList.add(Objects.requireNonNull(documentSnapshot.get("User")).toString());
                                                 }
                                             }
                                         }).addOnFailureListener(new OnFailureListener() {

@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,11 +18,9 @@ import androidx.navigation.Navigation;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.math.BigDecimal;
@@ -31,6 +28,7 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 import dmax.dialog.SpotsDialog;
 
@@ -39,12 +37,10 @@ import static android.content.ContentValues.TAG;
 public class SettleExpenseFragment extends Fragment {
     NavController navController;
     AlertDialog alertDialog;
-    FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
-    CollectionReference commonExpenseLists = db.collection("CommonExpenseLists");
-    CollectionReference events = db.collection("Events");
-    CollectionReference users = db.collection("Users");
-    CollectionReference eventAttendees = db.collection("EventAttendees");
+    FirestoreInstanceSingleton firestoreInstanceSingleton = FirestoreInstanceSingleton.getInstance();
+    CollectionReference commonExpenseLists = firestoreInstanceSingleton.getFirebaseFirestoreRef().collection("CommonExpenseLists");
+    CollectionReference users = firestoreInstanceSingleton.getFirebaseFirestoreRef().collection("Users");
+    CollectionReference eventAttendees = firestoreInstanceSingleton.getFirebaseFirestoreRef().collection("EventAttendees");
     DocumentReference eventReference;
     Context context;
     Bundle bundle;
@@ -60,9 +56,8 @@ public class SettleExpenseFragment extends Fragment {
     public SettleExpenseFragment() {
     }
 
-    public static SettleExpenseFragment newInstance(String param1, String param2) {
-        SettleExpenseFragment fragment = new SettleExpenseFragment();
-        return fragment;
+    public static SettleExpenseFragment newInstance() {
+        return new SettleExpenseFragment();
     }
 
     @Override
@@ -74,9 +69,9 @@ public class SettleExpenseFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        ((MainActivity) getActivity()).setDrawerLocked();
-        if (((MainActivity) getActivity()).getSupportActionBar() != null) {
-            ((MainActivity) getActivity()).getSupportActionBar().hide();
+        ((MainActivity) requireActivity()).setDrawerLocked();
+        if (((MainActivity) requireActivity()).getSupportActionBar() != null) {
+            Objects.requireNonNull(((MainActivity) requireActivity()).getSupportActionBar()).hide();
         }
         return inflater.inflate(R.layout.fragment_settle_expense, container, false);
     }
@@ -99,8 +94,9 @@ public class SettleExpenseFragment extends Fragment {
         alertDialog = new SpotsDialog(context);
 
         bundle = this.getArguments();
+        assert bundle != null;
         String path = bundle.getString("path");
-        eventReference = db.document(path);
+        eventReference = firestoreInstanceSingleton.getFirebaseFirestoreRef().document(path);
         eventId = eventReference.getId();
 
         expensePerPersonHashMap = new HashMap<>();
@@ -121,7 +117,7 @@ public class SettleExpenseFragment extends Fragment {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 if (documentSnapshot.exists()) {
-                    eventAuthor = documentSnapshot.toObject(Event.class).getEventAuthor();
+                    eventAuthor = Objects.requireNonNull(documentSnapshot.toObject(Event.class)).getEventAuthor();
                 }
                 populateHashMapWithGuestId();
             }
@@ -140,7 +136,7 @@ public class SettleExpenseFragment extends Fragment {
                 if (!queryDocumentSnapshots.isEmpty()) {
                     for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
                         if (documentSnapshot.exists()) {
-                            String guestId = documentSnapshot.get("User").toString();
+                            String guestId = Objects.requireNonNull(documentSnapshot.get("User")).toString();
                             expensePerPersonHashMap.put(guestId, (double) 0);
                         }
                     }
@@ -167,6 +163,7 @@ public class SettleExpenseFragment extends Fragment {
                     for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
                         if (documentSnapshot.exists()) {
                             CommonExpense currentCommonExpense = documentSnapshot.toObject(CommonExpense.class);
+                            assert currentCommonExpense != null;
                             if (currentCommonExpense.isCommonExpenseToSettle()) {
                                 long commonExpenseValueLong = currentCommonExpense.getCommonExpenseValue();
                                 double commonExpenseValueDouble = commonExpenseValueLong / 100;
@@ -207,6 +204,7 @@ public class SettleExpenseFragment extends Fragment {
                         if (idList.contains(documentSnapshot.getId())) {
                             int index = idList.indexOf(documentSnapshot.getId());
                             User user = documentSnapshot.toObject(User.class);
+                            assert user != null;
                             idToDisplayNameList[index] = user.getUserFirstName() + " " + user.getUserLastName();
                         }
                     }

@@ -32,12 +32,14 @@ import java.util.Map;
 import static android.content.ContentValues.TAG;
 
 public class InvitationListAdapter extends ArrayAdapter<Event> implements View.OnClickListener {
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
-    FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-    CollectionReference events = db.collection("Events");
-    CollectionReference attendeeEvents = db.collection("AttendeeEvents");
-    CollectionReference eventAttendees = db.collection("EventAttendees");
     NavController navController;
+    FirestoreInstanceSingleton firestoreInstanceSingleton = FirestoreInstanceSingleton.getInstance();
+    FirebaseAuthInstanceSingleton firebaseAuthInstanceSingleton = FirebaseAuthInstanceSingleton.getInstance();
+    final String currentUser = firebaseAuthInstanceSingleton.getFirebaseAuthRef().getCurrentUser().getUid();
+    CollectionReference events = firestoreInstanceSingleton.getFirebaseFirestoreRef().collection("Events");
+    CollectionReference users = firestoreInstanceSingleton.getFirebaseFirestoreRef().collection("Users");
+    CollectionReference attendeeEvents = firestoreInstanceSingleton.getFirebaseFirestoreRef().collection("AttendeeEvents");
+    CollectionReference eventAttendees = firestoreInstanceSingleton.getFirebaseFirestoreRef().collection("EventAttendees");
     private ArrayList<Event> eventList;
     private ArrayList<String> eventIdList;
     private Context context;
@@ -68,11 +70,11 @@ public class InvitationListAdapter extends ArrayAdapter<Event> implements View.O
         Button invitationConfirmEventButton = convertView.findViewById(R.id.invitationConfirmEventButton);
         Button invitationDeclineEventButton = convertView.findViewById(R.id.invitationDeclineEventButton);
 
-        db.collection("Users").document(event.getEventAuthor()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+        users.document(event.getEventAuthor()).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 User user = documentSnapshot.toObject(User.class);
-                invitationEventAuthorTextView.setText("Autor: " + user.getUserFirstName() + " " + user.getUserLastName());
+                invitationEventAuthorTextView.setText(R.string.invitation_author + user.getUserFirstName() + " " + user.getUserLastName());
                 invitationEventNameTextView.setText(event.getEventName());
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -109,7 +111,6 @@ public class InvitationListAdapter extends ArrayAdapter<Event> implements View.O
             @Override
             public void onClick(View v) {
                 final String eventId = eventIdList.get(position);
-                final String currentUser = firebaseAuth.getCurrentUser().getUid();
 
                 eventAttendees.document(eventId).collection("Invited").whereEqualTo("User", currentUser).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
@@ -177,7 +178,6 @@ public class InvitationListAdapter extends ArrayAdapter<Event> implements View.O
             @Override
             public void onClick(View v) {
                 final String eventId = eventIdList.get(position);
-                final String currentUser = firebaseAuth.getCurrentUser().getUid();
 
                 eventAttendees.document(eventId).collection("Invited").whereEqualTo("User", currentUser).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
@@ -248,16 +248,12 @@ public class InvitationListAdapter extends ArrayAdapter<Event> implements View.O
 
     public void setEventList(ArrayList<Event> eventList) {
         this.eventList.clear();
-        for (Event event : eventList) {
-            this.eventList.add(event);
-        }
+        this.eventList.addAll(eventList);
     }
 
     public void setEventIdList(ArrayList<String> eventIdList) {
         this.eventIdList.clear();
-        for (String eventId : eventIdList) {
-            this.eventIdList.add(eventId);
-        }
+        this.eventIdList.addAll(eventIdList);
     }
 
     @Override

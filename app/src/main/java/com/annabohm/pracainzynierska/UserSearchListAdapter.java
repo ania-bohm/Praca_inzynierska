@@ -49,7 +49,7 @@ public class UserSearchListAdapter extends ArrayAdapter<User> implements View.On
         userListItemUserLastNameTextView.setText(user.getUserLastName());
 
         String photoUri = user.getUserPhoto();
-        if (photoUri != null && photoUri != "") {
+        if (photoUri != null && !photoUri.equals("")) {
             Picasso.get()
                     .load(user.getUserPhoto().trim())
                     .transform(new CropCircleTransformation())
@@ -63,9 +63,7 @@ public class UserSearchListAdapter extends ArrayAdapter<User> implements View.On
 
     public void setUserList(ArrayList<User> userList) {
         this.userList.clear();
-        for (User user : userList) {
-            this.userList.add(user);
-        }
+        this.userList.addAll(userList);
     }
 
     @Override

@@ -18,16 +18,15 @@ import androidx.navigation.Navigation;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Objects;
 
 import dmax.dialog.SpotsDialog;
 
@@ -41,20 +40,19 @@ public class InvitationListFragment extends Fragment {
     ArrayList<String> invitationEventIdList;
     ArrayList<Event> invitationEventList;
     InvitationListAdapter adapter;
-    FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
-    CollectionReference events = db.collection("Events");
-    CollectionReference attendeeEvents = db.collection("AttendeeEvents");
+    FirestoreInstanceSingleton firestoreInstanceSingleton = FirestoreInstanceSingleton.getInstance();
+    FirebaseAuthInstanceSingleton firebaseAuthInstanceSingleton = FirebaseAuthInstanceSingleton.getInstance();
+    CollectionReference events = firestoreInstanceSingleton.getFirebaseFirestoreRef().collection("Events");
+    CollectionReference attendeeEvents = firestoreInstanceSingleton.getFirebaseFirestoreRef().collection("AttendeeEvents");
     Context context;
-    String currentUserId;
+    String currentUserId = firebaseAuthInstanceSingleton.getFirebaseAuthRef().getCurrentUser().getUid();
     AlertDialog alertDialog;
 
     public InvitationListFragment() {
     }
 
-    public static InvitationListFragment newInstance(String param1, String param2) {
-        InvitationListFragment fragment = new InvitationListFragment();
-        return fragment;
+    public static InvitationListFragment newInstance() {
+        return new InvitationListFragment();
     }
 
     @Override
@@ -66,7 +64,7 @@ public class InvitationListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        ((MainActivity) getActivity()).setDrawerLocked();
+        ((MainActivity) requireActivity()).setDrawerLocked();
         return inflater.inflate(R.layout.fragment_invitation_list, container, false);
     }
 
@@ -75,7 +73,6 @@ public class InvitationListFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         navController = Navigation.findNavController(view);
         alertDialog = new SpotsDialog(context);
-        currentUserId = firebaseAuth.getCurrentUser().getUid();
 
         invitationListListView = view.findViewById(R.id.invitationListListView);
         invitationListNoInvitationsTextView = view.findViewById(R.id.invitationListNoInvitationsTextView);
@@ -102,7 +99,7 @@ public class InvitationListFragment extends Fragment {
                                 @Override
                                 public void onSuccess(DocumentSnapshot documentSnapshot) {
                                     if (documentSnapshot.exists()) {
-                                        final String eventId = documentSnapshot.get("Event").toString();
+                                        final String eventId = Objects.requireNonNull(documentSnapshot.get("Event")).toString();
                                         invitationEventIdList.add(eventId);
                                         events.document(eventId).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                                             @Override
@@ -112,6 +109,7 @@ public class InvitationListFragment extends Fragment {
                                                     Date dateNow = new Date();
                                                     final DateFormat timeFormatterPrint = new SimpleDateFormat("HH:mm");
                                                     final DateFormat dateFormatterPrint = new SimpleDateFormat("dd/MM/yyyy");
+                                                    assert eventToCheck != null;
                                                     String newString = timeFormatterPrint.format(eventToCheck.getEventTimeFinish());
                                                     String newStringNow = timeFormatterPrint.format(dateNow);
 

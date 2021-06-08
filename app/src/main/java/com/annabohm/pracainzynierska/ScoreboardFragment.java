@@ -3,6 +3,12 @@ package com.annabohm.pracainzynierska;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -12,26 +18,15 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ListView;
-import android.widget.TextView;
-import android.widget.Toast;
-
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.rengwuxian.materialedittext.MaterialEditText;
@@ -39,6 +34,7 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 import dmax.dialog.SpotsDialog;
@@ -49,19 +45,17 @@ public class ScoreboardFragment extends Fragment {
     ScoreboardFragment fragmentThis;
     NavController navController;
     AlertDialog alertDialog;
-    FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
-    CollectionReference events = db.collection("Events");
-    CollectionReference users = db.collection("Users");
-    CollectionReference eventAttendees = db.collection("EventAttendees");
-    CollectionReference scoreLists = db.collection("ScoreLists");
+    FirebaseAuthInstanceSingleton firebaseAuthInstanceSingleton = FirebaseAuthInstanceSingleton.getInstance();
+    FirestoreInstanceSingleton firestoreInstanceSingleton = FirestoreInstanceSingleton.getInstance();
+    CollectionReference scoreLists = firestoreInstanceSingleton.getFirebaseFirestoreRef().collection("ScoreLists");
     MaterialEditText scoreboardGuestNameMaterialEditText, scoreboardValueMaterialEditText;
     FloatingActionButton scoreFloatingActionButton;
     RecyclerView scoreRecyclerView;
     DocumentReference eventReference;
     Context context;
     Bundle bundle;
-    String eventId, eventAuthorId, currentUserId;
+    String eventId, eventAuthorId;
+    String currentUserId = Objects.requireNonNull(firebaseAuthInstanceSingleton.getFirebaseAuthRef().getCurrentUser()).getUid();
     boolean isUpdate = false;
     String scoreItemToUpdateId = "";
     RecyclerView.LayoutManager layoutManager;
@@ -72,9 +66,8 @@ public class ScoreboardFragment extends Fragment {
 
     }
 
-    public static ScoreboardFragment newInstance(String param1, String param2) {
-        ScoreboardFragment fragment = new ScoreboardFragment();
-        return fragment;
+    public static ScoreboardFragment newInstance() {
+        return new ScoreboardFragment();
     }
 
     @Override
@@ -87,9 +80,9 @@ public class ScoreboardFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        ((MainActivity) getActivity()).setDrawerLocked();
-        if (((MainActivity) getActivity()).getSupportActionBar() != null) {
-            ((MainActivity) getActivity()).getSupportActionBar().hide();
+        ((MainActivity) requireActivity()).setDrawerLocked();
+        if (((MainActivity) requireActivity()).getSupportActionBar() != null) {
+            Objects.requireNonNull(((MainActivity) requireActivity()).getSupportActionBar()).hide();
         }
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_scoreboard, container, false);
@@ -99,8 +92,6 @@ public class ScoreboardFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         navController = Navigation.findNavController(view);
-
-        currentUserId = firebaseAuth.getCurrentUser().getUid();
 
         scoreboardGuestNameMaterialEditText = view.findViewById(R.id.scoreboardGuestNameMaterialEditText);
         scoreboardValueMaterialEditText = view.findViewById(R.id.scoreboardValueMaterialEditText);
@@ -115,14 +106,15 @@ public class ScoreboardFragment extends Fragment {
         alertDialog = new SpotsDialog(context);
 
         bundle = this.getArguments();
+        assert bundle != null;
         String path = bundle.getString("path");
-        eventReference = db.document(path);
+        eventReference = firestoreInstanceSingleton.getFirebaseFirestoreRef().document(path);
         eventId = eventReference.getId();
 
         eventReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
-                eventAuthorId = documentSnapshot.toObject(Event.class).getEventAuthor();
+                eventAuthorId = Objects.requireNonNull(documentSnapshot.toObject(Event.class)).getEventAuthor();
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -139,11 +131,11 @@ public class ScoreboardFragment extends Fragment {
         scoreFloatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (scoreboardGuestNameMaterialEditText.getText().toString().trim().isEmpty() || scoreboardValueMaterialEditText.getText().toString().trim().isEmpty()) {
+                if (Objects.requireNonNull(scoreboardGuestNameMaterialEditText.getText()).toString().trim().isEmpty() || Objects.requireNonNull(scoreboardValueMaterialEditText.getText()).toString().trim().isEmpty()) {
                     Toast.makeText(context, R.string.event_budget_empty_fields, Toast.LENGTH_SHORT).show();
                     return;
                 }
-                int scoreboardValue = Integer.valueOf(scoreboardValueMaterialEditText.getText().toString().trim());
+                int scoreboardValue = Integer.parseInt(scoreboardValueMaterialEditText.getText().toString().trim());
                 if (!isUpdate) {
                     setData(scoreboardGuestNameMaterialEditText.getText().toString().trim(), scoreboardValue);
                 } else {
@@ -233,7 +225,7 @@ public class ScoreboardFragment extends Fragment {
         scoreLists.document(eventId).collection("ScoreList").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                for (DocumentSnapshot documentSnapshot : task.getResult()) {
+                for (DocumentSnapshot documentSnapshot : Objects.requireNonNull(task.getResult())) {
                     if (documentSnapshot.exists()) {
                         Score score = documentSnapshot.toObject(Score.class);
                         scoreList.add(score);

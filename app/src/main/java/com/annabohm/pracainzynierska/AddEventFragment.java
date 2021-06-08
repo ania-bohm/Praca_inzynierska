@@ -41,6 +41,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -51,6 +52,12 @@ import static android.content.ContentValues.TAG;
 
 public class AddEventFragment extends Fragment implements AdapterView.OnItemSelectedListener {
     NavController navController;
+    private final View.OnClickListener eventCancelOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            navController.popBackStack();
+        }
+    };
     Context context;
     FirestoreInstanceSingleton firestoreInstanceSingleton = FirestoreInstanceSingleton.getInstance();
     FirebaseAuthInstanceSingleton firebaseAuthInstanceSingleton = FirebaseAuthInstanceSingleton.getInstance();
@@ -67,11 +74,7 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
     String eventAuthor = Objects.requireNonNull(firebaseAuthInstanceSingleton.getFirebaseAuthRef().getCurrentUser()).getUid();
     ArrayList<User> invitedUsersList, foundUsersList;
     ArrayList<String> invitedUsersIdList, foundUsersIdList;
-    UserSearchListAdapter invitedUsersAdapter, foundUsersAdapter;
-    SimpleImageArrayAdapter imageArrayAdapter;
-    InputMethodManager imm;
-
-    private View.OnClickListener eventReadyOnClickListener = new View.OnClickListener() {
+    private final View.OnClickListener eventReadyOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             String eventName = eventNameEditText.getText().toString();
@@ -158,19 +161,15 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
             navController.popBackStack();
         }
     };
-    private View.OnClickListener eventCancelOnClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            navController.popBackStack();
-        }
-    };
+    UserSearchListAdapter invitedUsersAdapter, foundUsersAdapter;
+    SimpleImageArrayAdapter imageArrayAdapter;
+    InputMethodManager imm;
 
     public AddEventFragment() {
     }
 
-    public static AddEventFragment newInstance(String param1, String param2) {
-        AddEventFragment fragment = new AddEventFragment();
-        return fragment;
+    public static AddEventFragment newInstance() {
+        return new AddEventFragment();
     }
 
     @Override
@@ -183,8 +182,8 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        ((MainActivity) getActivity()).setDrawerLocked();
-        imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        ((MainActivity) requireActivity()).setDrawerLocked();
+        imm = (InputMethodManager) requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         return inflater.inflate(R.layout.fragment_add_event, container, false);
     }
 
@@ -288,7 +287,7 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
     @Override
     public void onCreateContextMenu(@NonNull ContextMenu menu, @NonNull View v, @Nullable ContextMenu.ContextMenuInfo menuInfo) {
         super.onCreateContextMenu(menu, v, menuInfo);
-        getActivity().getMenuInflater().inflate(R.menu.floating_context_menu, menu);
+        requireActivity().getMenuInflater().inflate(R.menu.floating_context_menu, menu);
     }
 
     @Override
@@ -372,21 +371,22 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
         final ArrayList<User> userList = new ArrayList<>();
         final ArrayList<String> userIdList = new ArrayList<>();
         for (int i = 0; i < inputArray.length; i++) {
-            String firstPart = "", secondPart = "";
+            StringBuilder firstPart = new StringBuilder();
+            StringBuilder secondPart = new StringBuilder();
             for (int j = 0; j < i; j++) {
-                firstPart += inputArray[j];
-                firstPart += " ";
+                firstPart.append(inputArray[j]);
+                firstPart.append(" ");
             }
-            firstPart = firstPart.trim();
+            firstPart = new StringBuilder(firstPart.toString().trim());
 
             for (int j = i; j < inputArray.length; j++) {
-                secondPart += inputArray[j];
-                secondPart += " ";
+                secondPart.append(inputArray[j]);
+                secondPart.append(" ");
             }
-            secondPart = secondPart.trim();
+            secondPart = new StringBuilder(secondPart.toString().trim());
 
-            Query firstQuery = users.whereEqualTo("userFirstName", firstPart).whereGreaterThanOrEqualTo("userLastName", secondPart).whereLessThanOrEqualTo("userLastName", secondPart + '\uf8ff');
-            Query secondQuery = users.whereEqualTo("userLastName", firstPart).whereGreaterThanOrEqualTo("userFirstName", secondPart).whereLessThanOrEqualTo("userFirstName", secondPart + '\uf8ff');
+            Query firstQuery = users.whereEqualTo("userFirstName", firstPart.toString()).whereGreaterThanOrEqualTo("userLastName", secondPart.toString()).whereLessThanOrEqualTo("userLastName", secondPart.toString() + '\uf8ff');
+            Query secondQuery = users.whereEqualTo("userLastName", firstPart.toString()).whereGreaterThanOrEqualTo("userFirstName", secondPart.toString()).whereLessThanOrEqualTo("userFirstName", secondPart.toString() + '\uf8ff');
             Task firstTask = firstQuery.get();
             Task secondTask = secondQuery.get();
 
@@ -406,7 +406,7 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
             taskList.add(secondTask);
         }
 
-        Task<List<QuerySnapshot>> allTasks = Tasks.whenAllSuccess(taskList.toArray(new Task[taskList.size()]));
+        Task<List<QuerySnapshot>> allTasks = Tasks.whenAllSuccess(taskList.toArray(new Task[0]));
         allTasks.addOnSuccessListener(new OnSuccessListener<List<QuerySnapshot>>() {
             @Override
             public void onSuccess(List<QuerySnapshot> querySnapshots) {
@@ -438,11 +438,23 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
     }
 
     public boolean datesCorrect(Date eventDateStart, Date eventDateFinish, Date eventTimeStart, Date eventTimeFinish) {
-        Date dateNow = new Date();
-        if (dateNow.after(eventDateFinish)) {
-            return false;
-        }
-        // date start < date finish with times
-        return false;
+        Date eventDateStartMerged = mergeDateAndTime(eventDateStart, eventTimeStart);
+        Date eventDateFinishMerged = mergeDateAndTime(eventDateFinish, eventTimeFinish);
+        return !eventDateStartMerged.after(eventDateFinishMerged);
+    }
+
+    public Date mergeDateAndTime(Date date, Date time) {
+        Calendar calendarA = Calendar.getInstance();
+        calendarA.setTime(date);
+
+        Calendar calendarB = Calendar.getInstance();
+        calendarB.setTime(time);
+
+        calendarA.set(Calendar.HOUR_OF_DAY, calendarB.get(Calendar.HOUR_OF_DAY));
+        calendarA.set(Calendar.MINUTE, calendarB.get(Calendar.MINUTE));
+        calendarA.set(Calendar.SECOND, calendarB.get(Calendar.SECOND));
+        calendarA.set(Calendar.MILLISECOND, calendarB.get(Calendar.MILLISECOND));
+
+        return calendarA.getTime();
     }
 }

@@ -1,16 +1,10 @@
 package com.annabohm.pracainzynierska;
 
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -20,8 +14,6 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 
@@ -31,10 +23,8 @@ public class ScoreboardAdapter extends RecyclerView.Adapter<ScoreboardAdapter.Sc
     ArrayList<Score> scoreList;
     String eventId, currentUserId, eventAuthorId;
     ScoreboardFragment scoreboardFragment;
-    FirebaseFirestore db = FirebaseFirestore.getInstance();
-    CollectionReference scoreLists = db.collection("ScoreLists");
-    CollectionReference events = db.collection("Events");
-    CollectionReference users = db.collection("Users");
+    FirestoreInstanceSingleton firestoreInstanceSingleton = FirestoreInstanceSingleton.getInstance();
+    CollectionReference scoreLists = firestoreInstanceSingleton.getFirebaseFirestoreRef().collection("ScoreLists");
 
     public ScoreboardAdapter(ScoreboardFragment scoreboardFragment, ArrayList<Score> scoreList, String eventId, String currentUserId, String eventAuthorId) {
         this.scoreboardFragment = scoreboardFragment;

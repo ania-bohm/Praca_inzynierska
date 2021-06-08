@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 import dmax.dialog.SpotsDialog;
 
@@ -49,22 +50,22 @@ public class MainFragment extends Fragment {
     FloatingActionButton addEventFloatingActionButton;
     RecyclerView yourCurrentEventsRecyclerView, allEventsRecyclerView;
     TextView yourEventsEmptyTextView, allEventsEmptyTextView, welcomeUserFirstNameTextView;
-    FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-    FirestoreInstanceSingleton singleton = FirestoreInstanceSingleton.getInstance();
-    CollectionReference events = FirestoreInstanceSingleton.getInstance().getFirebaseFirestoreRef().collection("Events");
-    CollectionReference users = singleton.getFirebaseFirestoreRef().collection("Users");
-    CollectionReference attendeeEvents = singleton.getFirebaseFirestoreRef().collection("AttendeeEvents");
-    CollectionReference eventAttendees = singleton.getFirebaseFirestoreRef().collection("EventAttendees");
+    FirebaseAuthInstanceSingleton firebaseAuthInstanceSingleton = FirebaseAuthInstanceSingleton.getInstance();
+    FirestoreInstanceSingleton firestoreInstanceSingleton = FirestoreInstanceSingleton.getInstance();
+    CollectionReference events = firestoreInstanceSingleton.getFirebaseFirestoreRef().collection("Events");
+    CollectionReference users = firestoreInstanceSingleton.getFirebaseFirestoreRef().collection("Users");
+    CollectionReference attendeeEvents = firestoreInstanceSingleton.getFirebaseFirestoreRef().collection("AttendeeEvents");
+    CollectionReference eventAttendees = firestoreInstanceSingleton.getFirebaseFirestoreRef().collection("EventAttendees");
     ArrayList<String> attendeesToDeleteIdList = new ArrayList<>();
     ConfirmedEventAdapter allEventsAdapter;
     ConfirmedEventAdapter yourCurrentEventsAdapter;
     HashMap<String, Event> confirmedEvents;
     HashMap<String, Event> yourCurrentEvents;
-    String currentUserId;
+    String currentUserId = Objects.requireNonNull(firebaseAuthInstanceSingleton.getFirebaseAuthRef().getCurrentUser()).getUid();
     Context context;
     SpotsDialog alertDialog;
 
-    private View.OnClickListener addEventOnClickListener = new View.OnClickListener() {
+    private final View.OnClickListener addEventOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             navController.navigate(R.id.mainToAddEvent);
@@ -74,9 +75,8 @@ public class MainFragment extends Fragment {
     public MainFragment() {
     }
 
-    public static MainFragment newInstance(String param1, String param2) {
-        MainFragment fragment = new MainFragment();
-        return fragment;
+    public static MainFragment newInstance() {
+        return new MainFragment();
     }
 
     @Override
@@ -88,21 +88,20 @@ public class MainFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        ((MainActivity) getActivity()).setDrawerUnlocked();
+        ((MainActivity) requireActivity()).setDrawerUnlocked();
         return inflater.inflate(R.layout.fragment_main, container, false);
     }
 
     private void setUpAllEventsRecyclerView() {
-        String currentUserId = firebaseAuth.getCurrentUser().getUid();
         confirmedEvents.clear();
         attendeeEvents.document(currentUserId).collection("Confirmed").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                List<DocumentSnapshot> documentSnapshots = task.getResult().getDocuments();
+                List<DocumentSnapshot> documentSnapshots = Objects.requireNonNull(task.getResult()).getDocuments();
                 if (!documentSnapshots.isEmpty()) {
                     for (DocumentSnapshot documentSnapshot : documentSnapshots) {
                         if (documentSnapshot.exists()) {
-                            final String eventId = documentSnapshot.get("Event").toString();
+                            final String eventId = Objects.requireNonNull(documentSnapshot.get("Event")).toString();
                             events.document(eventId).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
                                 @Override
                                 public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -110,6 +109,7 @@ public class MainFragment extends Fragment {
                                     Date dateNow = new Date();
                                     final DateFormat timeFormatterPrint = new SimpleDateFormat("HH:mm");
                                     final DateFormat dateFormatterPrint = new SimpleDateFormat("dd/MM/yyyy");
+                                    assert eventToCheck != null;
                                     String newString = timeFormatterPrint.format(eventToCheck.getEventTimeFinish());
                                     String newStringNow = timeFormatterPrint.format(dateNow);
 
@@ -148,10 +148,6 @@ public class MainFragment extends Fragment {
                             });
                         }
                     }
-//                    if (confirmedEvents.isEmpty()) {
-//                        Toast.makeText(context, "Jestem w confirmedevents empty!", Toast.LENGTH_SHORT).show();
-//                        allEventsEmptyTextView.setVisibility(View.VISIBLE);
-//                    }
                 } else {
                     allEventsEmptyTextView.setVisibility(View.VISIBLE);
                 }
@@ -193,7 +189,7 @@ public class MainFragment extends Fragment {
         events.orderBy("eventDateStart", Query.Direction.ASCENDING).whereEqualTo("eventAuthor", currentUserId).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                List<DocumentSnapshot> documentSnapshots = task.getResult().getDocuments();
+                List<DocumentSnapshot> documentSnapshots = Objects.requireNonNull(task.getResult()).getDocuments();
                 if (!documentSnapshots.isEmpty()) {
                     for (DocumentSnapshot documentSnapshot : documentSnapshots) {
                         if (documentSnapshot.exists()) {
@@ -202,6 +198,7 @@ public class MainFragment extends Fragment {
                             Date dateNow = new Date();
                             final DateFormat timeFormatterPrint = new SimpleDateFormat("HH:mm");
                             final DateFormat dateFormatterPrint = new SimpleDateFormat("dd/MM/yyyy");
+                            assert eventToCheck != null;
                             String newString = timeFormatterPrint.format(eventToCheck.getEventTimeFinish());
                             String newStringNow = timeFormatterPrint.format(dateNow);
 
@@ -314,7 +311,7 @@ public class MainFragment extends Fragment {
                             @Override
                             public void onSuccess(DocumentSnapshot documentSnapshot) {
                                 if (documentSnapshot.exists()) {
-                                    attendeesToDeleteIdList.add(documentSnapshot.get("User").toString());
+                                    attendeesToDeleteIdList.add(Objects.requireNonNull(documentSnapshot.get("User")).toString());
                                 }
                             }
                         }).addOnFailureListener(new OnFailureListener() {
@@ -506,7 +503,6 @@ public class MainFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         navController = Navigation.findNavController(view);
-        currentUserId = firebaseAuth.getCurrentUser().getUid();
 
         yourCurrentEventsRecyclerView = view.findViewById(R.id.yourCurrentEventsRecyclerView);
         allEventsRecyclerView = view.findViewById(R.id.allEventsRecyclerView);
@@ -542,10 +538,10 @@ public class MainFragment extends Fragment {
         addEventFloatingActionButton.setOnClickListener(addEventOnClickListener);
 
         allEventsRecyclerView.setHasFixedSize(false);
-        allEventsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));//<----------
+        allEventsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
 
         yourCurrentEventsRecyclerView.setHasFixedSize(false);
-        yourCurrentEventsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));//<----------
+        yourCurrentEventsRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
 
         yourCurrentEventsRecyclerView.setAdapter(yourCurrentEventsAdapter);
         allEventsRecyclerView.setAdapter(allEventsAdapter);

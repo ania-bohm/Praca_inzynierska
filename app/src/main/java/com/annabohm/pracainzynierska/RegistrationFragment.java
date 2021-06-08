@@ -2,13 +2,6 @@ package com.annabohm.pracainzynierska;
 
 import android.content.Context;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-import androidx.navigation.NavController;
-import androidx.navigation.Navigation;
-
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Patterns;
@@ -21,15 +14,21 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.SignInMethodQueryResult;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.Objects;
 
 public class RegistrationFragment extends Fragment {
 
@@ -38,19 +37,19 @@ public class RegistrationFragment extends Fragment {
     Button createAccountButton, backToLoginButton;
     ImageView registerShowPasswordButton;
     EditText registerFirstNameEditText, registerLastNameEditText, registerEmailEditText, registerPhoneNumberEditText, registerPasswordEditText;
-    FirebaseAuth firebaseAuth;
-    FirebaseFirestore firebaseFirestore;
+    FirestoreInstanceSingleton firestoreInstanceSingleton = FirestoreInstanceSingleton.getInstance();
+    FirebaseAuthInstanceSingleton firebaseAuthInstanceSingleton = FirebaseAuthInstanceSingleton.getInstance();
     DocumentReference documentReference;
     ProgressBar registerProgressBar;
     Context context;
     String userID, registerFirstName, registerLastName, registerEmail, registerPassword, registerPhoneNumber;
-    private View.OnClickListener backToLoginOnClickListener = new View.OnClickListener() {
+    private final View.OnClickListener backToLoginOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             navController.popBackStack();
         }
     };
-    private View.OnClickListener registerOnClickListener = new View.OnClickListener() {
+    private final View.OnClickListener registerOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             registerFirstName = registerFirstNameEditText.getText().toString();
@@ -104,19 +103,18 @@ public class RegistrationFragment extends Fragment {
     public RegistrationFragment() {
     }
 
-    public static RegistrationFragment newInstance(String param1, String param2) {
-        RegistrationFragment fragment = new RegistrationFragment();
-        return fragment;
+    public static RegistrationFragment newInstance() {
+        return new RegistrationFragment();
     }
 
     public String formatString(String text) {
         String[] textArray = text.split(" ");
-        String formattedText = "";
-        for (int i = 0; i < textArray.length; i++) {
-            formattedText += textArray[i].substring(0, 1).toUpperCase() + textArray[i].substring(1).toLowerCase() + " ";
+        StringBuilder formattedText = new StringBuilder();
+        for (String s : textArray) {
+            formattedText.append(s.substring(0, 1).toUpperCase()).append(s.substring(1).toLowerCase()).append(" ");
         }
-        formattedText = formattedText.trim();
-        return formattedText;
+        formattedText = new StringBuilder(formattedText.toString().trim());
+        return formattedText.toString();
     }
 
     @Override
@@ -128,7 +126,7 @@ public class RegistrationFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        ((MainActivity) getActivity()).setDrawerLocked();
+        ((MainActivity) requireActivity()).setDrawerLocked();
         return inflater.inflate(R.layout.fragment_registration, container, false);
     }
 
@@ -147,15 +145,12 @@ public class RegistrationFragment extends Fragment {
         registerPasswordEditText = view.findViewById(R.id.registerPasswordEditText);
         registerProgressBar = view.findViewById(R.id.registerProgressBar);
 
-        firebaseAuth = FirebaseAuth.getInstance();
-        firebaseFirestore = FirebaseFirestore.getInstance();
-
         createAccountButton.setOnClickListener(registerOnClickListener);
         backToLoginButton.setOnClickListener(backToLoginOnClickListener);
     }
 
     private void checkEmailExistsOrNot(final EditText registerEmailEditText, final EditText registerPasswordEditText, final EditText registerFirstNameEditText, final EditText registerLastNameEditText, final EditText registerPhoneNumberEditText) {
-        firebaseAuth.fetchSignInMethodsForEmail(registerEmailEditText.getText().toString().trim()).addOnCompleteListener(new OnCompleteListener<SignInMethodQueryResult>() {
+        firebaseAuthInstanceSingleton.getFirebaseAuthRef().fetchSignInMethodsForEmail(registerEmailEditText.getText().toString().trim()).addOnCompleteListener(new OnCompleteListener<SignInMethodQueryResult>() {
             @Override
             public void onComplete(@NonNull Task<SignInMethodQueryResult> task) {
                 Log.d(TAG, "" + task.getResult().getSignInMethods().size());
@@ -164,7 +159,6 @@ public class RegistrationFragment extends Fragment {
                     registerUser(registerEmailEditText, registerPasswordEditText, registerFirstNameEditText, registerLastNameEditText, registerPhoneNumberEditText);
                 } else {
                     registerEmailEditText.setError(getString(R.string.email1_already_exists));
-                    return;
                 }
             }
         }).addOnFailureListener(new OnFailureListener() {
@@ -176,12 +170,12 @@ public class RegistrationFragment extends Fragment {
     }
 
     private void registerUser(EditText registerEmailEditText, EditText registerPasswordEditText, EditText registerFirstNameEditText, EditText registerLastNameEditText, EditText registerPhoneNumberEditText) {
-        firebaseAuth.createUserWithEmailAndPassword(registerEmailEditText.getText().toString().trim(), registerPasswordEditText.getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+        firebaseAuthInstanceSingleton.getFirebaseAuthRef().createUserWithEmailAndPassword(registerEmailEditText.getText().toString().trim(), registerPasswordEditText.getText().toString()).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
-                    userID = firebaseAuth.getCurrentUser().getUid();
-                    documentReference = firebaseFirestore.collection("Users").document(userID);
+                    userID = Objects.requireNonNull(firebaseAuthInstanceSingleton.getFirebaseAuthRef().getCurrentUser()).getUid();
+                    documentReference = firestoreInstanceSingleton.getFirebaseFirestoreRef().collection("Users").document(userID);
                     User newUser = new User(registerFirstName, registerLastName, registerEmail, registerPhoneNumber);
                     documentReference.set(newUser).addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
@@ -196,7 +190,7 @@ public class RegistrationFragment extends Fragment {
                     Toast.makeText(context, R.string.register_success, Toast.LENGTH_SHORT).show();
                     navController.popBackStack();
                 } else {
-                    Toast.makeText(context, task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context, Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
                 }
             }
         });

@@ -1,6 +1,5 @@
 package com.annabohm.pracainzynierska;
 
-import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.storage.FirebaseStorage;
 
 public class StorageInstanceSingleton {
