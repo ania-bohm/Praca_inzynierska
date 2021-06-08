@@ -90,6 +90,7 @@
                 android:inputType="text"
                 android:textSize="20sp"
                 app:met_baseColor="@android:color/white"
+                app:met_textColorHint="@color/colorWhite40Transparent"
                 app:met_floatingLabel="highlight"
                 app:met_primaryColor="@android:color/white"
                 app:met_singleLineEllipsis="true" />
@@ -99,6 +100,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/montserrat"
+                app:met_textColorHint="@color/colorWhite40Transparent"
                 android:hint="@string/event_cost_value"
                 android:inputType="numberDecimal"
                 android:textSize="16sp"

@@ -75,7 +75,7 @@
     <string name="event_image">Set event background</string>
     <string name="set_event_budget">Set event budget</string>
     <string name="edit_event_budget">Change event budget</string>
-    <string name="edit_event_image">Change event color</string>
+    <string name="edit_event_image">Change event background</string>
     <string name="event_ready">Finish</string>
     <string name="event_cancel">Cancel</string>
     <string name="account_settings">Account settings</string>
@@ -181,4 +181,5 @@
     <string name="event_dates_incorrect">Entered dates are incorrect!</string>
     <string name="invitation_author">"Author: "</string>
     <string name="event_duration">Event duration</string>
+    <string name="edit_event_duration">Modify event duration</string>
 </resources>

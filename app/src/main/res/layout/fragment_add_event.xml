@@ -53,11 +53,12 @@
                 android:hint="@string/event_name"
                 android:inputType="text"
                 android:padding="5dp"
-                android:textSize="16sp"
+                android:textSize="18sp"
                 app:met_baseColor="@android:color/white"
                 app:met_floatingLabel="highlight"
                 app:met_primaryColor="@android:color/white"
-                app:met_singleLineEllipsis="true" />
+                app:met_singleLineEllipsis="true"
+                app:met_textColorHint="@color/colorWhite60Transparent" />
 
             <com.rengwuxian.materialedittext.MaterialEditText
                 android:id="@+id/eventLocationMaterialEditText"
@@ -69,11 +70,12 @@
                 android:hint="@string/event_location"
                 android:inputType="text"
                 android:padding="5dp"
-                android:textSize="16sp"
+                android:textSize="18sp"
                 app:met_baseColor="@android:color/white"
                 app:met_floatingLabel="highlight"
                 app:met_primaryColor="@android:color/white"
-                app:met_singleLineEllipsis="true" />
+                app:met_singleLineEllipsis="true"
+                app:met_textColorHint="@color/colorWhite60Transparent" />
 
             <com.rengwuxian.materialedittext.MaterialEditText
                 android:id="@+id/eventDescriptionMaterialEditText"
@@ -85,11 +87,12 @@
                 android:hint="@string/event_description"
                 android:inputType="text"
                 android:padding="5dp"
-                android:textSize="16sp"
+                android:textSize="18sp"
                 app:met_baseColor="@android:color/white"
                 app:met_floatingLabel="highlight"
                 app:met_primaryColor="@android:color/white"
-                app:met_singleLineEllipsis="true" />
+                app:met_singleLineEllipsis="true"
+                app:met_textColorHint="@color/colorWhite60Transparent" />
 
             <TextView
                 android:id="@+id/eventDurationTextView"
@@ -103,7 +106,6 @@
                 android:textStyle="bold" />
 
             <LinearLayout
-                android:id="@+id/linearLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
@@ -133,7 +135,7 @@
                         android:inputType="date"
                         android:textColor="@color/colorTextDark"
                         android:textColorHighlight="@color/colorText"
-                        android:textSize="14dp"
+                        android:textSize="16sp"
                         app:mask="##/##/####" />
 
                     <TextView
@@ -153,7 +155,7 @@
                         android:fontFamily="@font/montserrat"
                         android:inputType="date"
                         android:textColor="@color/colorTextDark"
-                        android:textSize="14dp"
+                        android:textSize="16sp"
                         app:mask="##/##/####" />
                 </LinearLayout>
 
@@ -187,7 +189,7 @@
                         android:fontFamily="@font/montserrat"
                         android:inputType="time"
                         android:textColor="@color/colorTextDark"
-                        android:textSize="14dp"
+                        android:textSize="16sp"
                         app:mask="##:##" />
 
                     <TextView
@@ -207,7 +209,7 @@
                         android:fontFamily="@font/montserrat"
                         android:inputType="time"
                         android:textColor="@color/colorTextDark"
-                        android:textSize="14dp"
+                        android:textSize="16sp"
                         app:mask="##:##" />
 
                 </LinearLayout>
@@ -219,8 +221,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/montserrat"
-                android:padding="10dp"
                 android:text="@string/event_image"
+                android:padding="10dp"
                 android:textColor="@color/colorTextDark"
                 android:textSize="18sp"
                 android:textStyle="bold" />

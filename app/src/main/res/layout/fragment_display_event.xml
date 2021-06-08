@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/main_background"
+    android:background="@drawable/main_background_light"
     tools:context=".DisplayEventFragment">
 
     <LinearLayout
@@ -23,45 +23,37 @@
                 android:id="@+id/eventNameTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
                 android:fontFamily="@font/montserrat"
+                android:padding="8dp"
                 android:text="@string/event"
-                android:shadowColor="@color/colorTextDarkSeeThrough"
-                android:shadowDx="1"
-                android:shadowDy="4"
-                android:shadowRadius="0.6"
-                android:textColor="@color/colorAccent"
-                android:textSize="24sp"
-                android:textStyle="bold"/>
+                android:textColor="@color/colorTextDark"
+                android:textSize="24sp" />
 
             <ImageView
                 android:id="@+id/editEventButton"
                 android:layout_width="30sp"
                 android:layout_height="30sp"
-                android:layout_marginStart="4dp"
-                android:layout_marginTop="12dp"
-                android:src="@drawable/ic_edit"
-                android:layout_toRightOf="@id/eventNameTextView"/>
-
+                android:layout_marginTop="10dp"
+                android:layout_toRightOf="@id/eventNameTextView"
+                android:src="@drawable/ic_edit" />
 
             <ImageView
                 android:id="@+id/toDoListButton"
                 android:layout_width="40sp"
                 android:layout_height="40sp"
-                android:layout_marginEnd="8dp"
                 android:layout_marginTop="8dp"
-                android:src="@drawable/ic_to_do_list_3"
-                android:layout_toLeftOf="@id/commonExpenseButton"/>
+                android:layout_marginEnd="8dp"
+                android:layout_toLeftOf="@id/commonExpenseButton"
+                android:src="@drawable/ic_to_do_list_3" />
 
             <ImageView
                 android:id="@+id/commonExpenseButton"
                 android:layout_width="40sp"
                 android:layout_height="40sp"
-                android:layout_marginEnd="5dp"
                 android:layout_marginTop="8dp"
-                android:src="@drawable/ic_budget_2"
-                android:layout_toLeftOf="@id/scoreboardButton"/>
+                android:layout_marginEnd="5dp"
+                android:layout_toLeftOf="@id/scoreboardButton"
+                android:src="@drawable/ic_budget_2" />
 
             <ImageView
                 android:id="@+id/scoreboardButton"
@@ -69,15 +61,15 @@
                 android:layout_height="40sp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="5dp"
-                android:src="@drawable/ic_success"
-                android:layout_toLeftOf="@id/chatButton"/>
+                android:layout_toLeftOf="@id/chatButton"
+                android:src="@drawable/ic_success" />
 
             <ImageView
                 android:id="@+id/chatButton"
                 android:layout_width="40sp"
                 android:layout_height="40sp"
-                android:layout_marginTop="8dp"
                 android:layout_alignParentEnd="true"
+                android:layout_marginTop="8dp"
                 android:layout_marginEnd="5dp"
                 android:src="@drawable/ic_chat_2" />
 
@@ -87,7 +79,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginTop="5dp"
-            android:background="@drawable/bottom_semi_rectangular_background"
+            android:background="@drawable/bottom_semi_rectangular_background_primary"
             android:orientation="vertical"
             android:padding="10dp">
 
@@ -95,182 +87,182 @@
                 android:id="@+id/displayEventDataTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
                 android:fontFamily="@font/montserrat"
+                android:padding="10dp"
                 android:text="@string/event_data"
                 android:textColor="@color/colorTextDark"
-                android:textSize="16sp"
+                android:textSize="18sp"
                 android:textStyle="bold" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
-                android:orientation="horizontal">
+                android:orientation="vertical"
+                android:padding="5dp">
 
-                <LinearLayout
+                <TextView
+                    android:id="@+id/displayEventAuthorTextView"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="10dp"
-                    android:orientation="vertical">
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat"
+                    android:padding="5dp"
+                    android:text="@string/event_author"
+                    android:textColor="@color/colorTextDark"
+                    android:textSize="14sp" />
 
-                    <TextView
-                        android:id="@+id/displayEventAuthorTextView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="40dp"
-                        android:fontFamily="@font/montserrat"
-                        android:text="@string/event_author"
-                        android:textColor="@color/colorTextDark" />
+                <TextView
+                    android:id="@+id/showEventAuthorTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:fontFamily="@font/montserrat"
+                    android:textColor="@color/colorTextDark"
+                    android:textSize="20sp" />
 
-                    <TextView
-                        android:id="@+id/displayEventNameTextView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="40dp"
-                        android:fontFamily="@font/montserrat"
-                        android:text="@string/event_name"
-                        android:textColor="@color/colorTextDark" />
-
-                    <TextView
-                        android:id="@+id/displayEventDateStartTextView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="40dp"
-                        android:fontFamily="@font/montserrat"
-                        android:text="@string/event_date_start"
-                        android:textColor="@color/colorTextDark" />
-
-                    <TextView
-                        android:id="@+id/displayEventTimeStartTextView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="40dp"
-                        android:fontFamily="@font/montserrat"
-                        android:text="@string/event_time_start"
-                        android:textColor="@color/colorTextDark" />
-
-                    <TextView
-                        android:id="@+id/displayEventDateFinishTextView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="40dp"
-                        android:fontFamily="@font/montserrat"
-                        android:text="@string/event_date_finish"
-                        android:textColor="@color/colorTextDark" />
-
-                    <TextView
-                        android:id="@+id/displayEventTimeFinishTextView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="40dp"
-                        android:fontFamily="@font/montserrat"
-                        android:text="@string/event_time_finish"
-                        android:textColor="@color/colorTextDark" />
-
-                    <TextView
-                        android:id="@+id/displayEventLocationTextView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="40dp"
-                        android:fontFamily="@font/montserrat"
-                        android:text="@string/event_location"
-                        android:textColor="@color/colorTextDark" />
-
-                    <TextView
-                        android:id="@+id/displayEventDescriptionTextView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="40dp"
-                        android:fontFamily="@font/montserrat"
-                        android:text="@string/event_description"
-                        android:textColor="@color/colorTextDark" />
-
-                </LinearLayout>
-
-                <LinearLayout
+                <TextView
+                    android:id="@+id/displayEventNameTextView"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_marginStart="25dp"
-                    android:orientation="vertical">
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat"
+                    android:padding="5dp"
+                    android:text="@string/event_name"
+                    android:textColor="@color/colorTextDark"
+                    android:textSize="14sp" />
 
-                    <TextView
-                        android:id="@+id/showEventAuthorTextView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="40dp"
-                        android:ems="10"
-                        android:fontFamily="@font/montserrat"
-                        android:textColor="@color/colorTextDark"
-                        android:textSize="16sp" />
+                <TextView
+                    android:id="@+id/showEventNameTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:fontFamily="@font/montserrat"
+                    android:textColor="@color/colorTextDark"
+                    android:textSize="20sp" />
 
-                    <TextView
-                        android:id="@+id/showEventNameTextView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="40dp"
-                        android:ems="10"
-                        android:fontFamily="@font/montserrat"
-                        android:textColor="@color/colorTextDark"
-                        android:textSize="16sp" />
+                <TextView
+                    android:id="@+id/displayEventDateStartTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat"
+                    android:padding="5dp"
+                    android:text="@string/event_date_start"
+                    android:textColor="@color/colorTextDark"
+                    android:textSize="14sp" />
 
-                    <TextView
-                        android:id="@+id/showEventDateStartTextView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="40dp"
-                        android:ems="10"
-                        android:fontFamily="@font/montserrat"
-                        android:textColor="@color/colorTextDark"
-                        android:textSize="16sp" />
+                <TextView
+                    android:id="@+id/showEventDateStartTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:fontFamily="@font/montserrat"
+                    android:textColor="@color/colorTextDark"
+                    android:textSize="20sp" />
 
-                    <TextView
-                        android:id="@+id/showEventTimeStartTextView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="40dp"
-                        android:ems="10"
-                        android:fontFamily="@font/montserrat"
-                        android:textColor="@color/colorTextDark"
-                        android:textSize="16sp" />
+                <TextView
+                    android:id="@+id/displayEventTimeStartTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat"
+                    android:padding="5dp"
+                    android:text="@string/event_time_start"
+                    android:textColor="@color/colorTextDark"
+                    android:textSize="14sp" />
 
-                    <TextView
-                        android:id="@+id/showEventDateFinishTextView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="40dp"
-                        android:ems="10"
-                        android:fontFamily="@font/montserrat"
-                        android:textColor="@color/colorTextDark"
-                        android:textSize="16sp" />
+                <TextView
+                    android:id="@+id/showEventTimeStartTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:fontFamily="@font/montserrat"
+                    android:textColor="@color/colorTextDark"
+                    android:textSize="20sp" />
 
-                    <TextView
-                        android:id="@+id/showEventTimeFinishTextView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="40dp"
-                        android:ems="10"
-                        android:fontFamily="@font/montserrat"
-                        android:textColor="@color/colorTextDark"
-                        android:textSize="16sp" />
+                <TextView
+                    android:id="@+id/displayEventDateFinishTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat"
+                    android:padding="5dp"
+                    android:text="@string/event_date_finish"
+                    android:textColor="@color/colorTextDark"
+                    android:textSize="14sp" />
 
-                    <TextView
-                        android:id="@+id/showEventLocationTextView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="40dp"
-                        android:ems="10"
-                        android:fontFamily="@font/montserrat"
-                        android:textColor="@color/colorTextDark"
-                        android:textSize="16sp" />
+                <TextView
+                    android:id="@+id/showEventDateFinishTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:fontFamily="@font/montserrat"
+                    android:textColor="@color/colorTextDark"
+                    android:textSize="20sp" />
 
-                    <TextView
-                        android:id="@+id/showEventDescriptionTextView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:ems="10"
-                        android:fontFamily="@font/montserrat"
-                        android:textColor="@color/colorTextDark"
-                        android:textSize="16sp" />
+                <TextView
+                    android:id="@+id/displayEventTimeFinishTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat"
+                    android:padding="5dp"
+                    android:text="@string/event_time_finish"
+                    android:textColor="@color/colorTextDark"
+                    android:textSize="14sp" />
 
-                </LinearLayout>
+                <TextView
+                    android:id="@+id/showEventTimeFinishTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:fontFamily="@font/montserrat"
+                    android:textColor="@color/colorTextDark"
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:id="@+id/displayEventLocationTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat"
+                    android:padding="5dp"
+                    android:text="@string/event_location"
+                    android:textColor="@color/colorTextDark"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/showEventLocationTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:fontFamily="@font/montserrat"
+                    android:textColor="@color/colorTextDark"
+                    android:textSize="20sp" />
+
+                <TextView
+                    android:id="@+id/displayEventDescriptionTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/montserrat"
+                    android:padding="5dp"
+                    android:text="@string/event_description"
+                    android:textColor="@color/colorTextDark"
+                    android:textSize="14sp" />
+
+                <TextView
+                    android:id="@+id/showEventDescriptionTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:fontFamily="@font/montserrat"
+                    android:textColor="@color/colorTextDark"
+                    android:textSize="20sp" />
+
             </LinearLayout>
 
             <TextView
                 android:id="@+id/displayEventGuestListTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
                 android:fontFamily="@font/montserrat"
+                android:padding="10dp"
                 android:text="@string/event_guest_list"
                 android:textColor="@color/colorTextDark"
-                android:textSize="16sp"
+                android:textSize="18sp"
                 android:textStyle="bold" />
 
             <ListView

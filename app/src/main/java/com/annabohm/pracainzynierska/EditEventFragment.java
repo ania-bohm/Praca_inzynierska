@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
-import android.util.Patterns;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -36,9 +35,8 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.rengwuxian.materialedittext.MaterialEditText;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -61,7 +59,8 @@ public class EditEventFragment extends Fragment implements AdapterView.OnItemSel
     Bundle bundle;
     Context context;
     Event editedEvent;
-    EditText editEventNameEditText, editEventDateStartEditText, editEventTimeStartEditText, editEventDateFinishEditText, editEventTimeFinishEditText, editEventLocationEditText, editEventDescriptionEditText;
+    EditText editEventDateStartEditText, editEventTimeStartEditText, editEventDateFinishEditText, editEventTimeFinishEditText;
+    MaterialEditText editEventNameMaterialEditText, editEventLocationMaterialEditText, editEventDescriptionMaterialEditText;
     Button editEventReadyButton, editEventCancelButton;
     Spinner editEventImageSpinner;
     SearchView editEventGuestListSearchView;
@@ -83,9 +82,9 @@ public class EditEventFragment extends Fragment implements AdapterView.OnItemSel
     private final View.OnClickListener editEventReadyOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            String eventName = editEventNameEditText.getText().toString().trim();
-            String eventDescription = editEventDescriptionEditText.getText().toString().trim();
-            String eventLocation = editEventLocationEditText.getText().toString().trim();
+            String eventName = editEventNameMaterialEditText.getText().toString().trim();
+            String eventDescription = editEventDescriptionMaterialEditText.getText().toString().trim();
+            String eventLocation = editEventLocationMaterialEditText.getText().toString().trim();
             String dateStartValue = editEventDateStartEditText.getText().toString().trim();
             String dateFinishValue = editEventDateFinishEditText.getText().toString().trim();
             String timeStartValue = editEventTimeStartEditText.getText().toString().trim();
@@ -256,13 +255,13 @@ public class EditEventFragment extends Fragment implements AdapterView.OnItemSel
         super.onViewCreated(view, savedInstanceState);
         navController = Navigation.findNavController(view);
         alertDialog = new SpotsDialog(context);
-        editEventNameEditText = view.findViewById(R.id.editEventNameEditText);
+        editEventNameMaterialEditText = view.findViewById(R.id.editEventNameMaterialEditText);
         editEventDateStartEditText = view.findViewById(R.id.editEventDateStartEditText);
         editEventTimeStartEditText = view.findViewById(R.id.editEventTimeStartEditText);
         editEventDateFinishEditText = view.findViewById(R.id.editEventDateFinishEditText);
         editEventTimeFinishEditText = view.findViewById(R.id.editEventTimeFinishEditText);
-        editEventLocationEditText = view.findViewById(R.id.editEventLocationEditText);
-        editEventDescriptionEditText = view.findViewById(R.id.editEventDescriptionEditText);
+        editEventLocationMaterialEditText = view.findViewById(R.id.editEventLocationMaterialEditText);
+        editEventDescriptionMaterialEditText = view.findViewById(R.id.editEventDescriptionMaterialEditText);
         editEventReadyButton = view.findViewById(R.id.editEventReadyButton);
         editEventCancelButton = view.findViewById(R.id.editEventCancelButton);
         editEventImageSpinner = view.findViewById(R.id.editEventImageSpinner);
@@ -375,13 +374,13 @@ public class EditEventFragment extends Fragment implements AdapterView.OnItemSel
                     populateOldGuestList();
 
                     assert editedEvent != null;
-                    editEventNameEditText.setHint(editedEvent.getEventName());
+                    editEventNameMaterialEditText.setHint(editedEvent.getEventName());
                     editEventDateStartEditText.setHint(dateHandler.convertDateToString(editedEvent.getEventDateStart()));
                     editEventTimeStartEditText.setHint(dateHandler.convertTimeToString(editedEvent.getEventTimeStart()));
                     editEventDateFinishEditText.setHint(dateHandler.convertDateToString(editedEvent.getEventDateFinish()));
                     editEventTimeFinishEditText.setHint(dateHandler.convertTimeToString(editedEvent.getEventTimeFinish()));
-                    editEventLocationEditText.setHint(editedEvent.getEventLocation());
-                    editEventDescriptionEditText.setHint(editedEvent.getEventDescription());
+                    editEventLocationMaterialEditText.setHint(editedEvent.getEventLocation());
+                    editEventDescriptionMaterialEditText.setHint(editedEvent.getEventDescription());
                     alertDialog.dismiss();
                 }
             }
