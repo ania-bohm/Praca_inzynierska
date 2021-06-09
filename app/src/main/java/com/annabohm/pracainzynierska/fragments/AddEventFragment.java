@@ -105,14 +105,14 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
             Date eventTimeFinish;
 
             if (dateHandler.isDateValid(dateStartValue)
-                    && dateHandler.isTimeValid(dateStartValue)
+                    && dateHandler.isTimeValid(timeStartValue)
                     && dateHandler.isDateValid(dateFinishValue)
                     && dateHandler.isTimeValid(timeFinishValue)) {
                 eventDateStart = dateHandler.convertStringToDate(dateStartValue);
                 eventDateFinish = dateHandler.convertStringToDate(dateFinishValue);
                 eventTimeStart = dateHandler.convertStringToTime(timeStartValue);
                 eventTimeFinish = dateHandler.convertStringToTime(timeFinishValue);
-                if (!dateHandler.datesCorrect(eventDateStart, eventTimeStart, eventDateFinish, eventTimeFinish)) {
+                if (!dateHandler.datesCorrect(eventDateStart, eventDateFinish, eventTimeStart, eventTimeFinish)) {
                     Toast.makeText(context, R.string.event_dates_incorrect, Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -208,10 +208,13 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
         eventTimeFinishEditText = view.findViewById(R.id.eventTimeFinishEditText);
         eventLocationMaterialEditText = view.findViewById(R.id.eventLocationMaterialEditText);
         eventDescriptionMaterialEditText = view.findViewById(R.id.eventDescriptionMaterialEditText);
-//        test = view.findViewById(R.id.test);
         eventUserSearchListView = view.findViewById(R.id.eventUserSearchListView);
         eventImageSpinner = view.findViewById(R.id.eventImageSpinner);
         eventGuestListListView = view.findViewById(R.id.eventGuestListListView);
+
+        eventGuestListSearchView.setFocusable(false);
+        eventUserSearchListView.setFocusable(false);
+        eventGuestListListView.setFocusable(false);
 
         dateHandler = new DateHandler("dd/MM/yyyy", "HH:mm");
 

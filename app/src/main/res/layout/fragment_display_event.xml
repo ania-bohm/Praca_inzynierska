@@ -9,8 +9,6 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:descendantFocusability="blocksDescendants"
-        android:focusableInTouchMode="true"
         android:orientation="vertical">
 
         <RelativeLayout
@@ -93,12 +91,6 @@
                 android:textSize="22sp"
                 android:textStyle="bold" />
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:layout_marginStart="20dp"
-                android:layout_marginEnd="20dp"
-                android:background="@drawable/login_background" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -124,7 +116,7 @@
                     android:fontFamily="@font/montserrat"
                     android:padding="5dp"
                     android:textColor="@color/colorTextDark"
-                    android:textSize="20sp" />
+                    android:textSize="18sp" />
 
                 <View
                     android:layout_width="match_parent"
@@ -151,7 +143,7 @@
                     android:fontFamily="@font/montserrat"
                     android:padding="5dp"
                     android:textColor="@color/colorTextDark"
-                    android:textSize="20sp" />
+                    android:textSize="18sp" />
 
                 <View
                     android:layout_width="match_parent"
@@ -182,7 +174,7 @@
                         android:fontFamily="@font/montserrat"
                         android:padding="5dp"
                         android:textColor="@color/colorTextDark"
-                        android:textSize="20sp" />
+                        android:textSize="18sp" />
 
                     <TextView
                         android:id="@+id/showEventTimeStartTextView"
@@ -192,7 +184,7 @@
                         android:fontFamily="@font/montserrat"
                         android:padding="5dp"
                         android:textColor="@color/colorTextDark"
-                        android:textSize="20sp" />
+                        android:textSize="18sp" />
                 </LinearLayout>
 
                 <View
@@ -224,7 +216,7 @@
                         android:fontFamily="@font/montserrat"
                         android:padding="5dp"
                         android:textColor="@color/colorTextDark"
-                        android:textSize="20sp" />
+                        android:textSize="18sp" />
 
                     <TextView
                         android:id="@+id/showEventTimeFinishTextView"
@@ -234,7 +226,7 @@
                         android:fontFamily="@font/montserrat"
                         android:padding="5dp"
                         android:textColor="@color/colorTextDark"
-                        android:textSize="20sp" />
+                        android:textSize="18sp" />
                 </LinearLayout>
 
                 <View
@@ -262,7 +254,7 @@
                     android:fontFamily="@font/montserrat"
                     android:padding="5dp"
                     android:textColor="@color/colorTextDark"
-                    android:textSize="20sp" />
+                    android:textSize="18sp" />
 
                 <View
                     android:layout_width="match_parent"
@@ -289,14 +281,7 @@
                     android:fontFamily="@font/montserrat"
                     android:padding="5dp"
                     android:textColor="@color/colorTextDark"
-                    android:textSize="20sp" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="2dp"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginEnd="20dp"
-                    android:background="@drawable/login_background" />
+                    android:textSize="18sp" />
 
             </LinearLayout>
 
@@ -315,8 +300,7 @@
                 android:id="@+id/displayEventGuestListListView"
                 android:layout_width="match_parent"
                 android:layout_height="260dp"
-                android:focusable="false"
-                android:nestedScrollingEnabled="true"/>
+                android:nestedScrollingEnabled="true" />
 
         </LinearLayout>
     </LinearLayout>

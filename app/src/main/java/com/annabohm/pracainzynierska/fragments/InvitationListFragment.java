@@ -38,7 +38,7 @@ import dmax.dialog.SpotsDialog;
 import static android.content.ContentValues.TAG;
 
 public class InvitationListFragment extends Fragment {
-
+    InvitationListFragment fragmentThis;
     NavController navController;
     ListView invitationListListView;
     TextView invitationListNoInvitationsTextView;
@@ -65,6 +65,7 @@ public class InvitationListFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         context = getContext();
+        fragmentThis = this;
     }
 
     @Override
@@ -83,12 +84,10 @@ public class InvitationListFragment extends Fragment {
         invitationListListView = view.findViewById(R.id.invitationListListView);
         invitationListNoInvitationsTextView = view.findViewById(R.id.invitationListNoInvitationsTextView);
 
-        invitationListNoInvitationsTextView.setVisibility(View.GONE);
-
         invitationEventList = new ArrayList<>();
         invitationEventIdList = new ArrayList<>();
 
-        adapter = new InvitationListAdapter(context, invitationEventList, invitationEventIdList, navController);
+        adapter = new InvitationListAdapter(context, invitationEventList, invitationEventIdList, navController, fragmentThis);
         invitationListListView.setAdapter(adapter);
         alertDialog.show();
         loadEventsToListView();
@@ -125,20 +124,24 @@ public class InvitationListFragment extends Fragment {
                                                     String dateString = dateHandler.convertDateToString(eventToCheck.getEventDateFinish());
 
                                                     if (eventToCheck.getEventDateFinish().after(new Date())) {
+                                                        invitationListNoInvitationsTextView.setVisibility(View.GONE);
                                                         invitationEventList.add(documentSnapshot.toObject(Event.class));
                                                         adapter.notifyDataSetChanged();
                                                     } else if (dateString.equals(dateNowString)) {
                                                         if (hourNow == 0) {
                                                             if (hour == 0) {
                                                                 if (minute > minuteNow) {
+                                                                    invitationListNoInvitationsTextView.setVisibility(View.GONE);
                                                                     invitationEventList.add(documentSnapshot.toObject(Event.class));
                                                                     adapter.notifyDataSetChanged();
                                                                 }
                                                             }
                                                         } else if (hour == hourNow && minute > minuteNow) {
+                                                            invitationListNoInvitationsTextView.setVisibility(View.GONE);
                                                             invitationEventList.add(documentSnapshot.toObject(Event.class));
                                                             adapter.notifyDataSetChanged();
                                                         } else if (hour > hourNow) {
+                                                            invitationListNoInvitationsTextView.setVisibility(View.GONE);
                                                             invitationEventList.add(documentSnapshot.toObject(Event.class));
                                                             adapter.notifyDataSetChanged();
                                                         }
@@ -162,11 +165,6 @@ public class InvitationListFragment extends Fragment {
                         }
                     }
                     adapter.notifyDataSetChanged();
-                } else {
-                    invitationListNoInvitationsTextView.setVisibility(View.VISIBLE);
-                }
-                if (invitationEventList.isEmpty()) {
-                    invitationListNoInvitationsTextView.setVisibility(View.VISIBLE);
                 }
                 alertDialog.dismiss();
             }

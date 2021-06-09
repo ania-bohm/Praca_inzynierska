@@ -23,6 +23,7 @@ public class DateHandler {
         try {
             sdf.parse(dateStr);
         } catch (ParseException e) {
+            e.printStackTrace();
             return false;
         }
         return true;
@@ -34,6 +35,7 @@ public class DateHandler {
         try {
             sdf.parse(dateStr);
         } catch (ParseException e) {
+            e.printStackTrace();
             return false;
         }
         return true;

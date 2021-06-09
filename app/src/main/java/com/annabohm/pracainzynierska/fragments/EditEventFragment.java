@@ -278,6 +278,12 @@ public class EditEventFragment extends Fragment implements AdapterView.OnItemSel
         editEventGuestListListView = view.findViewById(R.id.editEventGuestListListView);
         editEventNewGuestListListView = view.findViewById(R.id.editEventNewGuestListListView);
 
+        editEventImageSpinner.setFocusable(false);
+        editEventGuestListSearchView.setFocusable(false);
+        editEventUserSearchListView.setFocusable(false);
+        editEventGuestListListView.setFocusable(false);
+        editEventNewGuestListListView.setFocusable(false);
+
         bundle = this.getArguments();
         assert bundle != null;
         String path = bundle.getString("path");

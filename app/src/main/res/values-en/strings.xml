@@ -179,7 +179,7 @@
     <string name="scoreboard_error">Only event author can delete the score from the scoreboard</string>
     <string name="email1_does_not_match_pattern">Character sequence does not match email address pattern</string>
     <string name="event_dates_incorrect">Entered dates are incorrect!</string>
-    <string name="invitation_author">"Author: "</string>
+    <string name="invitation_author">"Author:   "</string>
     <string name="event_duration">Event duration</string>
     <string name="edit_event_duration">Modify event duration</string>
     <string name="event_whole_date_start">Event date start</string>

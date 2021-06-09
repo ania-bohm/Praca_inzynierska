@@ -19,6 +19,7 @@ import com.annabohm.pracainzynierska.singletons.FirebaseAuthInstanceSingleton;
 import com.annabohm.pracainzynierska.singletons.FirestoreInstanceSingleton;
 import com.annabohm.pracainzynierska.R;
 import com.annabohm.pracainzynierska.datamodels.User;
+import com.annabohm.pracainzynierska.fragments.InvitationListFragment;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
@@ -34,6 +35,7 @@ import java.util.Map;
 import static android.content.ContentValues.TAG;
 
 public class InvitationListAdapter extends ArrayAdapter<Event> implements View.OnClickListener {
+    InvitationListFragment invitationListFragment;
     NavController navController;
     FirestoreInstanceSingleton firestoreInstanceSingleton = FirestoreInstanceSingleton.getInstance();
     FirebaseAuthInstanceSingleton firebaseAuthInstanceSingleton = FirebaseAuthInstanceSingleton.getInstance();
@@ -46,12 +48,13 @@ public class InvitationListAdapter extends ArrayAdapter<Event> implements View.O
     private ArrayList<String> eventIdList;
     private Context context;
 
-    public InvitationListAdapter(@NonNull Context context, @NonNull List<Event> eventList, List<String> eventIdList, NavController navController) {
+    public InvitationListAdapter(@NonNull Context context, @NonNull List<Event> eventList, List<String> eventIdList, NavController navController, InvitationListFragment invitationListFragment) {
         super(context, R.layout.invitation_list_item, eventList);
         this.eventList = (ArrayList) eventList;
         this.context = context;
         this.eventIdList = (ArrayList) eventIdList;
         this.navController = navController;
+        this.invitationListFragment = invitationListFragment;
     }
 
     @Override
@@ -76,7 +79,7 @@ public class InvitationListAdapter extends ArrayAdapter<Event> implements View.O
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 User user = documentSnapshot.toObject(User.class);
-                invitationEventAuthorTextView.setText(R.string.invitation_author + user.getUserFirstName() + " " + user.getUserLastName());
+                invitationEventAuthorTextView.setText(invitationListFragment.getString(R.string.invitation_author) + " " + user.getUserFirstName() + " " + user.getUserLastName());
                 invitationEventNameTextView.setText(event.getEventName());
             }
         }).addOnFailureListener(new OnFailureListener() {

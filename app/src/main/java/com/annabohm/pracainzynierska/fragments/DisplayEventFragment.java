@@ -136,6 +136,8 @@ public class DisplayEventFragment extends Fragment {
         displayEventGuestListListView = view.findViewById(R.id.displayEventGuestListListView);
         alertDialog = new SpotsDialog(context);
 
+        displayEventGuestListListView.setFocusable(false);
+
         editEventButton.setVisibility(View.GONE);
         toDoListButton.setVisibility(View.GONE);
         scoreboardButton.setVisibility(View.GONE);

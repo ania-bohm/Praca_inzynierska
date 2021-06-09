@@ -20,14 +20,14 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.annabohm.pracainzynierska.adapters.ConfirmedEventAdapter;
-import com.annabohm.pracainzynierska.others.DateHandler;
 import com.annabohm.pracainzynierska.datamodels.Event;
-import com.annabohm.pracainzynierska.singletons.FirebaseAuthInstanceSingleton;
-import com.annabohm.pracainzynierska.singletons.FirestoreInstanceSingleton;
-import com.annabohm.pracainzynierska.activities.MainActivity;
 import com.annabohm.pracainzynierska.R;
 import com.annabohm.pracainzynierska.datamodels.User;
+import com.annabohm.pracainzynierska.activities.MainActivity;
+import com.annabohm.pracainzynierska.adapters.ConfirmedEventAdapter;
+import com.annabohm.pracainzynierska.others.DateHandler;
+import com.annabohm.pracainzynierska.singletons.FirebaseAuthInstanceSingleton;
+import com.annabohm.pracainzynierska.singletons.FirestoreInstanceSingleton;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -124,20 +124,24 @@ public class MainFragment extends Fragment {
 
                                         if (eventToCheck.getEventDateFinish().after(new Date())) {
                                             confirmedEvents.put(eventId, documentSnapshot.toObject(Event.class));
+                                            allEventsEmptyTextView.setVisibility(View.GONE);
                                             allEventsAdapter.notifyDataSetChanged();
                                         } else if (dateString.equals(dateNowString)) {
                                             if (hourNow == 0) {
                                                 if (hour == 0) {
                                                     if (minute > minuteNow) {
                                                         confirmedEvents.put(eventId, documentSnapshot.toObject(Event.class));
+                                                        allEventsEmptyTextView.setVisibility(View.GONE);
                                                         allEventsAdapter.notifyDataSetChanged();
                                                     }
                                                 }
                                             } else if (hour == hourNow && minute > minuteNow) {
                                                 confirmedEvents.put(eventId, documentSnapshot.toObject(Event.class));
+                                                allEventsEmptyTextView.setVisibility(View.GONE);
                                                 allEventsAdapter.notifyDataSetChanged();
                                             } else if (hour > hourNow) {
                                                 confirmedEvents.put(eventId, documentSnapshot.toObject(Event.class));
+                                                allEventsEmptyTextView.setVisibility(View.GONE);
                                                 allEventsAdapter.notifyDataSetChanged();
                                             }
                                         }
@@ -147,14 +151,6 @@ public class MainFragment extends Fragment {
                                 @Override
                                 public void onFailure(@NonNull Exception e) {
                                     Log.d(TAG, e.toString());
-                                }
-                            }).addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                                @Override
-                                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                    allEventsAdapter.notifyDataSetChanged();
-                                    if (confirmedEvents.size() == 0) {
-                                        allEventsEmptyTextView.setVisibility(View.VISIBLE);
-                                    }
                                 }
                             });
                         }
@@ -539,7 +535,6 @@ public class MainFragment extends Fragment {
         yourCurrentEventsAdapter = new ConfirmedEventAdapter(yourCurrentEvents);
 
         yourEventsEmptyTextView.setVisibility(View.GONE);
-        allEventsEmptyTextView.setVisibility(View.GONE);
 
         addEventFloatingActionButton = view.findViewById(R.id.addEventFloatingActionButton);
         addEventFloatingActionButton.setOnClickListener(addEventOnClickListener);
