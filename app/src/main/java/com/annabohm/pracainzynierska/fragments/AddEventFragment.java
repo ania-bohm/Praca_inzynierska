@@ -128,35 +128,20 @@ public class AddEventFragment extends Fragment implements AdapterView.OnItemSele
                     Toast.makeText(context, R.string.event_add_success, Toast.LENGTH_SHORT).show();
                     String eventId = documentReference.getId();
                     if (!invitedUsersIdList.isEmpty()) {
+                        invitedUsersIdList.remove(eventAuthor);
                         for (int i = 0; i < invitedUsersIdList.size(); i++) {
                             Map<String, String> docDataUserId = new HashMap<>();
-                            docDataUserId.put("User", invitedUsersIdList.get(i));
+                            String userId = invitedUsersIdList.get(i);
+                            docDataUserId.put("User", userId);
 
-                            eventAttendees.document(eventId).collection("Invited").add(docDataUserId).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                                @Override
-                                public void onSuccess(DocumentReference documentReference) {
-                                }
-                            }).addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Log.d(TAG, e.toString());
-                                }
-                            });
+                            eventAttendees.document(eventId).collection("Invited").document(userId).set(docDataUserId);
                         }
 
                         for (int i = 0; i < invitedUsersIdList.size(); i++) {
                             Map<String, String> docDataEventId = new HashMap<>();
+                            String userId = invitedUsersIdList.get(i);
                             docDataEventId.put("Event", eventId);
-                            attendeeEvents.document(invitedUsersIdList.get(i)).collection("Invited").add(docDataEventId).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                                @Override
-                                public void onSuccess(DocumentReference documentReference) {
-                                }
-                            }).addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                    Log.d(TAG, e.toString());
-                                }
-                            });
+                            attendeeEvents.document(userId).collection("Invited").document(eventId).set(docDataEventId);
                         }
                     }
                 }

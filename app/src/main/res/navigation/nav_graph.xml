@@ -142,7 +142,8 @@
     <fragment
         android:id="@+id/settleExpenseFragment"
         android:name="com.annabohm.pracainzynierska.fragments.SettleExpenseFragment"
-        android:label="SettleExpenseFragment" />
+        android:label="SettleExpenseFragment"
+        tools:layout="@layout/fragment_settle_expense"/>
     <fragment
         android:id="@+id/scoreboardFragment"
         android:name="com.annabohm.pracainzynierska.fragments.ScoreboardFragment"

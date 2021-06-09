@@ -65,6 +65,10 @@ public class MainFragment extends Fragment {
     CollectionReference users = firestoreInstanceSingleton.getFirebaseFirestoreRef().collection("Users");
     CollectionReference attendeeEvents = firestoreInstanceSingleton.getFirebaseFirestoreRef().collection("AttendeeEvents");
     CollectionReference eventAttendees = firestoreInstanceSingleton.getFirebaseFirestoreRef().collection("EventAttendees");
+    CollectionReference toDoLists = firestoreInstanceSingleton.getFirebaseFirestoreRef().collection("ToDoLists");
+    CollectionReference scoreLists = firestoreInstanceSingleton.getFirebaseFirestoreRef().collection("ScoreLists");
+    CollectionReference messageLists = firestoreInstanceSingleton.getFirebaseFirestoreRef().collection("MessageLists");
+    CollectionReference commonExpenseLists = firestoreInstanceSingleton.getFirebaseFirestoreRef().collection("CommonExpenseLists");
     ArrayList<String> attendeesToDeleteIdList = new ArrayList<>();
     ConfirmedEventAdapter allEventsAdapter;
     ConfirmedEventAdapter yourCurrentEventsAdapter;
@@ -285,6 +289,10 @@ public class MainFragment extends Fragment {
                                     public void onClick(DialogInterface dialog, int which) {
                                         final String eventToDeleteId = yourCurrentEventsAdapter.getEventId(viewHolder.getAdapterPosition());
                                         getAttendeesToDeleteIdList(eventToDeleteId);
+                                        deleteToDoList(eventToDeleteId);
+                                        deleteScoreList(eventToDeleteId);
+                                        deleteExpenseList(eventToDeleteId);
+                                        deleteMessageList(eventToDeleteId);
                                         events.document(yourCurrentEventsAdapter.getEventId(viewHolder.getAdapterPosition())).delete();
                                         yourCurrentEventsAdapter.notifyDataSetChanged();
                                         setUpYourCurrentEventsRecyclerView();
@@ -500,6 +508,58 @@ public class MainFragment extends Fragment {
                 }
             });
         }
+    }
+
+    public void deleteToDoList(final String eventId) {
+        toDoLists.document(eventId).collection("ToDoList").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                if(!queryDocumentSnapshots.isEmpty()) {
+                    for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                        toDoLists.document(eventId).collection("ToDoList").document(documentSnapshot.getId()).delete();
+                    }
+                }
+            }
+        });
+    }
+
+    public void deleteScoreList(final String eventId) {
+        scoreLists.document(eventId).collection("ScoreList").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                if(!queryDocumentSnapshots.isEmpty()) {
+                    for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                        scoreLists.document(eventId).collection("ScoreList").document(documentSnapshot.getId()).delete();
+                    }
+                }
+            }
+        });
+    }
+
+    public void deleteExpenseList(final String eventId) {
+        commonExpenseLists.document(eventId).collection("CommonExpenseList").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                if(!queryDocumentSnapshots.isEmpty()) {
+                    for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                        commonExpenseLists.document(eventId).collection("CommonExpenseList").document(documentSnapshot.getId()).delete();
+                    }
+                }
+            }
+        });
+    }
+
+    public void deleteMessageList(final String eventId) {
+        messageLists.document(eventId).collection("MessageList").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                if(!queryDocumentSnapshots.isEmpty()) {
+                    for (DocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                        messageLists.document(eventId).collection("MessageList").document(documentSnapshot.getId()).delete();
+                    }
+                }
+            }
+        });
     }
 
     @Override

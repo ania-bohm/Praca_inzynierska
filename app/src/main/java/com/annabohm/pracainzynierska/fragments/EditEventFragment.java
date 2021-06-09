@@ -74,7 +74,7 @@ public class EditEventFragment extends Fragment implements AdapterView.OnItemSel
     SearchView editEventGuestListSearchView;
     ListView editEventUserSearchListView, editEventGuestListListView, editEventNewGuestListListView;
     Integer chosenImage = 0, selectionCount = 0, modificationCount = 0;
-    String eventId;
+    String eventId, authorId;
     ArrayList<User> oldGuestList, newGuestList, foundUsersList;
     ArrayList<String> oldGuestIdList, newGuestIdList, foundUsersIdList;
     DocumentReference event;
@@ -197,35 +197,20 @@ public class EditEventFragment extends Fragment implements AdapterView.OnItemSel
                 event.update("eventImage", eventImage);
 
                 if (!newGuestIdList.isEmpty()) {
+                    newGuestIdList.remove(authorId);
                     for (int i = 0; i < newGuestIdList.size(); i++) {
                         Map<String, String> docDataUserId = new HashMap<>();
-                        docDataUserId.put("User", newGuestIdList.get(i));
+                        String userId = newGuestIdList.get(i);
+                        docDataUserId.put("User", userId);
 
-                        eventAttendees.document(eventId).collection("Invited").add(docDataUserId).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                            @Override
-                            public void onSuccess(DocumentReference documentReference) {
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Log.d(TAG, e.toString());
-                            }
-                        });
+                        eventAttendees.document(eventId).collection("Invited").document(userId).set(docDataUserId);
                     }
 
                     for (int i = 0; i < newGuestIdList.size(); i++) {
                         Map<String, String> docDataEventId = new HashMap<>();
                         docDataEventId.put("Event", eventId);
-                        attendeeEvents.document(newGuestIdList.get(i)).collection("Invited").add(docDataEventId).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                            @Override
-                            public void onSuccess(DocumentReference documentReference) {
-                            }
-                        }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Log.d(TAG, e.toString());
-                            }
-                        });
+                        String userId = newGuestIdList.get(i);
+                        attendeeEvents.document(userId).collection("Invited").document(eventId).set(docDataEventId);
                     }
                 }
 
@@ -388,6 +373,7 @@ public class EditEventFragment extends Fragment implements AdapterView.OnItemSel
                     populateOldGuestList();
 
                     assert editedEvent != null;
+                    authorId = editedEvent.getEventAuthor();
                     editEventNameMaterialEditText.setHint(editedEvent.getEventName());
                     editEventDateStartEditText.setHint(dateHandler.convertDateToString(editedEvent.getEventDateStart()));
                     editEventTimeStartEditText.setHint(dateHandler.convertTimeToString(editedEvent.getEventTimeStart()));
