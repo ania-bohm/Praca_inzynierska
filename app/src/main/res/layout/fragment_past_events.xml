@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/main_background"
     android:orientation="vertical"
-    tools:context=".PastEventsFragment">
+    tools:context=".fragments.PastEventsFragment">
 
     <TextView
         android:id="@+id/pastEventsTextView"

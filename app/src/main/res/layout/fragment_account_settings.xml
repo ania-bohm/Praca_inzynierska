@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/main_background"
     android:orientation="vertical"
-    tools:context=".AccountSettingsFragment">
+    tools:context=".fragments.AccountSettingsFragment">
 
     <TextView
         android:id="@+id/accountSettingsTextView"

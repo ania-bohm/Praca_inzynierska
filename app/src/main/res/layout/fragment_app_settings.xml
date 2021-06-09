@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/main_background"
     android:orientation="vertical"
-    tools:context=".AppSettingsFragment">
+    tools:context=".fragments.AppSettingsFragment">
 
     <TextView
         android:layout_width="wrap_content"

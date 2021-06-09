@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/loginFragment"
-        android:name="com.annabohm.pracainzynierska.LoginFragment"
+        android:name="com.annabohm.pracainzynierska.fragments.LoginFragment"
         android:label="fragment_login"
         tools:layout="@layout/fragment_login" >
         <action
@@ -19,12 +19,12 @@
     </fragment>
     <fragment
         android:id="@+id/registrationFragment"
-        android:name="com.annabohm.pracainzynierska.RegistrationFragment"
+        android:name="com.annabohm.pracainzynierska.fragments.RegistrationFragment"
         android:label="fragment_registration"
         tools:layout="@layout/fragment_registration" />
     <fragment
         android:id="@+id/mainFragment"
-        android:name="com.annabohm.pracainzynierska.MainFragment"
+        android:name="com.annabohm.pracainzynierska.fragments.MainFragment"
         android:label="fragment_main"
         tools:layout="@layout/fragment_main" >
         <action
@@ -51,7 +51,7 @@
     </fragment>
     <fragment
         android:id="@+id/accountSettingsFragment"
-        android:name="com.annabohm.pracainzynierska.AccountSettingsFragment"
+        android:name="com.annabohm.pracainzynierska.fragments.AccountSettingsFragment"
         android:label="fragment_account_settings"
         tools:layout="@layout/fragment_account_settings" >
         <action
@@ -63,27 +63,27 @@
     </fragment>
     <fragment
         android:id="@+id/addEventFragment"
-        android:name="com.annabohm.pracainzynierska.AddEventFragment"
+        android:name="com.annabohm.pracainzynierska.fragments.AddEventFragment"
         android:label="fragment_add_event"
         tools:layout="@layout/fragment_add_event" />
     <fragment
         android:id="@+id/editAccountSettingsFragment"
-        android:name="com.annabohm.pracainzynierska.EditAccountSettingsFragment"
+        android:name="com.annabohm.pracainzynierska.fragments.EditAccountSettingsFragment"
         android:label="fragment_edit_account_settings"
         tools:layout="@layout/fragment_edit_account_settings" />
     <fragment
         android:id="@+id/changePasswordFragment"
-        android:name="com.annabohm.pracainzynierska.ChangePasswordFragment"
+        android:name="com.annabohm.pracainzynierska.fragments.ChangePasswordFragment"
         android:label="fragment_change_password"
         tools:layout="@layout/fragment_change_password" />
     <fragment
         android:id="@+id/appSettingsFragment"
-        android:name="com.annabohm.pracainzynierska.AppSettingsFragment"
+        android:name="com.annabohm.pracainzynierska.fragments.AppSettingsFragment"
         android:label="fragment_app_settings"
         tools:layout="@layout/fragment_app_settings" />
     <fragment
         android:id="@+id/invitationListFragment"
-        android:name="com.annabohm.pracainzynierska.InvitationListFragment"
+        android:name="com.annabohm.pracainzynierska.fragments.InvitationListFragment"
         android:label="fragment_invitation_list"
         tools:layout="@layout/fragment_invitation_list" >
         <action
@@ -92,7 +92,7 @@
     </fragment>
     <fragment
         android:id="@+id/displayEventFragment"
-        android:name="com.annabohm.pracainzynierska.DisplayEventFragment"
+        android:name="com.annabohm.pracainzynierska.fragments.DisplayEventFragment"
         android:label="fragment_display_event"
         tools:layout="@layout/fragment_display_event" >
         <action
@@ -113,17 +113,17 @@
     </fragment>
     <fragment
         android:id="@+id/editEventFragment"
-        android:name="com.annabohm.pracainzynierska.EditEventFragment"
+        android:name="com.annabohm.pracainzynierska.fragments.EditEventFragment"
         android:label="fragment_edit_event"
         tools:layout="@layout/fragment_edit_event" />
     <fragment
         android:id="@+id/toDoFragment"
-        android:name="com.annabohm.pracainzynierska.ToDoFragment"
+        android:name="com.annabohm.pracainzynierska.fragments.ToDoFragment"
         android:label="fragment_to_do"
         tools:layout="@layout/fragment_to_do" />
     <fragment
         android:id="@+id/pastEventsFragment"
-        android:name="com.annabohm.pracainzynierska.PastEventsFragment"
+        android:name="com.annabohm.pracainzynierska.fragments.PastEventsFragment"
         android:label="fragment_past_events"
         tools:layout="@layout/fragment_past_events" >
         <action
@@ -132,7 +132,7 @@
     </fragment>
     <fragment
         android:id="@+id/commonExpenseFragment"
-        android:name="com.annabohm.pracainzynierska.CommonExpenseFragment"
+        android:name="com.annabohm.pracainzynierska.fragments.CommonExpenseFragment"
         android:label="fragment_common_expense"
         tools:layout="@layout/fragment_common_expense" >
         <action
@@ -141,16 +141,16 @@
     </fragment>
     <fragment
         android:id="@+id/settleExpenseFragment"
-        android:name="com.annabohm.pracainzynierska.SettleExpenseFragment"
+        android:name="com.annabohm.pracainzynierska.fragments.SettleExpenseFragment"
         android:label="SettleExpenseFragment" />
     <fragment
         android:id="@+id/scoreboardFragment"
-        android:name="com.annabohm.pracainzynierska.ScoreboardFragment"
+        android:name="com.annabohm.pracainzynierska.fragments.ScoreboardFragment"
         android:label="fragment_scoreboard"
         tools:layout="@layout/fragment_scoreboard" />
     <fragment
         android:id="@+id/chatFragment"
-        android:name="com.annabohm.pracainzynierska.ChatFragment"
+        android:name="com.annabohm.pracainzynierska.fragments.ChatFragment"
         android:label="fragment_chat"
         tools:layout="@layout/fragment_chat" />
 </navigation>
