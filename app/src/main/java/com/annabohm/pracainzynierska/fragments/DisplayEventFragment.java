@@ -141,7 +141,6 @@ public class DisplayEventFragment extends Fragment {
         editEventButton.setVisibility(View.GONE);
         toDoListButton.setVisibility(View.GONE);
         scoreboardButton.setVisibility(View.GONE);
-        editEventButton.setVisibility(View.GONE);
         commonExpenseButton.setVisibility(View.GONE);
         chatButton.setVisibility(View.GONE);
 
@@ -201,10 +200,9 @@ public class DisplayEventFragment extends Fragment {
                     } else {
                         editEventButton.setVisibility(View.GONE);
                     }
-                    if(isCurrentUserGuestOrAuthor){
+                    if (isCurrentUserGuestOrAuthor) {
                         toDoListButton.setVisibility(View.VISIBLE);
                         scoreboardButton.setVisibility(View.VISIBLE);
-                        editEventButton.setVisibility(View.VISIBLE);
                         commonExpenseButton.setVisibility(View.VISIBLE);
                         chatButton.setVisibility(View.VISIBLE);
                     }

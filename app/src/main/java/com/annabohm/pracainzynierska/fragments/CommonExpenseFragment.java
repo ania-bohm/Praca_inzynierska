@@ -52,13 +52,15 @@ import dmax.dialog.SpotsDialog;
 import static android.content.ContentValues.TAG;
 
 public class CommonExpenseFragment extends Fragment {
+    public TextView displayCommonExpenseSumTextView, displayCommonExpenseToSettleTextView;
+    public MaterialEditText commonExpenseTitleMaterialEditText, commonExpenseValueMaterialEditText;
+    public boolean isUpdate = false;
+    public String commonExpenseItemToUpdateId = "";
     NavController navController;
     CommonExpenseFragment fragmentThis;
     ArrayList<CommonExpense> commonExpenseList;
     RecyclerView.LayoutManager layoutManager;
     CommonExpenseAdapter commonExpenseAdapter;
-    public TextView displayCommonExpenseSumTextView, displayCommonExpenseToSettleTextView;
-    public MaterialEditText commonExpenseTitleMaterialEditText, commonExpenseValueMaterialEditText;
     FloatingActionButton commonExpenseFloatingActionButton, commonExpenseSumUpFloatingActionButton;
     RecyclerView commonExpenseRecyclerView;
     AlertDialog alertDialog;
@@ -68,9 +70,7 @@ public class CommonExpenseFragment extends Fragment {
     DocumentReference eventReference;
     Context context;
     Bundle bundle;
-    public boolean isUpdate = false;
     String eventId, eventAuthor;
-    public String commonExpenseItemToUpdateId = "";
     String currentUserId = Objects.requireNonNull(firebaseAuthInstanceSingleton.getFirebaseAuthRef().getCurrentUser()).getUid();
 
     public CommonExpenseFragment() {
@@ -244,18 +244,12 @@ public class CommonExpenseFragment extends Fragment {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-
+                        loadData();
                     }
                 }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
                 Log.d(TAG, e.toString());
-            }
-        });
-        commonExpenseLists.document(eventId).collection("CommonExpenseList").document(commonExpenseItemToUpdateId).addSnapshotListener(new EventListener<DocumentSnapshot>() {
-            @Override
-            public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
-                loadData();
             }
         });
     }
@@ -282,9 +276,8 @@ public class CommonExpenseFragment extends Fragment {
     }
 
     public void loadData() {
-        if (commonExpenseList.size() > 0) {
-            commonExpenseList.clear();
-        }
+        commonExpenseList.clear();
+
         alertDialog.show();
         commonExpenseLists.document(eventId).collection("CommonExpenseList").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override

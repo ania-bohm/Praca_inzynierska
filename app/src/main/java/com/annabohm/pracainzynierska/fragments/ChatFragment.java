@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.annabohm.pracainzynierska.adapters.ChatAdapter;
+import com.annabohm.pracainzynierska.datamodels.Event;
 import com.annabohm.pracainzynierska.singletons.FirebaseAuthInstanceSingleton;
 import com.annabohm.pracainzynierska.singletons.FirestoreInstanceSingleton;
 import com.annabohm.pracainzynierska.activities.MainActivity;
@@ -122,6 +123,17 @@ public class ChatFragment extends Fragment {
         eventReference = firestoreInstanceSingleton.getFirebaseFirestoreRef().document(path);
         eventId = eventReference.getId();
 
+        eventReference.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                eventAuthor = Objects.requireNonNull(documentSnapshot.toObject(Event.class)).getEventAuthor();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Log.d(TAG, e.toString());
+            }
+        });
         users.document(currentUserId).get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
@@ -200,7 +212,7 @@ public class ChatFragment extends Fragment {
 
     public void loadData() {
         messageList = new ArrayList<>();
-        messageLists.document(eventId).collection("MessageList").addSnapshotListener(new EventListener<QuerySnapshot>() {
+        messageLists.document(eventId).collection("MessageList").orderBy("createdAt").addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
                 if (error != null) {

@@ -1,5 +1,8 @@
 package com.annabohm.pracainzynierska.datamodels;
 
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.storage.FirebaseStorage;
+
 public class ToDo {
     private String toDoId;
     private String toDoTitle;
@@ -57,4 +60,13 @@ public class ToDo {
     public void setToDoChecked(boolean toDoChecked) {
         this.toDoChecked = toDoChecked;
     }
+
+
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+
+
+
+
 }
+

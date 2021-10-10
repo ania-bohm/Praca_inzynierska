@@ -33,23 +33,39 @@ public class LoginFragment extends Fragment {
     public static final String Password = "Password";
     public static final String Email = "Email";
     NavController navController;
-    Button registerButton;
-    Button loginButton;
-    EditText loginEmailEditText, loginPasswordEditText;
-    ImageView loginShowPasswordButton;
-    ProgressBar loginProgressBar;
-   FirebaseAuthInstanceSingleton firebaseAuthInstanceSingleton = FirebaseAuthInstanceSingleton.getInstance();
-    Context context;
-    SharedPreferences sharedPreferences;
-    InputMethodManager imm;
-    boolean hiddenPassword = true;
     private final View.OnClickListener registerOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             navController.navigate(R.id.loginToRegister);
         }
     };
+    Button registerButton;
+    Button loginButton;
+    EditText loginEmailEditText, loginPasswordEditText;
+    ImageView loginShowPasswordButton;
+    ProgressBar loginProgressBar;
+    FirebaseAuthInstanceSingleton firebaseAuthInstanceSingleton = FirebaseAuthInstanceSingleton.getInstance();
+    Context context;
+    SharedPreferences sharedPreferences;
+    InputMethodManager imm;
+    private final View.OnClickListener loginOnClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            final String loginEmail = loginEmailEditText.getText().toString().trim();
+            final String loginPassword = loginPasswordEditText.getText().toString();
 
+            hideKeyboard();
+
+            if (!loginCorrect(loginEmail, loginPassword)) {
+                return;
+            }
+
+            loginProgressBar.setVisibility(View.VISIBLE);
+
+            login(loginEmail, loginPassword);
+        }
+    };
+    boolean hiddenPassword = true;
     private final View.OnClickListener loginShowPasswordOnClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
@@ -59,23 +75,6 @@ public class LoginFragment extends Fragment {
                 loginPasswordEditText.setTransformationMethod(new PasswordTransformationMethod());
             }
             hiddenPassword = !hiddenPassword;
-        }
-    };
-    private final View.OnClickListener loginOnClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            final String loginEmail = loginEmailEditText.getText().toString().trim();
-            final String loginPassword = loginPasswordEditText.getText().toString();
-
-            hideKeyboard();
-
-            if(!loginCorrect(loginEmail, loginPassword)){
-                return;
-            }
-
-            loginProgressBar.setVisibility(View.VISIBLE);
-
-            login(loginEmail, loginPassword);
         }
     };
 
@@ -140,7 +139,7 @@ public class LoginFragment extends Fragment {
         return true;
     }
 
-    public void login(final String loginEmail, final String loginPassword){
+    public void login(final String loginEmail, final String loginPassword) {
         firebaseAuthInstanceSingleton.getFirebaseAuthRef().signInWithEmailAndPassword(loginEmail, loginPassword).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {

@@ -108,6 +108,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             } else {
                 userSignOut();
             }
+        } else if (currentId == R.id.addEventFragment || currentId == R.id.editEventFragment) {
+            eventOnBackPressed();
         } else {
             super.onBackPressed();
         }
@@ -136,6 +138,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     }
                 })
                 .setIcon(R.drawable.ic_logout_gray)
+                .show();
+    }
+
+    public void eventOnBackPressed() {
+        new AlertDialog.Builder(MainActivity.this)
+                .setTitle(R.string.warning_title)
+                .setMessage(R.string.warning_message)
+                .setNegativeButton(R.string.warning_no, null)
+                .setPositiveButton(R.string.warning_yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        navController.popBackStack();
+                    }
+                })
+                .setIcon(R.drawable.ic_warning)
                 .show();
     }
 }

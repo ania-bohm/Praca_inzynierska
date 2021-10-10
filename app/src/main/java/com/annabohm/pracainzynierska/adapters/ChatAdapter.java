@@ -25,7 +25,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MessageItemHol
     ArrayList<Message> messageList;
     String currentUserId;
 
-    public ChatAdapter(Context context, ArrayList<Message> messageList, String currentUserId){
+    public ChatAdapter(Context context, ArrayList<Message> messageList, String currentUserId) {
         this.messageList = messageList;
         this.context = context;
         this.currentUserId = currentUserId;
@@ -35,7 +35,7 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MessageItemHol
     @Override
     public MessageItemHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view;
-        if(viewType == MSG_TYPE_RIGHT){
+        if (viewType == MSG_TYPE_RIGHT) {
             view = LayoutInflater.from(context).inflate(R.layout.message_item_right, parent, false);
         } else {
             view = LayoutInflater.from(context).inflate(R.layout.message_item_left, parent, false);
@@ -57,24 +57,24 @@ public class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MessageItemHol
         return messageList.size();
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        if (currentUserId.equals(messageList.get(position).getMessageSenderId())) {
+            return MSG_TYPE_RIGHT;
+        } else {
+            return MSG_TYPE_LEFT;
+        }
+    }
+
     public interface ItemClickListener {
         void onClick(View view, int position, boolean isLongClick);
     }
 
-    @Override
-    public int getItemViewType(int position) {
-       if(currentUserId.equals(messageList.get(position).getMessageSenderId())){
-           return MSG_TYPE_RIGHT;
-       } else {
-           return MSG_TYPE_LEFT;
-       }
-    }
-
     public static class MessageItemHolder extends RecyclerView.ViewHolder implements View.OnClickListener, View.OnCreateContextMenuListener {
-        ChatAdapter.ItemClickListener itemClickListener;
         public TextView messageContentTextView;
         public TextView messageSenderTextView;
         public TextView messageCreatedAtTextView;
+        ChatAdapter.ItemClickListener itemClickListener;
 
         public MessageItemHolder(@NonNull View itemView) {
             super(itemView);

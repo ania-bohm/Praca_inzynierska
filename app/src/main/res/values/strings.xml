@@ -172,10 +172,10 @@
     <string name="event_delete_success">Usunięto wydarzenie pomyślnie</string>
     <string name="common_expense_user_paying">Płacący: </string>
     <string name="to_do_creator">"Twórca: "</string>
-    <string name="settle_expense">"Rozliczenia"</string>
-    <string name="settle_expense_item_paid">"wydana suma: "</string>
-    <string name="settle_expense_details">"Detale rozliczenia"</string>
-    <string name="settle_expense_per_person">"Wydane pieniądze do rozliczenia"</string>
+    <string name="settle_expense">Rozliczenia</string>
+    <string name="settle_expense_item_paid">wydana suma: </string>
+    <string name="settle_expense_details">Detale rozliczenia</string>
+    <string name="settle_expense_per_person">Wydane pieniądze do rozliczenia</string>
     <string name="settle_expense_gives">oddaje:</string>
     <string name="settle_expense_receives">otrzymuje:</string>
     <string name="chat_header">Chat wydarzenia</string>
@@ -184,7 +184,11 @@
     <string name="common_expense_header">Wspólne wydatki</string>
     <string name="scoreboard_guest_name">Imię i nazwisko gracza</string>
     <string name="scoreboard_value">Liczba wygranych gier</string>
-    <string name="message_sender">"Wysłane przez: "</string>
-    <string name="message_hint">"Napisz wiadomość..."</string>
-    <string name="message_empty_error">"Nie możesz wysłać pustej wiadomości"</string>
+    <string name="message_sender">Wysłane przez: </string>
+    <string name="message_hint">Napisz wiadomość...</string>
+    <string name="message_empty_error">Nie możesz wysłać pustej wiadomości</string>
+    <string name="warning_title">Ostrzeżenie</string>
+    <string name="warning_message">Czy na pewno chcesz cofnąć?\nŻadne zmiany nie zostaną zapisane.</string>
+    <string name="warning_yes">Tak</string>
+    <string name="warning_no">Nie</string>
 </resources>

@@ -49,14 +49,16 @@ import static android.content.ContentValues.TAG;
 
 public class ToDoFragment extends Fragment {
 
+    public MaterialEditText toDoTitleMaterialEditText;
+    public MaterialEditText toDoDescriptionMaterialEditText;
+    public TextView displayToDoDoneTextView;
+    public boolean isUpdate = false;
+    public String toDoItemToUpdateId = "";
     ToDoFragment fragmentThis;
     ArrayList<ToDo> toDoList;
     RecyclerView toDoRecyclerView;
     RecyclerView.LayoutManager layoutManager;
     FloatingActionButton toDoFloatingActionButton;
-    public MaterialEditText toDoTitleMaterialEditText;
-    public MaterialEditText toDoDescriptionMaterialEditText;
-    public TextView displayToDoDoneTextView;
     TextView displayToDoSlashTextView;
     TextView displayToDoAllTextView;
     ToDoAdapter toDoAdapter;
@@ -67,10 +69,8 @@ public class ToDoFragment extends Fragment {
     DocumentReference eventReference;
     int taskCounter = 0;
     int taskDoneCounter = 0;
-    public boolean isUpdate = false;
     String eventId, eventAuthor;
     String currentUserId = Objects.requireNonNull(firebaseAuthInstanceSingleton.getFirebaseAuthRef().getCurrentUser()).getUid();
-    public String toDoItemToUpdateId = "";
     Context context;
     Bundle bundle;
 
@@ -161,8 +161,7 @@ public class ToDoFragment extends Fragment {
         if (item.getTitle().equals(getString(R.string.to_do_delete))) {
             if (currentUserId.equals(eventAuthor) || currentUserId.equals(toDoList.get(item.getOrder()).getToDoCreatorId())) {
                 deleteItem(item.getOrder());
-            }
-            else {
+            } else {
                 Toast.makeText(context, R.string.to_do_error, Toast.LENGTH_SHORT).show();
             }
         }
@@ -191,7 +190,7 @@ public class ToDoFragment extends Fragment {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-
+                        loadData();
                     }
                 }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -199,12 +198,7 @@ public class ToDoFragment extends Fragment {
                 Log.d(TAG, e.toString());
             }
         });
-        toDoLists.document(eventId).collection("ToDoList").document(toDoItemToUpdateId).addSnapshotListener(new EventListener<DocumentSnapshot>() {
-            @Override
-            public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
-                loadData();
-            }
-        });
+
     }
 
     private void setData(String title, String description) {
@@ -229,9 +223,8 @@ public class ToDoFragment extends Fragment {
     }
 
     public void loadData() {
-        if (toDoList.size() > 0) {
-            toDoList.clear();
-        }
+        toDoList.clear();
+
         alertDialog.show();
         toDoLists.document(eventId).collection("ToDoList").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override

@@ -41,7 +41,7 @@
     <string name="change_personal_data_error_empty">There are no modifications</string>
     <string name="edit_event_error_empty">There are no modifications</string>
     <string name="your_events">Your events</string>
-    <string name="your_events_empty">You haven\'t got any events yet.\\n\\n  Create an event by pressing \"+\" button.</string>
+    <string name="your_events_empty">You haven\'t got any events yet.\n\n  Create an event by pressing \"+\" button.</string>
     <string name="all_events">Confirmed events</string>
     <string name="all_events_empty">You aren\'t participating in any events yet</string>
     <string name="countdown">Next event starts in:</string>
@@ -188,4 +188,8 @@
     <string name="event_data_additional">Additional event data</string>
     <string name="modify_general_event_data">Modify general event data</string>
     <string name="modify_additional_event_data">Modify additional event data</string>
+    <string name="warning_title">Warning</string>
+    <string name="warning_message">Are you sure you want to cancel this operation?\nNo changes will be saved.</string>
+    <string name="warning_yes">Yes</string>
+    <string name="warning_no">No</string>
 </resources>

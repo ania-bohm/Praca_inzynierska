@@ -18,6 +18,7 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.annabohm.pracainzynierska.adapters.ToDoAdapter;
 import com.annabohm.pracainzynierska.datamodels.Event;
 import com.annabohm.pracainzynierska.singletons.FirebaseAuthInstanceSingleton;
 import com.annabohm.pracainzynierska.singletons.FirestoreInstanceSingleton;
@@ -49,14 +50,16 @@ import dmax.dialog.SpotsDialog;
 import static android.content.ContentValues.TAG;
 
 public class ScoreboardFragment extends Fragment {
+    public MaterialEditText scoreboardGuestNameMaterialEditText;
+    public MaterialEditText scoreboardValueMaterialEditText;
+    public boolean isUpdate = false;
+    public String scoreItemToUpdateId = "";
     ScoreboardFragment fragmentThis;
     NavController navController;
     AlertDialog alertDialog;
     FirebaseAuthInstanceSingleton firebaseAuthInstanceSingleton = FirebaseAuthInstanceSingleton.getInstance();
     FirestoreInstanceSingleton firestoreInstanceSingleton = FirestoreInstanceSingleton.getInstance();
     CollectionReference scoreLists = firestoreInstanceSingleton.getFirebaseFirestoreRef().collection("ScoreLists");
-    public MaterialEditText scoreboardGuestNameMaterialEditText;
-    public MaterialEditText scoreboardValueMaterialEditText;
     FloatingActionButton scoreFloatingActionButton;
     RecyclerView scoreRecyclerView;
     DocumentReference eventReference;
@@ -64,8 +67,6 @@ public class ScoreboardFragment extends Fragment {
     Bundle bundle;
     String eventId, eventAuthorId;
     String currentUserId = Objects.requireNonNull(firebaseAuthInstanceSingleton.getFirebaseAuthRef().getCurrentUser()).getUid();
-    public boolean isUpdate = false;
-    public String scoreItemToUpdateId = "";
     RecyclerView.LayoutManager layoutManager;
     ArrayList<Score> scoreList;
     ScoreboardAdapter scoreboardAdapter;
@@ -190,18 +191,12 @@ public class ScoreboardFragment extends Fragment {
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
                     @Override
                     public void onSuccess(Void aVoid) {
-
+                        loadData();
                     }
                 }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
                 Log.d(TAG, e.toString());
-            }
-        });
-        scoreLists.document(eventId).collection("ScoreList").document(scoreItemToUpdateId).addSnapshotListener(new EventListener<DocumentSnapshot>() {
-            @Override
-            public void onEvent(@Nullable DocumentSnapshot value, @Nullable FirebaseFirestoreException error) {
-                loadData();
             }
         });
     }
@@ -226,9 +221,8 @@ public class ScoreboardFragment extends Fragment {
     }
 
     public void loadData() {
-        if (scoreList.size() > 0) {
-            scoreList.clear();
-        }
+        scoreList.clear();
+
         alertDialog.show();
         scoreLists.document(eventId).collection("ScoreList").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
@@ -237,9 +231,10 @@ public class ScoreboardFragment extends Fragment {
                     if (documentSnapshot.exists()) {
                         Score score = documentSnapshot.toObject(Score.class);
                         scoreList.add(score);
-                        scoreboardAdapter.notifyDataSetChanged();
                     }
                 }
+                scoreboardAdapter = new ScoreboardAdapter(fragmentThis, scoreList, eventId, currentUserId, eventAuthorId);
+                scoreRecyclerView.setAdapter(scoreboardAdapter);
                 alertDialog.dismiss();
             }
         }).addOnFailureListener(new OnFailureListener() {
